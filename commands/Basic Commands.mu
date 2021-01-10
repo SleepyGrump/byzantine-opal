@@ -25,7 +25,13 @@ Layout functions:
 	formatcolumns() - fit tabular data into your default margins and borders
 	formattable() - tabular data, optionally with a header, you choose the number of columns
 	formatdb() - tabular data straight out of a database, columns determined by the number returned. (Designed to work with the output of SQL Commands.mu.)
-	multicol() - lay out tabular data where you want to specify column widths.
+	multicol() - lay out tabular data where you want to specify column widths, either as a percentage or explicit widths. Includes the ability to designate "fill" columns - * means "let this column take up all the remaining available space".
+
+The following functions are useful for developers:
+
+	debug(obj, message) - sends a message to the chosen debugger (hard-coded in a setting below so that your debugs have no chance of escaping) only if debugging is turned on for that object. You can turn debugging off and on with debug(obj).
+
+	report(obj, message) - sends a report automatically to a hard-coded target, either a dbref or a channel. I use this for SQL failures, which I always want to know about, and send them to the staff channel.
 
 Below are the old functions formattext and formatcolumns replace. They're not 1:1 replacements, so they are included below but are commented out:
 
@@ -46,10 +52,10 @@ Commands from SGP I will be duplicating:
 	+summon <name> and +rsummon or +return <name>
 
 Stuff I will not be duplicating at this time:
-	places - this would be its own thing if I created it
-	+beginner - I have never seen a beginner make proper use of this.
+	places - this would be its own thing if I created it and would not require fancy setup if I could avoid it
+	+beginner - I have never seen a beginner make use of this.
 	+info - this is going to be game-specific.
-	+selfboot  - @selfboot exists.
+	+selfboot - no need at the moment.
 	+knock and +shout
 	+uptime
 	+warn
@@ -84,6 +90,10 @@ Stuff I will not be duplicating at this time:
 &d.default-alert [v(d.bd)]=GAME
 
 &d.indent-width [v(d.bd)]=5
+
+&d.debug-target [v(d.bd)]=#1
+
+&d.report-target [v(d.bd)]=Staff
 
 @@ Effect controls the color of the header, footer, and divider functions.
 @@ -
@@ -229,9 +239,10 @@ Stuff I will not be duplicating at this time:
 
 &tr.make-functions [v(d.bf)]=@dolist lattr(me/f.global.*)=@function rest(rest(##, .), .)=me/##; @dolist lattr(me/f.globalp.*)=@function/preserve rest(rest(##, .), .)=me/##; @dolist lattr(me/f.globalpp.*)=@function/preserve/privilege rest(rest(##, .), .)=me/##;
 
-@@ These functions are rewrites of the SGP Globals.
+@@ These functions are rewrites of the SGP Globals functions.
 
-&f.global.isstaff [v(d.bf)]=or(member(v(d.staff_list), pmatch(%0)), orflags(%0,WZw))
+&f.globalpp.isstaff [v(d.bf)]=or(member(v(d.staff_list), pmatch(%0)), orflags(%0, WZw))
+
 
 @@ On with the custom stuff below!
 
@@ -443,8 +454,7 @@ Stuff I will not be duplicating at this time:
 
 @@ Output: an entire duration string: 3d 4h 5m 57s
 @@ %0 - number of seconds to calculate the duration of
-&f.duration-string [v(d.bf)]=strcat(setq(0, %0), setq(1,), null(iter(v(d.durations), if(gt(%0, itext(0)), strcat(setq(1, strcat(%q1, setr(2, div(%q0, itext(0))), extract(v(d.duration-words), inum(0), 1), %b)), setq(0, sub(%q0, mul(itext(0), %q2))))))), %q1, %q0, s)
-
+&f.duration-string [v(d.bf)]=extract(exptime(%0), 1, 2)
 
 @@ Output: A duration consisting of the largest 2 items in years, 30-day months, weeks, days, hours, minutes, or seconds, but only gives the largest two values.
 @@ %0 - number of seconds.
@@ -460,6 +470,9 @@ Stuff I will not be duplicating at this time:
 @@  %0 - number of seconds
 &f.globalpp.secs2hrs [v(d.bf)]=ulocal(f.calculate-duration, %0)
 
+&f.global.prettytime [v(d.bf)]=timefmt($m-$d-$Y $r)
+
+
 @@ %0 - the word
 @@ %1 - the position in the string
 @@ Cases:
@@ -474,6 +487,26 @@ Stuff I will not be duplicating at this time:
 @@ Output: A properly capitalized title-case string
 @@ %0 - the string to title-case
 &f.globalpp.title [v(d.bf)]=iter(%0, if(ulocal(f.should-word-be-capitalized, itext(0), inum(0)), capstr(itext(0)), itext(0)))
+
+
+&layout.debug [v(d.bf)]=strcat(alert(timefmt($X) debug), From, %b, moniker(%0), :%b, %1)
+
+&layout.debug_flag [v(d.bf)]=strcat(Debugging, %b, if(%1, enabled, disabled), %b, on, %b, moniker(%0)., if(%1, strcat(%b, Output will go to, %b, v(d.debug-target).)))
+
+&tr.send_debug_message [v(d.bf)]=if(default(%0/debug.enabled, 0), pemit(v(d.debug-target), ulocal(layout.debug, %0, %1)))
+
+&tr.flip_debug_flag [v(d.bf)]=strcat(set(%0, strcat(debug.enabled:, setr(0, not(default(%0/debug.enabled, 0))))), pemit(%#, ulocal(layout.debug_flag, %0, %q0)))
+
+@@ %0: target object
+@@ %1: message
+&f.globalpp.debug [v(d.bf)]=if(t(%1), ulocal(tr.send_debug_message, %0, %1), ulocal(tr.flip_debug_flag, %0))
+
+
+&layout.report [v(d.bf)]=strcat(alert(prettytime() Report), From, %b, moniker(%0), :%b, %1)
+
+@@ %0: target object
+@@ %1: message
+&f.globalpp.report [v(d.bf)]=if(isdbref(v(d.report-target)), pemit(v(d.report-target), ulocal(layout.report, %0, %1)), cemit(v(d.report-target), ulocal(layout.report, %0, %1)))
 
 
 

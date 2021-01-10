@@ -239,3 +239,11 @@ th multicol(a012345678901234567890123456789 b012345678901234567890123456789 c012
 th divider(A real(ish) world example)
 
 th multicol(user_id|user_name|user_email|user_editcount|1|TheSupremes|fakefake@example.com|4|2|MediaWiki default||0|4|A Fake Name|anemail@address.com|144|5|Another name|another@email.com|0|6|AnotherFake|thefakes@eample.com|0, 7 * * 14, 1, |, 0, %#)
+
+@@ Debugging tests:
+
+th debug(%#)
+th debug(%#, Test)
+th debug(%#)
+th debug(%#, Test)
+
