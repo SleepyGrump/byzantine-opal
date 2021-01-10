@@ -205,13 +205,20 @@ Staff Commands:
 @@ If yes columns yes where: Columns and rows matching where.
 @@ If where = RAND, get a random row.
 
-&f.globalpp.fetch [v(d.sf)]=strcat(setq(R, if(t(strlen(%3)), %3, v(d.default-row-delimeter))), setq(C, if(t(strlen(%4)), %4, v(d.default-column-delimeter))), case(0, isstaff(%@), #-1 PERMISSION DENIED, lte(words(%0), 1), #-1 TOO MANY TABLES (%0), t(%0), sql(ulocal(sql.get-tables), %qR, %qC), case(strcat(t(%1), t(%2)), 00, ulocal(f.get-entire-table, %0, %qR, %qC), 01, switch(%2, RAND, ulocal(f.get-random-row, %0, %qR, %qC), ulocal(f.get-whole-row-by-where, %0, %2, %qR, %qC)), 11, switch(%2, RAND, ulocal(f.get-random-row-by-columns, %0, %1, %qR, %qC), ulocal(f.get-columns-and-row-by-where, %0, %1, %2, %qR, %qC)), 10, ulocal(f.get-table-by-columns, %0, %1, %qR, %qC))))
+&f.globalpp.fetch [v(d.sf)]=strcat(setq(R, if(t(strlen(%3)), %3, v(d.default-row-delimeter))), setq(C, if(t(strlen(%4)), %4, v(d.default-column-delimeter))), case(0, cor(isstaff(%#), cand(not(member(num(me), %@)), hastype(%@, THING), andflags(%@, I!h!n), isstaff(owner(%@)))), #-1 PERMISSION DENIED, lte(words(%0), 1), #-1 TOO MANY TABLES (%0), t(%0), sql(ulocal(sql.get-tables), %qR, %qC), case(strcat(t(%1), t(%2)), 00, ulocal(f.get-entire-table, %0, %qR, %qC), 01, switch(%2, RAND, ulocal(f.get-random-row, %0, %qR, %qC), ulocal(f.get-whole-row-by-where, %0, %2, %qR, %qC)), 11, switch(%2, RAND, ulocal(f.get-random-row-by-columns, %0, %1, %qR, %qC), ulocal(f.get-columns-and-row-by-where, %0, %1, %2, %qR, %qC)), 10, ulocal(f.get-table-by-columns, %0, %1, %qR, %qC))))
+
+@@ %0: table list
+@@ %1: viewer
+&f.filter-unlocked-tables [v(d.sf)]=if(isstaff(%1), %0, setinter(%0, v(d.unlocked_tables), v(d.default-row-delimeter)))
+
+@@ %0: table list
+&f.filter-hidden-tables [v(d.sf)]=setdiff(%0, v(d.hidden_tables), v(d.default-row-delimeter))
 
 @@ %0: table list
 @@ %1: user viewing this
-&layout.show_tables [v(d.sf)]=strcat(header(All available tables, %1), %r, fitcolumns(%0, v(d.default-row-delimeter), %1, 2), %r, footer(+db <table name> for more, %1), %r, %0)
+&layout.show_tables [v(d.sf)]=strcat(header(All available tables, %1), %r, formatcolumns(%0, v(d.default-row-delimeter), %1), %r, footer(+db <table name> for more, %1))
 
-&c.+db [v(d.sc)]=$+db:@pemit %#=ulocal(layout.show_tables, objeval(%#, fetch()), %#);
+&c.+db [v(d.sc)]=$+db:@pemit %#=ulocal(layout.show_tables, ulocal(f.filter-hidden-tables, ulocal(f.filter-unlocked-tables, fetch(), %#)), %#);
 
 @@ Wrapping up:
 
