@@ -23,10 +23,15 @@ Requirements:
 	isstaff()
 	formatdb()
 	formatcolumns()
+	multicol()
+	debug()
+	report()
 
 @@ MAYBE: You will also need to secure your installation somewhat.
 
 Code functions:
+	sanitize(input) - fire this on everything you plan to put into an SQL query that comes directly from a user. That means where clauses, post values, column names, EVERYTHING. This is not built into fetch() by default because that would make queries like fetch(user,, user_name LIKE 'B_b*') impossible. Instead we restricted access to fetch() to staff-only and staff-owned wiz-inherit code objects. Sanitize your inputs.
+
 	fetch(table, columns, where query, row delimeter, column delimeter)
 		table: optional; if skipped returns a list of mirrored tables
 		columns: optional; if skipped returns the entire contents of the table, if given, sorts by the given column order
@@ -34,13 +39,11 @@ Code functions:
 		row delimeter: defaults to |
 		column delimeter: defaults to ~
 
-		* A word about where queries: Please sanitize your inputs. We can't sanitize here without reducing the usefulness of the command. There is a reason it is restricted to staff and staff-owned objects only. If you leave a gaping hole through which someone can drive a "Robert'); DROP TABLE students;--"-sized truck through, that's on your head. Never put user input directly into the WHERE clause. Strip it, snip it, make sure it's exactly as long as you expect and has no special characters, especially these: % * _ ' ` " \
-
 		* If the WHERE query contains LIKE and *'s, we will interpret all *'s as % because % is a MUX reserved character and would have to be mightily escaped otherwise.
 
 		* If the WHERE query is exactly "RAND" (case insensitive), you will receive one random row from the given table.
 
-		* You will need to put quotes around your own where query strings. This allows you to do things like "ID = 1 AND Name LIKE 'B*'" - the syntax is a bit too complex for us to write an entire engine here.
+		* You will need to put quotes around your own where query strings. This allows you to do things like "Email LIKE '*@gmail.com' AND Name LIKE 'B*'" - the syntax is a bit too complex for us to write an entire engine here.
 
 		* Limitations: This doesn't support spaces in column or table names. Use an underscore or dash or just concatenate. Or just use sql() directly.
 
@@ -125,6 +128,10 @@ Staff Commands:
 
 &d.default-column-delimeter [v(d.sd)]=~
 
+&d.dangerous_in_sql [v(d.sd)]=%*_`\
+
+&d.allowed_with_escapes_in_sql [v(d.sd)]=' "
+
 &sql.get-tables [v(d.sd)]=SHOW TABLES;
 
 &sql.get-table-columns [v(d.sd)]=DESCRIBE %0;
@@ -160,42 +167,45 @@ Staff Commands:
 
 &d.sanitize-where [v(d.sd)]=%\
 
-&f.sanitize-where [v(d.sf)]=strcat(setq(0, strip(%0, v(d.sanitize-where))), if(strmatch(%q0, * LIKE *), edit(%q0, *, %%%%%%), %q0))
+&f.sanitize-where [v(d.sf)]=strcat(setq(0, strip(%0, v(d.sanitize-where))), setq(0, if(strmatch(%q0, * LIKE *), edit(%q0, *, %%%%), %q0)), edit(%q0, @@ESCAPE@@, \\\\))
 
+&layout.query_error [v(d.sf)]=strcat(Query error in %0:, %b, \[%1\], :%b, %2)
+
+&tr.report_error [v(d.sf)]=if(cand(not(t(%1)), t(strlen(%1))), report(num(me), ulocal(layout.query_error, %0, %1, %2)))
 
 @@ %0: table
 @@ %1: row delimiter
 @@ %2: column delimeter
 
 @@ Output: column1~column2~column3
-&f.get-table-columns [v(d.sf)]=iter(sql(ulocal(sql.get-table-columns, %0), %1, %2), first(itext(0), %2), %1, %2)
+&f.get-table-columns [v(d.sf)]=strcat(iter(setr(R, sql(setr(Q, ulocal(sql.get-table-columns, %0)), %1, %2)), first(itext(0), %2), %1, %2), ulocal(tr.report_error, get-table-columns, %qR, %qQ))
 
-&f.get-table-contents [v(d.sf)]=sql(ulocal(sql.get-table-contents, %0), %1, %2)
+&f.get-table-contents [v(d.sf)]=strcat(setr(R, sql(setr(Q, ulocal(sql.get-table-contents, %0)), %1, %2)), ulocal(tr.report_error, get-table-contents, %qR, %qQ))
 
 &f.get-entire-table [v(d.sf)]=strcat(ulocal(f.get-table-columns, %0, %1, %2), %1, ulocal(f.get-table-contents, %0, %1, %2))
 
-&f.get-random-row [v(d.sf)]=strcat(ulocal(f.get-table-columns, %0, %1, %2), %1, sql(ulocal(sql.get-table-random, %0), %1, %2))
+&f.get-random-row [v(d.sf)]=strcat(ulocal(f.get-table-columns, %0, %1, %2), %1, setr(R, sql(setr(Q, ulocal(sql.get-table-random, %0)), %1, %2)), ulocal(tr.report_error, get-random-row, %qR, %qQ))
 
 @@ %0: table
 @@ %1: where query
 @@ %2: row delimiter
 @@ %3: column delimeter
-&f.get-whole-row-by-where [v(d.sf)]=strcat(ulocal(f.get-table-columns, %0, %2, %3), %2, sql(ulocal(sql.get-whole-row-by-where, %0, %1), %2, %3))
+&f.get-whole-row-by-where [v(d.sf)]=strcat(ulocal(f.get-table-columns, %0, %2, %3), %2, setr(R, sql(setr(Q, ulocal(sql.get-whole-row-by-where, %0, %1)), %2, %3)), ulocal(tr.report_error, get-whole-row-by-where, %qR, %qQ))
 
 @@ %0: table
 @@ %1: columns
 @@ %2: row delimiter
 @@ %3: column delimeter
-&f.get-table-by-columns [v(d.sf)]=strcat(edit(%1, %b, %3), %2, sql(ulocal(sql.get-table-by-columns, %0, %1), %2, %3))
+&f.get-table-by-columns [v(d.sf)]=strcat(edit(%1, %b, %3), %2, setr(R, sql(setr(Q, ulocal(sql.get-table-by-columns, %0, %1)), %2, %3)), ulocal(tr.report_error, get-table-by-columns, %qR, %qQ))
 
-&f.get-random-row-by-columns [v(d.sf)]=strcat(edit(%1, %b, %3), %2, sql(ulocal(sql.get-random-by-columns, %0, %1), %2, %3))
+&f.get-random-row-by-columns [v(d.sf)]=strcat(edit(%1, %b, %3), %2, setr(R, sql(setr(Q, ulocal(sql.get-random-by-columns, %0, %1)), %2, %3)), ulocal(tr.report_error, get-random-row-by-columns, %qR, %qQ))
 
 @@ %0: table
 @@ %1: columns
 @@ %2: where query
 @@ %3: row delimiter
 @@ %4: column delimeter
-&f.get-columns-and-row-by-where [v(d.sf)]=strcat(edit(%1, %b, %4), %3, sql(ulocal(sql.get-columns-and-row-by-where, %0, %1, %2), %3, %4))
+&f.get-columns-and-row-by-where [v(d.sf)]=strcat(edit(%1, %b, %4), %3, setr(R, sql(setr(Q, ulocal(sql.get-columns-and-row-by-where, %0, %1, %2)), %3, %4)), ulocal(tr.report_error, get-columns-and-row-by-where, %qR, %qQ))
 
 @@ %0: table: optional; if skipped returns a list of tables
 @@ %1: columns: optional; if skipped returns the entire contents of the table, if given, sorts by the given column order
@@ -210,6 +220,11 @@ Staff Commands:
 @@ If where = RAND, get a random row.
 
 &f.globalpp.fetch [v(d.sf)]=strcat(setq(R, if(t(strlen(%3)), %3, v(d.default-row-delimeter))), setq(C, if(t(strlen(%4)), %4, v(d.default-column-delimeter))), case(0, cor(isstaff(%#), cand(not(member(num(me), %@)), hastype(%@, THING), andflags(%@, I!h!n), isstaff(owner(%@)))), #-1 PERMISSION DENIED, lte(words(%0), 1), #-1 TOO MANY TABLES (%0), t(%0), sql(ulocal(sql.get-tables), %qR, %qC), case(strcat(t(%1), t(%2)), 00, ulocal(f.get-entire-table, %0, %qR, %qC), 01, switch(%2, RAND, ulocal(f.get-random-row, %0, %qR, %qC), ulocal(f.get-whole-row-by-where, %0, %2, %qR, %qC)), 11, switch(%2, RAND, ulocal(f.get-random-row-by-columns, %0, %1, %qR, %qC), ulocal(f.get-columns-and-row-by-where, %0, %1, %2, %qR, %qC)), 10, ulocal(f.get-table-by-columns, %0, %1, %qR, %qC))))
+
+&f.escape-characters [v(d.sf)]=if(t(setr(0, member(setr(1, v(d.allowed_with_escapes_in_sql)), %0))), strcat(@@ESCAPE@@, extract(%q1, %q0, 1)), %0)
+
+@@ %0: term to sanitize
+&f.globalpp.sanitize [v(d.sf)]=strcat(setq(0, strip(%0, v(d.dangerous_in_sql))), setq(1,), null(iter(lnum(strlen(%q0)), setq(1, strcat(%q1, ulocal(f.escape-characters, mid(%q0, itext(0), 1)))))), %q1)
 
 @@ %0: table list
 @@ %1: viewer
@@ -241,6 +256,11 @@ Staff Commands:
 &c.+db [v(d.sc)]=$+db:@pemit %#=ulocal(layout.show_tables, ulocal(f.filter-hidden-tables, ulocal(f.filter-unlocked-tables, fetch(), %#)), %#);
 
 &c.+db_table [v(d.sc)]=$+db *:@assert member(ulocal(f.filter-unlocked-tables, fetch(), %#), %0, v(d.default-row-delimeter))={ @trigger me/tr.error=%#, Cannot find a table named '%0'.; }; @pemit %#=ulocal(layout.table, %0, fetch(%0, v(d.columns.%0)), %#); &_current.table %#=%0;
+
+&c.+db_rand [v(d.sc)]=$+db/rand *:@assert member(ulocal(f.filter-unlocked-tables, fetch(), %#), %0, v(d.default-row-delimeter))={ @trigger me/tr.error=%#, Cannot find a table named '%0'.; }; @pemit %#=ulocal(layout.table, %0, fetch(%0, v(d.columns.%0), RAND), %#); &_current.table %#=%0;
+
+&c.+db_find [v(d.sc)]=$+db/find */*=*:@assert member(ulocal(f.filter-unlocked-tables, fetch(), %#), %0, v(d.default-row-delimeter))={ @trigger me/tr.error=%#, Cannot find a table named '%0'.; }; @break t(setr(U, setdiff(%1, trim(fetch(%0,, 1=0), r, v(d.default-row-delimeter)), v(d.default-column-delimeter))))={ @trigger me/tr.error=%#, Could not find a column named '%qU'.;}; @pemit %#=ulocal(layout.table, %0, fetch(%0, v(d.columns.%0), strcat(%1, %b, LIKE, %b', setr(A, sanitize(%2)), *')), %#); &_current.table %#=%0;
+
 
 &c.+db_columns [v(d.sc)]=$+db/c* *:@break strmatch(%1, *=*); @assert member(ulocal(f.filter-unlocked-tables, fetch(), %#), %1, v(d.default-row-delimeter))={ @trigger me/tr.error=%#, Cannot find a table named '%1'.; }; @pemit %#=ulocal(layout.table-columns, %1, fetch(%1,, 1=0), %#); &_current.table %#=%1;
 

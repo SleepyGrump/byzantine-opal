@@ -59,6 +59,26 @@ th Back to staff-bit:
 +db/colwidth user=7 * * 14
 +db user
 
+@@ Make sure we have some randomness.
+
++db/rand user
++db/rand user
++db/rand user
++db/rand user
+
+@@ Time to try SQL injection!
+
+&d.bobby_tables me=Robert'); DROP TABLE students;--
+
+th sanitize(v(d.bobby_tables))
+
+th debug(v(d.sf))
+
+th debug(v(d.sc))
+
++db/find user/user_name=Robert'); DROP TABLE students;--
+
+
 
 @@ To hide all wiki tables so staff won't have to deal with the spam, use this:
 
