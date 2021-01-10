@@ -27,3 +27,95 @@ th fetch(actor archive)
 th fetch(actor,, rand)
 th fetch(actor, actor_id actor_name, rand)
 
+@@ Now command tests.
+
+th From a staffbit try:
+
++db/hide bot_passwords
++db
++db/hide bot_passwords
+
+th From a player bit try:
+
++db/hide bot_passwords
+
+th Back to staff-bit:
+
++db/c user
++db/col user=user_id user_name user_email user_editcount
++db user
+
+@@ Should error:
++db/co user=7 * * 14
+
+@@ Test for bad display settings:
++db/colwidth user=7 * * 14
++db user
+
++db/col user=
++db user
++db/col user=user_id user_name user_email user_editcount
++db user
++db/colwidth user=7 * * 14
++db user
+
+
+@@ To hide all wiki tables so staff won't have to deal with the spam, use this:
+
++db/hide actor
++db/hide archive
++db/hide bot_passwords
++db/hide category
++db/hide categorylinks
++db/hide change_tag
++db/hide change_tag_def
++db/hide comment
++db/hide content
++db/hide content_models
++db/hide externallinks
++db/hide filearchive
++db/hide image
++db/hide imagelinks
++db/hide interwiki
++db/hide ip_changes
++db/hide ipblocks
++db/hide ipblocks_restrictions
++db/hide iwlinks
++db/hide job
++db/hide l10n_cache
++db/hide langlinks
++db/hide log_search
++db/hide logging
++db/hide module_deps
++db/hide objectcache
++db/hide oldimage
++db/hide page
++db/hide page_props
++db/hide page_restrictions
++db/hide pagelinks
++db/hide protected_titles
++db/hide querycache
++db/hide querycache_info
++db/hide querycachetwo
++db/hide recentchanges
++db/hide redirect
++db/hide revision
++db/hide revision_actor_temp
++db/hide revision_comment_temp
++db/hide searchindex
++db/hide site_identifiers
++db/hide site_stats
++db/hide sites
++db/hide slot_roles
++db/hide slots
++db/hide templatelinks
++db/hide text
++db/hide updatelog
++db/hide uploadstash
++db/hide user
++db/hide user_former_groups
++db/hide user_groups
++db/hide user_newtalk
++db/hide user_properties
++db/hide watchlist
++db/hide watchlist_expiry

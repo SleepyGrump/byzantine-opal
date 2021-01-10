@@ -21,6 +21,8 @@ Requirements:
 	footer()
 	alert()
 	isstaff()
+	formatdb()
+	formatcolumns()
 
 @@ MAYBE: You will also need to secure your installation somewhat.
 
@@ -41,6 +43,8 @@ Code functions:
 		* You will need to put quotes around your own where query strings. This allows you to do things like "ID = 1 AND Name LIKE 'B*'" - the syntax is a bit too complex for us to write an entire engine here.
 
 		* Limitations: This doesn't support spaces in column or table names. Use an underscore or dash or just concatenate. Or just use sql() directly.
+
+		* fetch() can only be used by a staffer or a staff-owned, inherit, non-halted, non-no_commands object. Players can't call it directly.
 
 	post(table, columns, values, where query, column delimeter, value delimeter)
 		table, columns, values, and where query are REQUIRED.
@@ -73,13 +77,19 @@ Commands:
 	+db/rand <table> - get a random value from a table.
 
 Staff Commands:
-	+db/allow <table> - add <table> to the list of tables players can look at. By default they are not allowed to view any tables.
+	+db/unlock <table> - add <table> to the list of tables players can look at. By default they are not allowed to view any tables.
 
 	+db/lock <table> - remove <table> from the list of tables players can look at.
 
 	+db/hide <table> - hide <table> from the list of tables staff and players have access to. It's still there, but they won't see it and can only find it if they know its name. (This is easier than it sounds! Don't use this thinking no one will guess it.)
 
 	+db/show <table> - as above, in reverse.
+
+	+db/columns <table>=<list of columns> - leave blank to return to the default view.
+
+	+db/colwidth <table>=<list of widths - use * for "widest possible"> - set the widths of columns in a table. Must match the number of columns in the table. For example:
+		+db/col user=user_id user_name user_email user_editcount
+		+db/colwidth user=7 * * 14
 
 	+db/update [<table>/]<column>=<value> - you're assumed to have a table selected already if you don't include the <table> argument. The first update call is the "where" query - for example "+db/update actor/actor_id=3" - you are now working on the one record where the actor_id is 3. Some fields will not be editable and you will receive an error if that is the case.
 	+db/set <column>=<value> - repeat until the columns look the way you want them to
@@ -101,16 +111,10 @@ Staff Commands:
 @set SF=SAFE INHERIT
 @parent SF=SD
 
-@@ @lock/use [v(d.sf)]=isstaff/1
-@@ &isstaff [v(d.sf)]=isstaff(%0)
-
 @create SQL Commands <SC>=10
 @set SC=SAFE INHERIT
 @parent SC=SF
 @force me=&d.sc me=[num(SC)]
-
-@@ @lock/use [v(d.sc)]=isstaff/1
-@@ &isstaff [v(d.sc)]=isstaff(%0)
 
 @force me=&d.sf me=[num(SF)]
 @force me=&vd [v(d.sf)]=[v(d.sd)]
@@ -218,7 +222,39 @@ Staff Commands:
 @@ %1: user viewing this
 &layout.show_tables [v(d.sf)]=strcat(header(All available tables, %1), %r, formatcolumns(%0, v(d.default-row-delimeter), %1), %r, footer(+db <table name> for more, %1))
 
+@@ %0: table name
+@@ %1: table contents
+@@ %2: user viewing this
+&layout.table [v(d.sf)]=strcat(setq(W, v(d.column_widths.%0)), header(From the '%0' table, %2), %r, if(t(%qW), multicol(edit(%1, v(d.default-column-delimeter), v(d.default-row-delimeter)), %qW, 1, v(d.default-row-delimeter),, %2), formatdb(%1, 1,,, %2)), %r, footer(, %2))
+
+@@ %0: table name
+@@ %1: table contents
+@@ %2: user viewing this
+&layout.table-columns [v(d.sf)]=strcat(setq(R, v(d.default-row-delimeter)), setq(C, v(d.default-column-delimeter)), header(Columns in the the '%0' table, %2), %r, formattable(iter(first(%1, %qR), squish(strcat(itext(0), :, %qR, setq(I, sql(ulocal(sql.get-single-column-info, %0, itext(0)), %qR, %qC)), if(first(%qI, %qC), nullable, required), %b, switch(extract(%qI, 2, 1, %qC), PRI, primary key, UNI, unique, MUL, multi-key,), %b, extract(%qI, 3, 1, %qC), %b, extract(%qI, 4, 1, %qC), %b, extract(%qI, 5, 1, %qC), %b, extract(%qI, 6, 1, %qC))), %qC, %qR), 2,, %qR, %2), %r, footer(, %2))
+
+&tr.error [v(d.sc)]=@pemit %0=alert(Error) %1;
+
+&tr.success [v(d.sc)]=@pemit %0=alert(Success) %1;
+
+&tr.message [v(d.sc)]=@pemit %0=alert(Alert) %1;
+
 &c.+db [v(d.sc)]=$+db:@pemit %#=ulocal(layout.show_tables, ulocal(f.filter-hidden-tables, ulocal(f.filter-unlocked-tables, fetch(), %#)), %#);
+
+&c.+db_table [v(d.sc)]=$+db *:@assert member(ulocal(f.filter-unlocked-tables, fetch(), %#), %0, v(d.default-row-delimeter))={ @trigger me/tr.error=%#, Cannot find a table named '%0'.; }; @pemit %#=ulocal(layout.table, %0, fetch(%0, v(d.columns.%0)), %#); &_current.table %#=%0;
+
+&c.+db_columns [v(d.sc)]=$+db/c* *:@break strmatch(%1, *=*); @assert member(ulocal(f.filter-unlocked-tables, fetch(), %#), %1, v(d.default-row-delimeter))={ @trigger me/tr.error=%#, Cannot find a table named '%1'.; }; @pemit %#=ulocal(layout.table-columns, %1, fetch(%1,, 1=0), %#); &_current.table %#=%1;
+
+&c.+db_columns_set [v(d.sc)]=$+db/c* *=*:@break strmatch(%0, *w*); @assert member(ulocal(f.filter-unlocked-tables, fetch(), %#), %1, v(d.default-row-delimeter))={ @trigger me/tr.error=%#, Cannot find a table named '%1'.; }; @break t(setr(U, setdiff(edit(%2, %b, v(d.default-column-delimeter)), trim(fetch(%1,, 1=0), r, v(d.default-row-delimeter)), v(d.default-column-delimeter))))={ @trigger me/tr.error=%#, Could not find all the columns in your list. Can't find: '[itemize(%qU, v(d.default-column-delimeter))]';}; &d.columns.%1 %vD=%2; @trigger me/tr.success=%#, The column list for '%1' is now: %2; @assert cor(not(t(setr(W, v(d.column_widths.%1)))), eq(words(default(d.columns.%1, edit(first(fetch(%1,, 1=0), v(d.default-row-delimeter)), v(d.default-column-delimeter), %b))), words(%qW)))={ &d.column_widths.%1 %vD=; @trigger me/tr.message=%#, Your column widths no longer match your number of columns. This can lead to data leakage. Because of this%, your custom column widths have been wiped. They were: %qW; }; &_current.table %#=%1;
+
+&c.+db_columns_widths [v(d.sc)]=$+db/c* *=*:@assert strmatch(%0, *w*); @assert member(ulocal(f.filter-unlocked-tables, fetch(), %#), %1, v(d.default-row-delimeter))={ @trigger me/tr.error=%#, Cannot find a table named '%1'.; }; @assert eq(words(default(d.columns.%1, edit(first(fetch(%1,, 1=0), v(d.default-row-delimeter)), v(d.default-column-delimeter), %b))), words(%2))={ @trigger me/tr.error=%#, You must have the same number of column widths as columns.; }; &d.column_widths.%1 %vD=%2; @trigger me/tr.success=%#, The column width list for '%1' is now: %2; &_current.table %#=%1;
+
+&c.+db/hide [v(d.sc)]=$+db/hide *:@assert isstaff(%#)={ @trigger me/tr.error=%#, You must be staff to use this function.; }; @assert member(fetch(), %0, v(d.default-row-delimeter))={ @trigger me/tr.error=%#, Can't find a table named '%0'.; }; @break member(v(d.hidden_tables), %0, v(d.default-row-delimeter))={ @trigger me/tr.error=%#, The table '%0' is already hidden.; }; &d.hidden_tables %vD=[setunion(v(d.hidden_tables), %0, v(d.default-row-delimeter))]; @trigger me/tr.success=%#, The table '%0' has been added to the list of hidden tables. You will no longer see it in +db.; &_current.table %#=;
+
+&c.+db/show [v(d.sc)]=$+db/show *:@assert isstaff(%#)={ @trigger me/tr.error=%#, You must be staff to use this function.; }; @assert member(fetch(), %0, v(d.default-row-delimeter))={ @trigger me/tr.error=%#, Can't find a table named '%0'.; }; @assert member(v(d.hidden_tables), %0, v(d.default-row-delimeter))={ @trigger me/tr.error=%#, The table '%0' is not currently hidden.; }; &d.hidden_tables %vD=[setdiff(v(d.hidden_tables), %0, v(d.default-row-delimeter))]; @trigger me/tr.success=%#, The table '%0' has been unhidden. You will now see it in +db.; &_current.table %#=%0;
+
+&c.+db/unlock [v(d.sc)]=$+db/unlock *:@assert isstaff(%#)={ @trigger me/tr.error=%#, You must be staff to use this function.; }; @assert member(fetch(), %0, v(d.default-row-delimeter))={ @trigger me/tr.error=%#, Can't find a table named '%0'.; }; @break member(v(d.unlocked_tables), %0, v(d.default-row-delimeter))={ @trigger me/tr.error=%#, The table '%0' is already unlocked and visible to players.; }; &d.unlocked_tables %vD=[setunion(v(d.unlocked_tables), %0, v(d.default-row-delimeter))]; @trigger me/tr.success=%#, The table '%0' has been unlocked. Players can now see it in +db.; &_current.table %#=%0;
+
+&c.+db/lock [v(d.sc)]=$+db/lock *:@assert isstaff(%#)={ @trigger me/tr.error=%#, You must be staff to use this function.; }; @assert member(fetch(), %0, v(d.default-row-delimeter))={ @trigger me/tr.error=%#, Can't find a table named '%0'.; }; @assert member(v(d.unlocked_tables), %0, v(d.default-row-delimeter))={ @trigger me/tr.error=%#, The table '%0' is locked and is not currently visible to players.; }; &d.unlocked_tables %vD=[setdiff(v(d.unlocked_tables), %0, v(d.default-row-delimeter))]; @trigger me/tr.success=%#, The table '%0' has been locked. Players can no longer see it in +db.; &_current.table %#=;
 
 @@ Wrapping up:
 
