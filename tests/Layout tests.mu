@@ -6,7 +6,7 @@
 
 &lipsum2 me=Phasellus Venenatis Tempor Diam Vitae Turpis Laoreet Eu Fusce Tristique A Elit Hendrerit Volutpat Phasellus Tristique Elit Dignissim Hendrerit Aliquam Magna Enim Sodales Leo Eu Condimentum Turpis Tortor Quis Arcu Praesent Id Consectetur Ligula Quis Pulvinar Ligula Ut Lobortis Nisi Nisi Vel Egestas Dolor Euismod A Vestibulum Luctus Risus Tellus Et Feugiat Turpis Vehicula Ac Nunc Accumsan
 
-&c.+test me=$+test:@pemit %#=strcat(alert() Testing the following configuration:, %r%tEffect:, %b, xget(v(d.bd), d.effect), %r%tColors:, %b, xget(v(d.bd), d.colors), %r%tText color:, %b, xget(v(d.bd), d.text-color), %r%tText left%, repeat%, and right:, %b, xget(v(d.bd), d.text-left), %b, xget(v(d.bd), d.text-repeat), %b, xget(v(d.bd), d.text-right), %r%tTitle left and right:, %b, xget(v(d.bd), d.title-left), %b, xget(v(d.bd), d.title-right), %r%tBody left and right:, %b, xget(v(d.bd), d.body-left), %b, xget(v(d.bd), d.body-right), %r%r, header(iter(lnum(rand(1, 6)), pickrand(v(lipsum2)))), %r, formattext(v(lipsum1)), %r, divider(iter(lnum(rand(0, 6)), pickrand(v(lipsum2)))), %r, formatcolumns(v(lipsum2)), %r, footer(iter(lnum(rand(0, 6)), pickrand(v(lipsum2)))))
+&c.+test me=$+test:@pemit %#=strcat(alert() Testing the following configuration:, %r%tEffect:, %b, xget(v(d.bd), d.effect), %r%tColors:, %b, xget(v(d.bd), d.colors), %r%tText color:, %b, xget(v(d.bd), d.text-color), %r%tText left%, repeat%, and right:, %b, xget(v(d.bd), d.text-left), %b, xget(v(d.bd), d.text-repeat), %b, xget(v(d.bd), d.text-right), %r%tTitle left and right:, %b, xget(v(d.bd), d.title-left), %b, xget(v(d.bd), d.title-right), %r%tBody left and right:, %b, xget(v(d.bd), d.body-left), %b, xget(v(d.bd), d.body-right), %r%r, header(iter(lnum(rand(1, 6)), pickrand(v(lipsum2)))), %r, formattext(v(lipsum1), 1, %#), %r, divider(iter(lnum(rand(0, 6)), pickrand(v(lipsum2)))), %r, formatcolumns(v(lipsum2),, %#), %r, divider(iter(lnum(rand(0, 6)), pickrand(v(lipsum2)))), %r, formattable(v(lipsum2),, 7, 1), %r, footer(iter(lnum(rand(0, 6)), pickrand(v(lipsum2)))))
 
 @@ =============================================================================
 @@ TEST
@@ -74,6 +74,14 @@
 &d.body-left [v(d.bd)]=.
 &d.body-right [v(d.bd)]=.
 
++test
+
+@@ =============================================================================
+@@ TEST
+@@ =============================================================================
+
+&d.body-left [v(d.bd)]=| o |
+&d.body-right [v(d.bd)]=| o |
 +test
 
 @@ =============================================================================

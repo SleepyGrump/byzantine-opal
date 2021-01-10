@@ -23,8 +23,9 @@ Layout functions:
 	footer() and wfooter()
 	formattext() - wrap the text up with your default margins and borders
 	formatcolumns() - fit tabular data into your default margins and borders
+	formattable() - tabular data, optionally with a header, you choose the number of columns
 
-These are the old functions formattext and formatcolumns replace. They're not 1:1 replacements, so they are included below but are commented out:
+Below are the old functions formattext and formatcolumns replace. They're not 1:1 replacements, so they are included below but are commented out:
 
 	boxtext() - wrap a bit of text up with margins, optionally tabulated
 	fitcolumns() - fit as many columns on the screen as possible
@@ -79,6 +80,8 @@ Stuff I will not be duplicating at this time:
 
 @@ Default alert message
 &d.default-alert [v(d.bd)]=GAME
+
+&d.indent-width [v(d.bd)]=5
 
 @@ Effect controls the color of the header, footer, and divider functions.
 @@ -
@@ -181,23 +184,24 @@ Stuff I will not be duplicating at this time:
 &d.body-left [v(d.bd)]=.
 &d.body-right [v(d.bd)]=.
 
-@@ Other sample header ideas:
+@@ Other sample ascii art ideas:
 @@ ^V^V^V^V^V^V^V^V^V^V^V^V^V^V^V^V^V^V^V^V^V^V^V^V^V^V^V^V^V^V^V^V^V^V^V^V^V^V^
-@@ < text goes here and there is surely going to be a lot of text whee texting >
+@@ ^V^ text goes here and there is surely going to be a lot of text whee tex ^V^
 @@ <--------------------------------------------------------------------------->
-@@ < text goes here and there is surely going to be a lot of text whee texting >
+@@ | o | text goes here and there is surely going to be a lot of text whee | o |
 @@ .o.o.o.o.o.o.o.o.o.o.o.o.o.o.o.o.o.o.o.o.o.o.o.o.o.o.o.o.o.o.o.o.o.o.o.o.o.o.
-@@ ( text goes here and there is surely going to be a lot of text whee texting )
+@@ () text goes here and there is surely going to be a lot of text whee texti ()
 @@ <+><+><+><+><+><+><+><+><+><+><+><+><+><+><+><+><+><+><+><+><+><+><+><+><+<+>
-@@ + text goes here and there is surely going to be a lot of text whee texting +
+@@ <+> text goes here and there is surely going to be a lot of text whee tex <+>
 @@ <+>-+-<+>-+-<+>-+-<+>-+-<+>-+-<+>-+-<+>-+-<+>-+-<+>-+-<+>-+-<+>-+-<+>-+-<-<+>
-@@ + text goes here and there is surely going to be a lot of text whee texting +
+@@ ][ text goes here and there is surely going to be a lot of text whee texti ][
 @@ .:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.
-@@ . text goes here and there is surely going to be a lot of text whee texting .
+@@ : text goes here and there is surely going to be a lot of text whee texting :
 
 
 @@ =============================================================================
-@@ Past this point, you shouldn't change anything unless you know what you're doing.
+@@ Past this point, you shouldn't change anything unless you know what you're
+@@ doing.
 @@ =============================================================================
 
 @@ 31570560 - 365 days we're calling a year
@@ -224,22 +228,25 @@ Stuff I will not be duplicating at this time:
 
 @@ On with the custom stuff below!
 
-&f.get-ansi [v(d.bf)]=extract(%0, if(lte(%1, words(%0)), %1, add(mod(%1, words(%0)), 1)), 1)
+&f.get-ansi [v(d.bf)]=extract(%0, if(lte(%1, words(%0)), %1, inc(mod(%1, words(%0)))), 1)
 
 @@ All effects take the following parameter:
 @@  %0 - text
+@@  %1 - effect width, default 1
 
 &effect.none [v(d.bf)]=%0
 
-&effect.alt [v(d.bf)]=strcat(setq(0, v(d.colors)), iter(lnum(strlen(%0)), ansi(ulocal(f.get-ansi, %q0, inum(0)), mid(%0, itext(0), 1)),, @@))
+&effect.alt [v(d.bf)]=strcat(setq(0, v(d.colors)), setq(1, if(t(%1), %1, 1)), iter(lnum(ceil(fdiv(strlen(%0), %q1))), ansi(ulocal(f.get-ansi, %q0, inum(0)), mid(%0, mul(itext(0), %q1), %q1)),, @@))
 
-&effect.altrev [v(d.bf)]=strcat(setq(0, v(d.colors)), setq(0, strcat(%q0, %b, revwords(%q0))), iter(lnum(strlen(%0)), ansi(ulocal(f.get-ansi, %q0, inum(0)), mid(%0, itext(0), 1)),, @@))
+&effect.altrev [v(d.bf)]=strcat(setq(0, v(d.colors)), setq(0, strcat(%q0, %b, revwords(%q0))), setq(1, if(t(%1), %1, 1)), iter(lnum(ceil(fdiv(strlen(%0), %q1))), ansi(ulocal(f.get-ansi, %q0, inum(0)), mid(%0, mul(itext(0), %q1), %q1)),, @@))
 
-&effect.random [v(d.bf)]=strcat(setq(0, v(d.colors)), iter(lnum(strlen(%0)), ansi(pickrand(%q0), mid(%0, itext(0), 1)),, @@))
+&effect.random [v(d.bf)]=strcat(setq(0, v(d.colors)), setq(1, if(t(%1), %1, 1)), iter(lnum(ceil(fdiv(strlen(%0), %q1))), ansi(pickrand(%q0), mid(%0, mul(itext(0), %q1), %q1)),, @@))
 
-&effect.fade [v(d.bf)]=strcat(setq(0, v(d.colors)), if(gt(strlen(%0), words(%q0)), strcat(iter(lnum(words(%q0)), ansi(ulocal(f.get-ansi, %q0, inum(0)), mid(%0, itext(0), 1)),, @@), ansi(last(%q0), mid(%0, words(%q0), sub(strlen(%0), mul(words(%q0), 2)))), reverse(iter(lnum(words(%q0)), ansi(ulocal(f.get-ansi, %q0, inum(0)), mid(reverse(%0), itext(0), 1)),, @@))), ulocal(effect.alt, %0)))
+&effect.fade [v(d.bf)]=strcat(setq(0, v(d.colors)), setq(1, if(t(%1), %1, 1)), setq(2, mul(words(%q0), %q1)), setq(3, sub(strlen(%0), mul(%q2, 2))), if(lt(strlen(%0), %q2), strcat(setq(2, strlen(%0)), setq(3, 0), setq(4, 0)), setq(4, if(lt(%q3, 0), strcat(setq(2, add(%q2, div(%q3, 2))), add(%q2, sub(0, mod(%q3, 2))), setq(3, 0)), %q2))), if(lt(strlen(%0), mul(words(%q0), %q1)), setq(4, 0)), ulocal(effect.alt, mid(%0, 0, %q2), %1), if(gt(%q3, 0), ansi(last(%q0), mid(%0, %q2, %q3))), if(gt(%q4, 0), reverse(ulocal(effect.alt, mid(reverse(%0), 0, %q4), %1))))
 
-&f.reverse-fade [v(d.bf)]=strcat(setq(0, revwords(extract(v(d.colors), 1, strlen(%0)))), iter(lnum(strlen(%0)), ansi(ulocal(f.get-ansi, %q0, inum(0)), mid(%0, itext(0), 1)),, @@))
+@@ Missing the start of the title...
+
+&f.reverse-fade [v(d.bf)]=strcat(setq(0, revwords(extract(v(d.colors), 1, strlen(%0)))), setq(1, if(t(%1), %1, 1)), iter(lnum(ceil(fdiv(strlen(%0), %q1))), ansi(ulocal(f.get-ansi, %q0, inum(0)), mid(%0, mul(itext(0), %q1), %q1)),, @@))
 
 &f.construct-title [v(d.bf)]=if(t(%0), strcat(ulocal(f.apply-effect, v(d.title-left)), %b, ansi(v(d.text-color), %0), %b, if(switch(v(d.effect), fade, 1, altrev, 1, 0), ulocal(f.reverse-fade, v(d.title-right)), ulocal(f.apply-effect, v(d.title-right)))))
 
@@ -250,11 +257,6 @@ Stuff I will not be duplicating at this time:
 @@ %0 - width of the left and right edges
 @@ %1 - width of the middle
 &f.repeating-divider [v(d.bf)]=strcat(repeat(u(d.fade-edge), %0), repeat(u(d.fade-middle), %1), repeat(u(d.fade-edge), %0))
-
-@@ %0 - %#
-@@ %1 - minimum width
-@@ Output: a number between 1 and 6 for how many columns can fit on screen.
-&f.get-max-columns [v(d.bf)]=strcat(setq(0, sub(ulocal(f.get-width, %0), 2)), setq(1, if(t(%1), %1, 10)), case(1, gt(%q1, ulocal(f.calc-width, %q0, 2)), 1, gt(%q1, ulocal(f.calc-width, %q0, 3)), 2, gt(%q1, ulocal(f.calc-width, %q0, 4)), 3, gt(%q1, ulocal(f.calc-width, %q0, 5)), 4, gt(%q1, ulocal(f.calc-width, %q0, 6)), 5, 6))
 
 @@ A universal var-setter. One of the few u() functions rather than ulocal().
 @@ %0 - title text, optional
@@ -268,8 +270,9 @@ Stuff I will not be duplicating at this time:
 &f.get-layout-vars [v(d.bf)]=strcat(setq(0, ulocal(f.get-width, %1)), setq(1, ulocal(f.construct-title, %0)), setq(2, v(d.text-left)), setq(3, v(d.text-right)), setq(4, v(d.text-repeat)), setq(5, sub(%q0, add(strlen(%q1), strlen(%q2), strlen(%q3), 2))))
 
 @@ Pass the layout to the effects machines to produce the appropriate result.
-@@ %0 - the header, footer, or divider.
-&f.apply-effect [v(d.bf)]=ulocal(effect.[v(d.effect)], %0)
+@@ %0 - the string to apply the effect to, usually header, footer, or divider.
+@@ %1 - width, optional
+&f.apply-effect [v(d.bf)]=ulocal(effect.[v(d.effect)], %0, %1)
 
 &f.globalpp.header [v(d.bf)]=strcat(u(f.get-layout-vars, %0, %1), %b, ulocal(f.apply-effect, %q2), %q1, ulocal(f.apply-effect, strcat(mid(repeat(%q4, %q5), 0, %q5), %q3)), %b)
 
@@ -281,20 +284,55 @@ Stuff I will not be duplicating at this time:
 &f.globalpp.alert [v(d.bf)]=strcat(ulocal(f.apply-effect, v(d.text-left)), ulocal(f.construct-title, if(t(%0), %0, v(d.default-alert))), ulocal(f.apply-effect, v(d.text-right)))
 
 @@ %0: text to format
-@@ %1: player to format for (optional)
+@@ %1: indent (default no)
+@@ %2: player to format for (optional)
 @@ Registers:
 @@ %q0: player width
 @@ %q1: left text
 @@ %q2: right text
 @@ %q3: remaining width
-&f.globalpp.formattext [v(d.bf)]=strcat(setq(0, ulocal(f.get-width, %1)), setq(1, v(d.body-left)), setq(2, v(d.body-right)), setq(3, sub(%q0, add(strlen(%q1), strlen(%q2), 4))), wrap(%0, %q3, l, %b%q1%b, %b%q2))
+@@ %q4: how many lines
+@@ %q5: lines
+@@ %q6: Left text layout
+@@ %q7: Right text layout
+&f.globalpp.formattext [v(d.bf)]=strcat(setq(T, edit(%0, |, %r)), if(t(%1), setq(T, strcat(%r, space(v(d.indent-width)), trim(trim(%qT, b, %r)), %r%b))), setq(0, ulocal(f.get-width, %2)), setq(1, v(d.body-left)), setq(2, v(d.body-right)), setq(3, sub(%q0, add(strlen(%q1), strlen(%q2), 4))), setq(4, words(wrap(%qT, %q3, l, edit(%b%q1%b, |, %b), edit(%b%q2, |, %b),, |), |)), setq(5, wrap(%qT, %q3, l,,,, |)), setq(6, ulocal(f.apply-effect, iter(lnum(%q4), %q1,, @@), strlen(%q1))), setq(7, ulocal(f.apply-effect, iter(lnum(%q4), %q2,, @@), strlen(%q2))), iter(lnum(%q4), strcat(%b, mid(%q6, mul(itext(0), strlen(%q1)), strlen(%q1)), %b, extract(%q5, inum(0), 1, |), %b, mid(%q7, mul(itext(0), strlen(%q2)), strlen(%q2))),, %r))
+
+@@ %0: the list
+@@ %1: delimiter (optional, space is default)
+&f.get-widest [v(d.bf)]=strcat(setq(0, 0), null(iter(%0, if(gt(setr(1, strlen(itext(0))), %q0), setq(0, %q1)), if(t(%1), %1, %b))), %q0)
 
 @@ %0: data to format
-@@ %1: delimiter (optional, space is default)
+@@ %1: input delimiter (optional, space is default)
 @@ %2: player to format for (optional)
-&f.globalpp.formatcolumns [v(d.bf)]=strcat(setq(0, ulocal(f.get-width, %2)), setq(1, v(d.body-left)), setq(2, v(d.body-right)), setq(3, sub(%q0, add(strlen(%q1), strlen(%q2), 4))), wrap(%0, %q3, l, %b%q1%b, %b%q2))
+@@ Registers:
+@@ %q0: player width
+@@ %q1: left text
+@@ %q2: right text
+@@ %q3: remaining width
+@@ %q4: widest column
+@@ %q5: number of columns
+@@ %q6: number of rows
+@@ %q7: Left text layout
+@@ %q8: Right text layout
 
-+test
+&f.globalpp.formatcolumns [v(d.bf)]=strcat(setq(0, ulocal(f.get-width, %2)), setq(1, v(d.body-left)), setq(2, v(d.body-right)), setq(3, sub(%q0, add(strlen(%q1), strlen(%q2), 4))), setq(4, ulocal(f.get-widest, %0, %1)), setq(5, if(gt(inc(mul(%q4, 2)), %q3), strcat(1, setq(4, %q3)), div(%q3, inc(%q4)))), setq(6, ceil(fdiv(words(%0, %1), %q5))), setq(7, ulocal(f.apply-effect, iter(lnum(%q6), %q1,, @@), strlen(%q1))), setq(8, ulocal(f.apply-effect, iter(lnum(%q6), %q2,, @@), strlen(%q2))), iter(lnum(%q6), strcat(%b, mid(%q7, mul(itext(0), strlen(%q1)), strlen(%q1)), %b, setq(9, mid(iter(lnum(%q5), ljust(mid(extract(%0, add(mul(itext(1), %q5), inum(0)), 1, %1), 0, %q4), %q4)), 0, %q3)), %q9, space(sub(%q3, strlen(%q9))), %b, mid(%q8, mul(itext(0), strlen(%q2)), strlen(%q2))),, %r))
+
+@@ %0: data to format
+@@ %1: input delimiter (optional, space is default)
+@@ %2: number of columns
+@@ %3: first row is a header row (optional, default no)
+@@ %4: player to format for (optional)
+@@ Registers:
+@@ %q0: player width
+@@ %q1: left text
+@@ %q2: right text
+@@ %q3: remaining width
+@@ %q4: widest column
+@@ %q6: number of rows
+@@ %q7: Left text layout
+@@ %q8: Right text layout
+
+&f.globalpp.formattable [v(d.bf)]=strcat(setq(0, ulocal(f.get-width, %4)), setq(1, v(d.body-left)), setq(2, v(d.body-right)), setq(3, sub(%q0, add(strlen(%q1), strlen(%q2), 4))), setq(4, div(%q3, inc(%2))), setq(6, ceil(fdiv(words(%0, %1), %2))), setq(7, ulocal(f.apply-effect, iter(lnum(%q6), %q1,, @@), strlen(%q1))), setq(8, ulocal(f.apply-effect, iter(lnum(%q6), %q2,, @@), strlen(%q2))), iter(lnum(%q6), strcat(%b, mid(%q7, mul(itext(0), strlen(%q1)), strlen(%q1)), %b, setq(9, mid(iter(lnum(%2), ansi(if(cand(t(%3), eq(itext(1), 0)), strcat(first(v(d.colors)), %b, u)), ljust(mid(extract(%0, add(mul(itext(1), %2), inum(0)), 1, %1), 0, %q4), %q4)),, %b), 0, %q3)), %q9, space(sub(%q3, strlen(%q9))), %b, mid(%q8, mul(itext(0), strlen(%q2)), strlen(%q2))),, %r))
 
 @@ Aliases for the other commands.
 
@@ -308,6 +346,14 @@ Stuff I will not be duplicating at this time:
 
 &f.globalpp.wfooter [v(d.bf)]=footer(%0, %1)
 
+@@ %0 - the width of the screen
+@@ %1 - the number of columns
+@@ &f.calc-width [v(d.bf)]=sub(ceil(fdiv(%0, %1)), sub(%1, 1))
+
+@@ %0 - %#
+@@ %1 - minimum width
+@@ Output: a number between 1 and 6 for how many columns can fit on screen.
+@@ &f.get-max-columns [v(d.bf)]=strcat(setq(0, sub(ulocal(f.get-width, %0), 2)), setq(1, if(t(%1), %1, 10)), case(1, gt(%q1, ulocal(f.calc-width, %q0, 2)), 1, gt(%q1, ulocal(f.calc-width, %q0, 3)), 2, gt(%q1, ulocal(f.calc-width, %q0, 4)), 3, gt(%q1, ulocal(f.calc-width, %q0, 5)), 4, gt(%q1, ulocal(f.calc-width, %q0, 6)), 5, 6))
 
 @@ %0 - a list
 @@ %1 - delimiter (optional)
