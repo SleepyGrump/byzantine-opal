@@ -70,6 +70,14 @@ th Back to staff-bit:
 +db/show user
 +db/show
 
+th Should error, this isn't enabled:
++db/unlock
+th These should succeed:
+@wait 1=+db/unlock user
+@wait 1=+db/lock user
+@wait 3=th This should throw a normal error:
+@wait 3=+db/lock
+
 
 @@ Make sure we have some randomness.
 
