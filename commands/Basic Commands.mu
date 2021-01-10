@@ -24,6 +24,8 @@ Layout functions:
 	formattext() - wrap the text up with your default margins and borders
 	formatcolumns() - fit tabular data into your default margins and borders
 	formattable() - tabular data, optionally with a header, you choose the number of columns
+	formatdb() - tabular data straight out of a database, columns determined by the number returned. (Designed to work with the output of SQL Commands.mu.)
+	multicol() - lay out tabular data where you want to specify column widths.
 
 Below are the old functions formattext and formatcolumns replace. They're not 1:1 replacements, so they are included below but are commented out:
 
@@ -204,6 +206,11 @@ Stuff I will not be duplicating at this time:
 @@ doing.
 @@ =============================================================================
 
+@@ Make sure these match the defaults in your SQL Commands install if you change those:
+&d.default-row-delimeter [v(d.bd)]=|
+
+&d.default-column-delimeter [v(d.bd)]=~
+
 @@ 31570560 - 365 days we're calling a year
 @@ 2592000 - 30 day span we are arbitrarily calling a month
 @@ 604800 - week
@@ -244,15 +251,17 @@ Stuff I will not be duplicating at this time:
 
 &effect.fade [v(d.bf)]=strcat(setq(0, v(d.colors)), setq(1, if(t(%1), %1, 1)), setq(2, mul(words(%q0), %q1)), setq(3, sub(strlen(%0), mul(%q2, 2))), if(lt(strlen(%0), %q2), strcat(setq(2, strlen(%0)), setq(3, 0), setq(4, 0)), setq(4, if(lt(%q3, 0), strcat(setq(2, add(%q2, div(%q3, 2))), add(%q2, sub(0, mod(%q3, 2))), setq(3, 0)), %q2))), if(lt(strlen(%0), mul(words(%q0), %q1)), setq(4, 0)), ulocal(effect.alt, mid(%0, 0, %q2), %1), if(gt(%q3, 0), ansi(last(%q0), mid(%0, %q2, %q3))), if(gt(%q4, 0), reverse(ulocal(effect.alt, mid(reverse(%0), 0, %q4), %1))))
 
+@@ TODO: Fade header and footer don't take into account the extra that should theoretically be lopped off due to the title's edges.
+
 @@ Missing the start of the title...
 
 &f.reverse-fade [v(d.bf)]=strcat(setq(0, revwords(extract(v(d.colors), 1, strlen(%0)))), setq(1, if(t(%1), %1, 1)), iter(lnum(ceil(fdiv(strlen(%0), %q1))), ansi(ulocal(f.get-ansi, %q0, inum(0)), mid(%0, mul(itext(0), %q1), %q1)),, @@))
 
 &f.construct-title [v(d.bf)]=if(t(%0), strcat(ulocal(f.apply-effect, v(d.title-left)), %b, ansi(v(d.text-color), %0), %b, if(switch(v(d.effect), fade, 1, altrev, 1, 0), ulocal(f.reverse-fade, v(d.title-right)), ulocal(f.apply-effect, v(d.title-right)))))
 
-@@ %0 - the player to get the width of the screen of
-@@ Output: the width of the player's screen, max 200 and min 50.
-&f.get-width [v(d.bf)]=max(min(width(if(t(%0), %0, %#)), 200), 50)
+@@ %0 - the player to get the width of the screen of OR a specific width
+@@ Output: the width of the player's screen, max 200 and min 50, or the numeric width given.
+&f.get-width [v(d.bf)]=if(isnum(%0), %0, max(min(width(if(t(%0), %0, %#)), 200), 50))
 
 @@ %0 - width of the left and right edges
 @@ %1 - width of the middle
@@ -260,7 +269,7 @@ Stuff I will not be duplicating at this time:
 
 @@ A universal var-setter. One of the few u() functions rather than ulocal().
 @@ %0 - title text, optional
-@@ %1 - player, optional
+@@ %1 - player or numeric width, optional
 @@ %q0 - player's screen width
 @@ %q1 - title
 @@ %q2 - left text
@@ -285,7 +294,7 @@ Stuff I will not be duplicating at this time:
 
 @@ %0: text to format
 @@ %1: indent (default no)
-@@ %2: player to format for (optional)
+@@ %2: player to format for or numeric width (optional)
 @@ Registers:
 @@ %q0: player width
 @@ %q1: left text
@@ -303,7 +312,7 @@ Stuff I will not be duplicating at this time:
 
 @@ %0: data to format
 @@ %1: input delimiter (optional, space is default)
-@@ %2: player to format for (optional)
+@@ %2: player to format for or numeric width (optional)
 @@ Registers:
 @@ %q0: player width
 @@ %q1: left text
@@ -314,6 +323,7 @@ Stuff I will not be duplicating at this time:
 @@ %q6: number of rows
 @@ %q7: Left text layout
 @@ %q8: Right text layout
+@@ %q9: temp var for line output
 @@ %qE: extra space
 
 &f.globalpp.formatcolumns [v(d.bf)]=strcat(setq(0, ulocal(f.get-width, %2)), setq(1, v(d.body-left)), setq(2, v(d.body-right)), setq(3, sub(%q0, add(strlen(%q1), strlen(%q2), 4))), setq(4, ulocal(f.get-widest, %0, %1)), setq(5, if(gt(inc(mul(%q4, 2)), %q3), strcat(1, setq(4, %q3)), div(%q3, inc(%q4)))), if(lt(words(%0, %1), %q5), setq(5, words(%0, %1))), setq(6, ceil(fdiv(words(%0, %1), %q5))), setq(7, ulocal(f.apply-effect, iter(lnum(%q6), %q1,, @@), strlen(%q1))), setq(8, ulocal(f.apply-effect, iter(lnum(%q6), %q2,, @@), strlen(%q2))), setq(E, sub(%q3, add(mul(%q4, %q5), %q5))), setq(4, add(%q4, div(%qE, %q5))), iter(lnum(%q6), strcat(%b, mid(%q7, mul(itext(0), strlen(%q1)), strlen(%q1)), %b, setq(9, mid(iter(lnum(%q5), ljust(mid(extract(%0, add(mul(itext(1), %q5), inum(0)), 1, %1), 0, %q4), %q4)), 0, %q3)), %q9, space(sub(%q3, strlen(%q9))), %b, mid(%q8, mul(itext(0), strlen(%q2)), strlen(%q2))),, %r))
@@ -322,7 +332,7 @@ Stuff I will not be duplicating at this time:
 @@ %1: number of columns
 @@ %2: first row is a header row (optional, default no)
 @@ %3: input delimiter (optional, space is default)
-@@ %4: player to format for (optional)
+@@ %4: player to format for or numeric width (optional)
 @@ Registers:
 @@ %q0: player width
 @@ %q1: left text
@@ -332,9 +342,60 @@ Stuff I will not be duplicating at this time:
 @@ %q6: number of rows
 @@ %q7: Left text layout
 @@ %q8: Right text layout
+@@ %q9: temp var for line output
 @@ %qE: extra space
 
 &f.globalpp.formattable [v(d.bf)]=strcat(setq(0, ulocal(f.get-width, %4)), setq(1, v(d.body-left)), setq(2, v(d.body-right)), setq(3, sub(%q0, add(strlen(%q1), strlen(%q2), 4))), setq(4, div(%q3, inc(%1))), setq(6, ceil(fdiv(words(%0, %3), %1))), setq(7, ulocal(f.apply-effect, iter(lnum(%q6), %q1,, @@), strlen(%q1))), setq(8, ulocal(f.apply-effect, iter(lnum(%q6), %q2,, @@), strlen(%q2))), setq(E, sub(%q3, add(mul(%q4, %1), %1))), setq(4, add(%q4, div(%qE, %1))), iter(lnum(%q6), strcat(%b, mid(%q7, mul(itext(0), strlen(%q1)), strlen(%q1)), %b, setq(9, mid(iter(lnum(%1), ansi(if(cand(t(%2), eq(itext(1), 0)), strcat(first(v(d.colors)), %b, u)), ljust(mid(extract(%0, add(mul(itext(1), %1), inum(0)), 1, %3), 0, %q4), %q4)),, %b), 0, %q3)), %q9, space(sub(%q3, strlen(%q9))), %b, mid(%q8, mul(itext(0), strlen(%q2)), strlen(%q2))),, %r))
+
+@@ %0: db data to format
+@@ %1: first row is a header row (optional, default no)
+@@ %2: row delimiter (optional)
+@@ %3: column delimiter (optional)
+@@ %4: player to format for or numeric width (optional)
+@@ Registers:
+@@ %q0: player width
+@@ %q1: left text
+@@ %q2: right text
+@@ %q3: remaining width
+@@ %q4: widest column
+@@ %q5: number of columns
+@@ %q6: number of rows
+@@ %q7: Left text layout
+@@ %q8: Right text layout
+@@ %q9: temp var for line output
+@@ %qE: extra space
+@@ %qT: text to translate
+@@ %qR: row delimiter
+@@ %qC: column delimiter
+
+&f.globalpp.formatdb [v(d.bf)]=strcat(setq(R, if(t(%2), %2, v(d.default-row-delimeter))), setq(C, if(t(%3), %3, v(d.default-column-delimeter))), setq(5, words(first(%0, %qR), %qC)), setq(T, edit(%0, %qC, %qR)), setq(0, ulocal(f.get-width, %4)), setq(1, v(d.body-left)), setq(2, v(d.body-right)), setq(3, sub(%q0, add(strlen(%q1), strlen(%q2), 4))), setq(4, div(%q3, inc(%q5))), setq(6, ceil(fdiv(words(%qT, %qR), %q5))), setq(7, ulocal(f.apply-effect, iter(lnum(%q6), %q1,, @@), strlen(%q1))), setq(8, ulocal(f.apply-effect, iter(lnum(%q6), %q2,, @@), strlen(%q2))), setq(E, sub(%q3, add(mul(%q4, %q5), %q5))), setq(4, add(%q4, div(%qE, %q5))), iter(lnum(%q6), strcat(%b, mid(%q7, mul(itext(0), strlen(%q1)), strlen(%q1)), %b, setq(9, mid(iter(lnum(%q5), ansi(if(cand(t(%1), eq(itext(1), 0)), strcat(first(v(d.colors)), %b, u)), ljust(mid(extract(%qT, add(mul(itext(1), %q5), inum(0)), 1, %qR), 0, %q4), %q4)),, %b), 0, %q3)), %q9, space(sub(%q3, strlen(%q9))), %b, mid(%q8, mul(itext(0), strlen(%q2)), strlen(%q2))),, %r))
+
+@@ %0: data to work with
+@@ %1: a list of column widths (ie, 4 * 12, * means all remaining space)
+@@ %2: first row is a header row (optional, default no)
+@@ %3: data delimiter (optional, default space)
+@@ %4: column widths are percentages
+@@ %5: player to format for or numeric width (optional)
+@@ Registers:
+@@ %q0: player width
+@@ %q1: left text
+@@ %q2: right text
+@@ %q3: remaining width
+@@ %q5: number of columns
+@@ %q6: number of rows
+@@ %q7: Left text layout
+@@ %q8: Right text layout
+@@ %q9: temp var for line output
+
+&f.globalpp.multicol [v(d.bf)]=strcat(setq(5, words(%1)), setq(0, ulocal(f.get-width, %5)), setq(1, v(d.body-left)), setq(2, v(d.body-right)), setq(3, sub(%q0, add(strlen(%q1), strlen(%q2), 4))), setq(6, ceil(fdiv(words(%0, %3), %q5))), setq(7, ulocal(f.apply-effect, iter(lnum(%q6), %q1,, @@), strlen(%q1))), setq(8, ulocal(f.apply-effect, iter(lnum(%q6), %q2,, @@), strlen(%q2))), iter(lnum(%q6), strcat(%b, mid(%q7, mul(itext(0), strlen(%q1)), strlen(%q1)), %b, setq(9, mid(iter(lnum(%q5), ansi(if(cand(t(%2), eq(itext(1), 0)), strcat(first(v(d.colors)), %b, u)), ljust(mid(extract(%0, add(mul(itext(1), %q5), inum(0)), 1, %3), 0, ulocal(f.get-column-width, %4, %q3, inum(0), %1)), ulocal(f.get-column-width, %4, %q3, inum(0), %1))),, %b), 0, %q3)), %q9, space(sub(%q3, strlen(%q9))), %b, mid(%q8, mul(itext(0), strlen(%q2)), strlen(%q2))),, %r))
+
+@@ %0: is percentage
+@@ %1: width of space available
+@@ %2: which width to grab
+@@ %3: all widths so we can calculate remaining space if * is passed
+&f.get-column-width [v(d.bf)]=strcat(setq(W, extract(%3, %2, 1)), if(member(*, %qW), strcat(setq(0,), null(iter(setr(L, trim(squish(edit(%3, *,)))), setq(0, add(%q0, ulocal(f.calc-column-width, %0, %1, extract(%qL, inum(0), 1), %qL))))), setq(1, sub(floor(fdiv(sub(%1, %q0), dec(words(%3, *)))), sub(words(%3), dec(words(%3, *))))), setq(E, mod(sub(%1, %q0), dec(words(%3, *)))), add(%q1, if(eq(%2, member(reverse(%3), *)), %qE))), ulocal(f.calc-column-width, %0, %1, %qW, %3)))
+
+&f.calc-column-width [v(d.bf)]=if(t(%0), floor(mul(%1, fdiv(%2, 100))), %2)
 
 @@ Aliases for the other commands.
 
