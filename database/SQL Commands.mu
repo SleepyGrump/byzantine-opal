@@ -30,7 +30,7 @@ Requirements:
 @@ MAYBE: You will also need to secure your installation somewhat.
 
 Code functions:
-	sanitize(input) - fire this on everything you plan to put into an SQL query that comes directly from a user. That means where clauses, post values, column names, EVERYTHING. This is not built into fetch() by default because that would make queries like fetch(user,, user_name LIKE 'B_b*') impossible. Instead we restricted access to fetch() to staff-only and staff-owned wiz-inherit code objects. Sanitize your inputs.
+	sanitize(input) - fire this on everything you plan to put into an SQL query that comes directly from a user. That means where clauses, post values, column names, EVERYTHING. This is not built into fetch() by default because that would make queries like fetch(user,, user_name LIKE 'B_b*') impossible. Instead we restricted access to fetch() to staff-only and staff-owned wiz-inherit code objects. Be aware that this will not keep out a truly determined hacker and you should have daily backups (and possibly just remove all single and double quotes from your inputs before you commit them). Sanitize your inputs.
 
 	fetch(table, columns, where query, row delimeter, column delimeter)
 		table: optional; if skipped returns a list of mirrored tables
