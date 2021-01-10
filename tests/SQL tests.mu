@@ -59,6 +59,18 @@ th Back to staff-bit:
 +db/colwidth user=7 * * 14
 +db user
 
++db/col
++db/col user_id user_name user_email user_editcount
++db/cw 7 * * 14
+
++db/hide
++db user
++db/hide user
++db user
++db/show user
++db/show
+
+
 @@ Make sure we have some randomness.
 
 +db/rand user
