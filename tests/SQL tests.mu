@@ -78,6 +78,37 @@ th These should succeed:
 @wait 3=th This should throw a normal error:
 @wait 3=+db/lock
 
+th Testing POST():
+
+th sql(CREATE TABLE `lagos`.`demo` ( `id` INT UNSIGNED NOT NULL AUTO_INCREMENT , `dateadded` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `test_1` VARCHAR(255) NOT NULL , `test_2` VARCHAR(255) NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB COMMENT = 'Demo only, feel free to delete.';)
+
+th All of these should error:
+th post()
+th post(demos)
+th post(demo, test_1)
+th post(demo 1 2, test_2)
+th post(demo, test_2, Bob~Sandy)
+th post(demo, test_2, Oscar, id=99999)
+th post(demo, test_1~test_3, Bob~Bobbitus Maximus, INSERT)
+
+th Be careful with these, they work:
+
+th post(demo, test_1~test_2, Bob~Bobbitus Maximus, INSERT)
++db demo
+th post(demo, test_1~test_2, Bob2~Bobbitus Maximus, id=1)
++db demo
+
+th Should fail because test_1 is required to be non-null:
+th post(demo, test_2, Bobbitus Maximus, INSERT)
++db demo
+
+th Should succeed because sanitization:
+th post(demo, test_1~test_2, sanitize(Bob~Robert'\); DROP TABLE students;--), INSERT)
++db demo
+
+th post(demo, test_1, sanitize(asdf'\); DROP TABLE students;--), id=1)
++db demo
+
 
 @@ Make sure we have some randomness.
 
