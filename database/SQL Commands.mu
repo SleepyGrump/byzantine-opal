@@ -77,7 +77,7 @@ Commands:
 	+db/rand <table> - get a random value from a table.
 	+db/next - go to the next page of the table
 	+db/prev - go to the previous page of the table
-	+db <table> resets your paging position.
+		+db <table> resets your paging position.
 
 Staff Commands:
 	+db/unlock <table> - add <table> to the list of tables players can look at. By default they are not allowed to view any tables.
@@ -95,8 +95,6 @@ Staff Commands:
 		+db/cw user=7 * * 14
 
 TODO: all items below.
-
-	Implement paging.
 
 	+db/update [<table>/]<column>=<value> - you're assumed to have a table selected already if you don't include the <table> argument. The first update call is the "where" query - for example "+db/update actor/actor_id=3" - you are now working on the one record where the actor_id is 3. Some fields will not be editable and you will receive an error if that is the case.
 		+db/set <column>=<value> - repeat until the columns look the way you want them to
@@ -183,8 +181,6 @@ TODO: all items below.
 
 &tr.report_error [v(d.sf)]=if(cand(not(t(%1)), t(strlen(%1))), report(num(me), ulocal(layout.query_error, %0, %1, %2)))
 
-&tr.save_offset [v(d.sf)]=if(t(strlen(%0)), set(%#, _current.page:%1))
-
 @@ %0: table
 @@ %1: row delimiter
 @@ %2: column delimeter
@@ -193,7 +189,7 @@ TODO: all items below.
 @@ Output: column1~column2~column3
 &f.get-table-columns [v(d.sf)]=strcat(iter(setr(R, sql(setr(Q, ulocal(sql.get-table-columns, %0)), %1, %2)), first(itext(0), %2), %1, %2), ulocal(tr.report_error, get-table-columns, %qR, %qQ))
 
-&f.get-table-contents [v(d.sf)]=strcat(setr(R, sql(setr(Q, ulocal(sql.get-table-contents, %0, %3)), %1, %2)), ulocal(tr.report_error, get-table-contents, %qR, %qQ), ulocal(tr.save_offset, %qR, add(%3, 25)))
+&f.get-table-contents [v(d.sf)]=strcat(setr(R, sql(setr(Q, ulocal(sql.get-table-contents, %0, %3)), %1, %2)), ulocal(tr.report_error, get-table-contents, %qR, %qQ))
 
 &f.get-entire-table [v(d.sf)]=strcat(ulocal(f.get-table-columns, %0, %1, %2), %1, ulocal(f.get-table-contents, %0, %1, %2, %3))
 
@@ -204,14 +200,14 @@ TODO: all items below.
 @@ %2: row delimiter
 @@ %3: column delimeter
 @@ %4: offset
-&f.get-whole-row-by-where [v(d.sf)]=strcat(ulocal(f.get-table-columns, %0, %2, %3), %2, setr(R, sql(setr(Q, ulocal(sql.get-whole-row-by-where, %0, %1, %4)), %2, %3)), ulocal(tr.report_error, get-whole-row-by-where, %qR, %qQ), ulocal(tr.save_offset, %qR, add(%4, 25)))
+&f.get-whole-row-by-where [v(d.sf)]=strcat(ulocal(f.get-table-columns, %0, %2, %3), %2, setr(R, sql(setr(Q, ulocal(sql.get-whole-row-by-where, %0, %1, %4)), %2, %3)), ulocal(tr.report_error, get-whole-row-by-where, %qR, %qQ))
 
 @@ %0: table
 @@ %1: columns
 @@ %2: row delimiter
 @@ %3: column delimeter
 @@ %4: offset
-&f.get-table-by-columns [v(d.sf)]=strcat(edit(%1, %b, %3), %2, setr(R, sql(setr(Q, ulocal(sql.get-table-by-columns, %0, %1, %4)), %2, %3)), ulocal(tr.report_error, get-table-by-columns, %qR, %qQ), ulocal(tr.save_offset, %qR, add(%4, 25)))
+&f.get-table-by-columns [v(d.sf)]=strcat(edit(%1, %b, %3), %2, setr(R, sql(setr(Q, ulocal(sql.get-table-by-columns, %0, %1, %4)), %2, %3)), ulocal(tr.report_error, get-table-by-columns, %qR, %qQ))
 
 &f.get-random-row-by-columns [v(d.sf)]=strcat(edit(%1, %b, %3), %2, setr(R, sql(setr(Q, ulocal(sql.get-random-by-columns, %0, %1)), %2, %3)), ulocal(tr.report_error, get-random-row-by-columns, %qR, %qQ))
 
@@ -221,7 +217,7 @@ TODO: all items below.
 @@ %3: row delimiter
 @@ %4: column delimeter
 @@ %5: offset
-&f.get-columns-and-row-by-where [v(d.sf)]=strcat(edit(%1, %b, %4), %3, setr(R, sql(setr(Q, ulocal(sql.get-columns-and-row-by-where, %0, %1, %2, %5)), %3, %4)), ulocal(tr.report_error, get-columns-and-row-by-where, %qR, %qQ), ulocal(tr.save_offset, %qR, add(%5, 25)))
+&f.get-columns-and-row-by-where [v(d.sf)]=strcat(edit(%1, %b, %4), %3, setr(R, sql(setr(Q, ulocal(sql.get-columns-and-row-by-where, %0, %1, %2, %5)), %3, %4)), ulocal(tr.report_error, get-columns-and-row-by-where, %qR, %qQ))
 
 @@ %0: table: optional; if skipped returns a list of tables
 @@ %1: columns: optional; if skipped returns the entire contents of the table, if given, sorts by the given column order
@@ -283,7 +279,9 @@ TODO: all items below.
 @@ %0: table name
 @@ %1: table contents
 @@ %2: user viewing this
-&layout.table [v(d.sf)]=if(gt(words(%1, v(d.default-row-delimeter)), 2), strcat(setq(W, v(d.column_widths.%0)), header(From the '%0' table, %2), %r, if(t(%qW), multicol(edit(%1, v(d.default-column-delimeter), v(d.default-row-delimeter)), %qW, 1, v(d.default-row-delimeter),, %2), formatdb(%1, 1,,, %2)), %r, footer(, %2)), ulocal(layout.single_row, %0, %1, %2))
+&layout.page-footer [v(d.sf)]=strcat(Results, %b, setq(P, default(%2/_current.page.%0, 0)), inc(%qP), %b, -, %b, setr(L, min(add(%qP, 25), add(%qP, dec(words(%1, v(d.default-row-delimeter)))))), if(eq(%qL, 25), strcat(%,%b, +db/n for next page), if(gt(%qP, 0), strcat(%,%b, +db/p for previous page))))
+
+&layout.table [v(d.sf)]=if(gt(words(%1, v(d.default-row-delimeter)), 2), strcat(setq(W, v(d.column_widths.%0)), header(From the '%0' table, %2), %r, if(t(%qW), multicol(edit(%1, v(d.default-column-delimeter), v(d.default-row-delimeter)), %qW, 1, v(d.default-row-delimeter),, %2), formatdb(%1, 1,,, %2)), %r, footer(ulocal(layout.page-footer, %0, %1, %2), %2)), ulocal(layout.single_row, %0, %1, %2))
 
 @@ %0: table name
 @@ %1: table contents
@@ -298,7 +296,11 @@ TODO: all items below.
 
 &c.+db [v(d.sc)]=$+db:@pemit %#=ulocal(layout.show_tables, ulocal(f.filter-hidden-tables, ulocal(f.filter-unlocked-tables, fetch(), %#)), %#);
 
-&c.+db_table [v(d.sc)]=$+db *:@assert member(ulocal(f.filter-unlocked-tables, fetch(), %#), %0, v(d.default-row-delimeter))={ @trigger me/tr.error=%#, Cannot find a table named '%0'.; }; @pemit %#=ulocal(layout.table, %0, fetch(%0, v(d.columns.%0)), %#); &_current.table %#=%0;
+&c.+db_table [v(d.sc)]=$+db *:@assert member(ulocal(f.filter-unlocked-tables, fetch(), %#), %0, v(d.default-row-delimeter))={ @trigger me/tr.error=%#, Cannot find a table named '%0'.; }; @pemit %#=ulocal(layout.table, %0, fetch(%0, v(d.columns.%0)), %#); &_current.table %#=%0; @wipe %#/_current.page.*; &_current.page.%0 %#=0;
+
+&c.+db_next [v(d.sc)]=$+db/n*:@break strmatch(%0, * *); @assert member(ulocal(f.filter-unlocked-tables, fetch(), %#), setr(0, xget(%#, _current.table)), v(d.default-row-delimeter))={ @trigger me/tr.error=%#, Cannot find a table named '%q0'.; }; @eval if(eq(words(trim(setr(1, fetch(%q0, v(d.columns.%q0),,,, setr(2, add(default(%#/_current.page.%q0, 0), 25)))), b, v(d.default-row-delimeter)), v(d.default-row-delimeter)), 1), strcat(setq(1, fetch(%q0, v(d.columns.%q0),,,, 0)), setq(2, 0), setq(3, 1))); &_current.page.%q0 %#=%q2; @pemit %#=ulocal(layout.table, %q0, %q1, %#); @break t(%q3)={  @trigger me/tr.message=%#, Reached the end of the list. Starting over.; };
+
+&c.+db_back [v(d.sc)]=$+db/*:@break strmatch(%0, * *); @assert cor(strmatch(%0, p*), strmatch(%0, b*)); @assert member(ulocal(f.filter-unlocked-tables, fetch(), %#), setr(0, xget(%#, _current.table)), v(d.default-row-delimeter))={ @trigger me/tr.error=%#, Cannot find a table named '%q0'.; }; @assert gt(setr(2, default(%#/_current.page.%q0, 0)), 0)={ @trigger me/tr.error=%#, You have reached the beginning and cannot go further back.; }; &_current.page.%q0 %#=setr(2, sub(%q2, 25)); @pemit %#=ulocal(layout.table, %q0, fetch(%q0, v(d.columns.%q0),,,, %q2), %#);
 
 &c.+db_rand_table [v(d.sc)]=$+db/rand *:@assert member(ulocal(f.filter-unlocked-tables, fetch(), %#), %0, v(d.default-row-delimeter))={ @trigger me/tr.error=%#, Cannot find a table named '%0'.; }; @pemit %#=ulocal(layout.table, %0, fetch(%0, v(d.columns.%0), RAND), %#); &_current.table %#=%0;
 

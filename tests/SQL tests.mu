@@ -129,6 +129,16 @@ th debug(v(d.sc))
 
 +db/find user/user_name=Robert'); DROP TABLE students;--
 
+@@ Trying paging:
+
++db page
++db/n
++db/n
++db/n
++db/n
++db/b
++db/b
++db/b
 
 
 @@ To hide all wiki tables so staff won't have to deal with the spam, use this:
