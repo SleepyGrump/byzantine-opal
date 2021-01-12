@@ -25,7 +25,7 @@ Layout functions:
 	formatcolumns() - fit tabular data into your default margins and borders
 	formattable() - tabular data, optionally with a header, you choose the number of columns
 	formatdb() - tabular data straight out of a database, columns determined by the number returned. (Designed to work with the output of SQL Commands.mu.)
-	multicol() - lay out tabular data where you want to specify column widths, either as a percentage or explicit widths. Includes the ability to designate "fill" columns - * means "let this column take up all the remaining available space".
+	multicol() - lay out tabular data where you want to specify column widths, either as a percentage or explicit widths. Includes the ability to designate "fill" columns - * means "let this column take up all the remaining available space" - and percentage columns (type '12p' instead of '12').
 	themecolors() - returns the theme's colors so you can use them in other code.
 
 The following functions are useful for developers:
@@ -389,11 +389,18 @@ Stuff I will not be duplicating at this time:
 &f.globalpp.formatdb [v(d.bf)]=strcat(setq(R, if(t(%2), %2, v(d.default-row-delimeter))), setq(C, if(t(%3), %3, v(d.default-column-delimeter))), setq(5, words(first(%0, %qR), %qC)), setq(T, edit(%0, %qC, %qR)), setq(0, ulocal(f.get-width, %4)), setq(1, v(d.body-left)), setq(2, v(d.body-right)), setq(3, sub(%q0, add(strlen(%q1), strlen(%q2), 4))), setq(4, div(%q3, inc(%q5))), setq(6, ceil(fdiv(words(%qT, %qR), %q5))), setq(7, ulocal(f.apply-effect, iter(lnum(%q6), %q1,, @@), strlen(%q1))), setq(8, ulocal(f.apply-effect, iter(lnum(%q6), %q2,, @@), strlen(%q2))), setq(E, sub(%q3, add(mul(%q4, %q5), %q5))), setq(4, add(%q4, div(%qE, %q5))), iter(lnum(%q6), strcat(%b, mid(%q7, mul(itext(0), strlen(%q1)), strlen(%q1)), %b, setq(9, mid(iter(lnum(%q5), ansi(if(cand(t(%1), eq(itext(1), 0)), strcat(first(v(d.colors)), %b, u)), ljust(mid(extract(%qT, add(mul(itext(1), %q5), inum(0)), 1, %qR), 0, %q4), %q4)),, %b), 0, %q3)), %q9, space(sub(%q3, strlen(%q9))), %b, mid(%q8, mul(itext(0), strlen(%q2)), strlen(%q2))),, %r))
 
 @@ %0: data to work with
-@@ %1: a list of column widths (ie, 4 * 12, * means all remaining space)
+@@ %1: a list of column widths
+@@   Number: interpreted as the number of characters.
+@@   Number followed by a "p": interpreted as percentage.
+@@   Asterisk: interpreted as "all remaining space".
+@@   Example: 50p 16 *
+@@     Would be interpreted as:
+@@     The first column takes up 50% of the available width.
+@@     The second column takes up 16 characters.
+@@     The third column takes up all the remaining width.
 @@ %2: first row is a header row (optional, default no)
 @@ %3: data delimiter (optional, default space)
-@@ %4: column widths are percentages
-@@ %5: player to format for or numeric width (optional)
+@@ %4: player to format for or numeric width (optional)
 @@ Registers:
 @@ %q0: player width
 @@ %q1: left text
@@ -406,13 +413,13 @@ Stuff I will not be duplicating at this time:
 @@ %q9: temp var for line output
 @@ Output: A table formatted according to the given column widths.
 
-&f.globalpp.multicol [v(d.bf)]=strcat(setq(5, words(%1)), setq(0, ulocal(f.get-width, %5)), setq(1, v(d.body-left)), setq(2, v(d.body-right)), setq(3, sub(%q0, add(strlen(%q1), strlen(%q2), 4))), setq(6, ceil(fdiv(words(%0, %3), %q5))), setq(7, ulocal(f.apply-effect, iter(lnum(%q6), %q1,, @@), strlen(%q1))), setq(8, ulocal(f.apply-effect, iter(lnum(%q6), %q2,, @@), strlen(%q2))), iter(lnum(%q6), strcat(%b, mid(%q7, mul(itext(0), strlen(%q1)), strlen(%q1)), %b, setq(9, mid(iter(lnum(%q5), ansi(if(cand(t(%2), eq(itext(1), 0)), strcat(first(v(d.colors)), %b, u)), ljust(mid(extract(%0, add(mul(itext(1), %q5), inum(0)), 1, %3), 0, ulocal(f.get-column-width, %4, %q3, inum(0), %1)), ulocal(f.get-column-width, %4, %q3, inum(0), %1))),, %b), 0, %q3)), %q9, space(sub(%q3, strlen(%q9))), %b, mid(%q8, mul(itext(0), strlen(%q2)), strlen(%q2))),, %r))
+&f.globalpp.multicol [v(d.bf)]=strcat(setq(5, words(%1)), setq(0, ulocal(f.get-width, %4)), setq(1, v(d.body-left)), setq(2, v(d.body-right)), setq(3, sub(%q0, add(strlen(%q1), strlen(%q2), 4))), setq(6, ceil(fdiv(words(%0, %3), %q5))), setq(7, ulocal(f.apply-effect, iter(lnum(%q6), %q1,, @@), strlen(%q1))), setq(8, ulocal(f.apply-effect, iter(lnum(%q6), %q2,, @@), strlen(%q2))), iter(lnum(%q6), strcat(%b, mid(%q7, mul(itext(0), strlen(%q1)), strlen(%q1)), %b, setq(9, mid(iter(lnum(%q5), ansi(if(cand(t(%2), eq(itext(1), 0)), strcat(first(v(d.colors)), %b, u)), ljust(mid(extract(%0, add(mul(itext(1), %q5), inum(0)), 1, %3), 0, ulocal(f.get-column-width, %q3, inum(0), %1)), ulocal(f.get-column-width, %q3, inum(0), %1))),, %b), 0, %q3)), %q9, space(sub(%q3, strlen(%q9))), %b, mid(%q8, mul(itext(0), strlen(%q2)), strlen(%q2))),, %r))
 
-@@ %0: is percentage
-@@ %1: width of space available
-@@ %2: which width to grab
-@@ %3: all widths so we can calculate remaining space if * is passed
-&f.get-column-width [v(d.bf)]=strcat(setq(W, extract(%3, %2, 1)), if(member(*, %qW), strcat(setq(0,), null(iter(setr(L, trim(squish(edit(%3, *,)))), setq(0, add(%q0, ulocal(f.calc-column-width, %0, %1, extract(%qL, inum(0), 1), %qL))))), setq(1, sub(floor(fdiv(sub(%1, %q0), dec(words(%3, *)))), sub(words(%3), dec(words(%3, *))))), setq(E, mod(sub(%1, %q0), dec(words(%3, *)))), add(%q1, if(eq(%2, member(reverse(%3), *)), %qE))), ulocal(f.calc-column-width, %0, %1, %qW, %3)))
+
+@@ %0: width of space available
+@@ %1: which width to grab
+@@ %2: all widths so we can calculate remaining space if * is passed
+&f.get-column-width [v(d.bf)]=strcat(setq(W, extract(%2, %1, 1)), if(member(*, %qW), strcat(setq(0,), null(iter(setr(L, trim(squish(edit(%2, *,)))), strcat(setq(C, extract(%qL, inum(0), 1)), setq(P, strmatch(%qC, *p)), setq(C, edit(%qC, p,)), setq(0, add(%q0, ulocal(f.calc-column-width, %qP, %0, %qC, %qL)))))), setq(1, sub(floor(fdiv(sub(%0, %q0), dec(words(%2, *)))), sub(words(%2), dec(words(%2, *))))), setq(E, mod(sub(%0, %q0), dec(words(%2, *)))), add(%q1, if(eq(%1, member(reverse(%2), *)), %qE))), strcat(setq(I, strmatch(%qW, *p)), setq(W, edit(%qW, p,)), ulocal(f.calc-column-width, %qI, %0, %qW, %2))))
 
 &f.calc-column-width [v(d.bf)]=if(t(%0), floor(mul(%1, fdiv(%2, 100))), %2)
 
