@@ -274,14 +274,14 @@ TODO: all items below.
 
 &f.flip-data-horizontal [v(d.sf)]=strcat(setq(R, v(d.default-row-delimeter)), setq(C, v(d.default-column-delimeter)), setq(0, setq(1,)), null(iter(first(%0, %qR), setq(1, strcat(if(gt(strlen(itext(0)), %q0), setq(0, strlen(itext(0)))), %q1, %qR, ansi(first(themecolors()), itext(0)), :, %qR, extract(rest(%0, %qR), inum(0), 1, %qC))), %qC, @@)), trim(%q1, b, %qR), @@WIDTH@@, %q0)
 
-&layout.single_row [v(d.sf)]=strcat(setq(0, ulocal(f.flip-data-horizontal, %1)), setq(1, last(%q0, @@WIDTH@@)), setq(0, before(%q0, @@WIDTH@@)), header(Single result from the '%0' table', %2), %r, multicol(%q0, inc(%q1) *,, v(d.default-row-delimeter),, %2), %r, footer(Only one result returned., %2))
+&layout.single_row [v(d.sf)]=strcat(setq(0, ulocal(f.flip-data-horizontal, %1)), setq(1, last(%q0, @@WIDTH@@)), setq(0, before(%q0, @@WIDTH@@)), header(Single result from the '%0' table', %2), %r, multicol(%q0, inc(%q1) *,, v(d.default-row-delimeter), %2), %r, footer(Only one result returned., %2))
 
 @@ %0: table name
 @@ %1: table contents
 @@ %2: user viewing this
 &layout.page-footer [v(d.sf)]=strcat(Results, %b, setq(P, default(%2/_current.page.%0, 0)), inc(%qP), %b, -, %b, setr(L, min(add(%qP, 25), add(%qP, dec(words(%1, v(d.default-row-delimeter)))))), if(eq(%qL, 25), strcat(%,%b, +db/n for next page), if(gt(%qP, 0), strcat(%,%b, +db/p for previous page))))
 
-&layout.table [v(d.sf)]=if(gt(words(%1, v(d.default-row-delimeter)), 2), strcat(setq(W, v(d.column_widths.%0)), header(From the '%0' table, %2), %r, if(t(%qW), multicol(edit(%1, v(d.default-column-delimeter), v(d.default-row-delimeter)), %qW, 1, v(d.default-row-delimeter),, %2), formatdb(%1, 1,,, %2)), %r, footer(ulocal(layout.page-footer, %0, %1, %2), %2)), ulocal(layout.single_row, %0, %1, %2))
+&layout.table [v(d.sf)]=if(gt(words(%1, v(d.default-row-delimeter)), 2), strcat(setq(W, v(d.column_widths.%0)), header(From the '%0' table, %2), %r, if(t(%qW), multicol(edit(%1, v(d.default-column-delimeter), v(d.default-row-delimeter)), %qW, 1, v(d.default-row-delimeter), %2), formatdb(%1, 1,,, %2)), %r, footer(ulocal(layout.page-footer, %0, %1, %2), %2)), ulocal(layout.single_row, %0, %1, %2))
 
 @@ %0: table name
 @@ %1: table contents
