@@ -240,6 +240,12 @@ th divider(A real(ish) world example)
 
 th multicol(user_id|user_name|user_email|user_editcount|1|TheSupremes|fakefake@example.com|4|2|MediaWiki default||0|4|A Fake Name|anemail@address.com|144|5|Another name|another@email.com|0|6|AnotherFake|thefakes@eample.com|0, 7 * * 14, 1, |, %#)
 
+th The difference between 33 characters and 33 percent:
+
+th multicol(a b c, 33 * 33,,, %#)
+th multicol(a b c, 33p * 33p,,, %#)
+
+
 @@ Debugging tests:
 
 th debug(%#)
