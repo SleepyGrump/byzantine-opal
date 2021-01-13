@@ -1,13 +1,15 @@
-/*
-Note: When done installing this, @restart the game or the functions won't work.
+@@ This file is now deprecated, its contents have been moved into 1. setup. Keeping it for now in case I missed anything. It was getting WAY too huge.
 
-I'm adding SGP functions as I run across the need for them. So far I have:
+/*
+The goal of this file is to get a game from "literally nothing coded" to at least halfway usable with a standardized interface which is highly and easily customizable.
+
+This file is also intended to replace and supplant the SGP Globals which come by default with MUX. It's probably best if you install this on a brand new game and remove or disable the standard globals since they could conflict with this code.
+
+The following functions are cribbed from SGP Globals but updated:
 
 	isstaff() - allow access if someone is a staffer (now takes into account non-bitted staffers)
 
 	secs2hrs() - functionality updated to return durations in years, months, weeks, days, hours, minutes, and seconds, but only the first two intervals.
-
-Anything else, I haven't come across a need for outside of the SGP Globals themselves.
 
 Some additional functions that are my own work:
 
@@ -15,18 +17,23 @@ Some additional functions that are my own work:
 
 	title() - a properly cased title which honors the case given by the sentence author: title(a book about the iPad by the BBC) will produce "A Book About the iPad by the BBC". (Note, this is different functionality from the titlestr() function of Thenomain's GMCCG - that was designed to turn all-caps words like "COOKING" into title-cased "Cooking". This would keep the original word's case.)
 
-
-Layout functions:
-
 	header() and wheader()
 	divider(), subheader(), and wdivider()
 	footer() and wfooter()
+
 	formattext() - wrap the text up with your default margins and borders
+
 	formatcolumns() - fit tabular data into your default margins and borders
+
 	formattable() - tabular data, optionally with a header, you choose the number of columns
+
 	formatdb() - tabular data straight out of a database, columns determined by the number returned. (Designed to work with the output of SQL Commands.mu.)
+
 	multicol() - lay out tabular data where you want to specify column widths, either as a percentage or explicit widths. Includes the ability to designate "fill" columns - * means "let this column take up all the remaining available space" - and percentage columns (type '12p' instead of '12').
-	themecolors() - returns the theme's colors so you can use them in other code.
+
+	themecolors() - returns the theme's colors so you can use them in other code without having to hardcode a reference.
+
+	indent() - returns the standard indent.
 
 The following functions are useful for developers:
 
@@ -34,14 +41,14 @@ The following functions are useful for developers:
 
 	report(obj, message) - sends a report automatically to a hard-coded target, either a dbref or a channel. I use this for SQL failures, which I always want to know about, and send them to the staff channel.
 
-Below are the old functions formattext and formatcolumns replace. They're not 1:1 replacements, so they are included below but are commented out:
+This set of commands includes a custom room parent for IC and OOC rooms as well as basic commands for switching to the new parents:
 
-	boxtext() - wrap a bit of text up with margins, optionally tabulated
-	fitcolumns() - fit as many columns on the screen as possible
-	getlongest() - get the longest item in a list (used for determining width, no longer needs to be its own function)
+	+roomparent - show which room parent the room is parented to
+	+roomparent ooc or ic - parent the room to the OOC or IC room parent
+
 
 Commands from SGP I will be duplicating:
-	motd
+	+motd
 	ooc and '
 	+ooc/+ic
 	+staff and +staff/all, +staff/add and +staff/remove
@@ -51,16 +58,21 @@ Commands from SGP I will be duplicating:
 	+dark
 	+join <name> and +rjoin or +return or something cuz I always forgot that command
 	+summon <name> and +rsummon or +return <name>
+	+selfboot
 
 Stuff I will not be duplicating at this time:
 	places - this would be its own thing if I created it and would not require fancy setup if I could avoid it
 	+beginner - I have never seen a beginner make use of this.
 	+info - this is going to be game-specific.
-	+selfboot - no need at the moment.
 	+knock and +shout
 	+uptime
 	+warn
 	+bg
+
+New commands:
+	+doing
+	+doing <text> - cuz some folks forget the @doing syntax (it's not @doing me=<text>, it's @doing <text>), and I think it's easier to remember as a +command.
+
 
 */
 
@@ -72,7 +84,6 @@ Stuff I will not be duplicating at this time:
 @set BF=SAFE INHERIT
 @parent BF=BD
 @force me=&d.bf me=[num(BF)]
-@force me=&vd [v(d.bf)]=[v(d.bd)]
 
 @create Basic Commands <BC>=10
 @set BC=SAFE INHERIT
@@ -81,6 +92,10 @@ Stuff I will not be duplicating at this time:
 
 @tel [v(d.bd)]=[v(d.bf)]
 @tel [v(d.bf)]=[v(d.bc)]
+
+@force me=&vd [v(d.bf)]=[v(d.bd)]
+
+@aconnect [v(d.bc)]=@pemit %#=ulocal(layout.motd, %#);
 
 @@ Here are where the settings go. Change this if you want!
 
@@ -306,6 +321,8 @@ Stuff I will not be duplicating at this time:
 
 &f.globalpp.themecolors [v(d.bf)]=v(d.colors)
 
+&f.globalpp.indent [v(d.bf)]=space(v(d.indent-width))
+
 @@ %0: text to format
 @@ %1: indent (default no)
 @@ %2: player to format for or numeric width (optional)
@@ -318,7 +335,7 @@ Stuff I will not be duplicating at this time:
 @@ %q5: lines
 @@ %q6: Left text layout
 @@ %q7: Right text layout
-&f.globalpp.formattext [v(d.bf)]=strcat(setq(T, edit(%0, |, %r)), if(t(%1), setq(T, strcat(%r, space(v(d.indent-width)), trim(trim(%qT, b, %r)), %r%b))), setq(0, ulocal(f.get-width, %2)), setq(1, v(d.body-left)), setq(2, v(d.body-right)), setq(3, sub(%q0, add(strlen(%q1), strlen(%q2), 4))), setq(4, words(wrap(%qT, %q3, l, edit(%b%q1%b, |, %b), edit(%b%q2, |, %b),, |), |)), setq(5, wrap(%qT, %q3, l,,,, |)), setq(6, ulocal(f.apply-effect, iter(lnum(%q4), %q1,, @@), strlen(%q1))), setq(7, ulocal(f.apply-effect, iter(lnum(%q4), %q2,, @@), strlen(%q2))), iter(lnum(%q4), strcat(%b, mid(%q6, mul(itext(0), strlen(%q1)), strlen(%q1)), %b, extract(%q5, inum(0), 1, |), %b, mid(%q7, mul(itext(0), strlen(%q2)), strlen(%q2))),, %r))
+&f.globalpp.formattext [v(d.bf)]=strcat(setq(T, edit(%0, |, %r, %t, indent())), if(t(%1), setq(T, strcat(%r, indent(), trim(trim(%qT, b, %r)), %r%b))), setq(0, ulocal(f.get-width, %2)), setq(1, v(d.body-left)), setq(2, v(d.body-right)), setq(3, sub(%q0, add(strlen(%q1), strlen(%q2), 4))), setq(4, words(wrap(%qT, %q3, l, edit(%b%q1%b, |, %b), edit(%b%q2, |, %b),, |), |)), setq(5, wrap(%qT, %q3, l,,,, |)), setq(6, ulocal(f.apply-effect, iter(lnum(%q4), %q1,, @@), strlen(%q1))), setq(7, ulocal(f.apply-effect, iter(lnum(%q4), %q2,, @@), strlen(%q2))), iter(lnum(%q4), strcat(%b, mid(%q6, mul(itext(0), strlen(%q1)), strlen(%q1)), %b, extract(%q5, inum(0), 1, |), %b, mid(%q7, mul(itext(0), strlen(%q2)), strlen(%q2))),, %r))
 
 @@ %0: the list
 @@ %1: delimiter (optional, space is default)
@@ -483,7 +500,7 @@ Stuff I will not be duplicating at this time:
 @@ Function: Output a duration in the largest 2 numbers - 2d 3h or 1m 20s.
 @@ Arguments:
 @@  %0 - number of seconds
-&f.globalpp.secs2hrs [v(d.bf)]=ulocal(f.calculate-duration, %0)
+&f.globalpp.secs2hrs [v(d.bf)]=if(lt(%0, 0), -, ulocal(f.calculate-duration, %0))
 
 &f.global.prettytime [v(d.bf)]=timefmt($m-$d-$Y $r)
 
@@ -523,8 +540,120 @@ Stuff I will not be duplicating at this time:
 @@ %1: message
 &f.globalpp.report [v(d.bf)]=if(isdbref(v(d.report-target)), pemit(v(d.report-target), ulocal(layout.report, %0, %1)), cemit(v(d.report-target), ulocal(layout.report, %0, %1)))
 
+@@ =============================================================================
+@@ +motd
+@@ =============================================================================
 
+&layout.motd_string [v(d.bf)]=formattext(strcat(setq(0, ulocal(d.motd_%0)), %q0, if(t(%q0), strcat(%r%r, indent(), Set by, %b, v(d.%0_motd_set_by), %b, on, %b, timefmt($m/$d/$Y $r, v(d.%0_motd_date)).), None set.)), 1, %1)
 
+&layout.staff_motd [v(d.bf)]=if(isstaff(%0), strcat(%r, header(Staff-only MOTD, %0), %r, ulocal(layout.motd_string, staff, %0)))
+
+&layout.motd [v(d.bf)]=strcat(header(MOTD, %0), %r, ulocal(layout.motd_string, player, %0), ulocal(layout.staff_motd, %0), %r, footer(, %0))
+
+&tr.error [v(d.bc)]=@pemit %0=alert(Error) %1;
+
+&tr.success [v(d.bc)]=@pemit %0=alert(Success) %1;
+
+&tr.message [v(d.bc)]=@pemit %0=alert(Alert) %1;
+
+&filter.isstaff [v(d.bf)]=isstaff(%0)
+
+&tr.motd-change [v(d.bc)]=@switch %0=player, { @wall/emit/no_prefix strcat(alert(MOTD), %b, moniker(%1) just changed the MOTD. +motd to see it.); }, { @pemit/list filter(filter.isstaff, lwho())=strcat(alert(Staff MOTD), %b, moniker(%1) just changed the staff-only MOTD. +motd to see it.); };
+
+&c.+motd [v(d.bc)]=$+motd:@pemit %#=ulocal(layout.motd, %#);
+
+&c.+motd/set [v(d.bc)]=$+motd* *=*:@assert isstaff(%#)={ @trigger me/tr.error=%#, You must be staff to execute this command. }; @assert switch(%1, g*, 1, d*, 1, s*, 1, w*, 1, 0)={ @trigger me/tr.error=%#, Could not figure out what you meant by '%0 %1'.; }; &d.motd_[setr(L, if(switch(%1, g*, 1, d*, 1, s*, 0, w*, 0, 1), player, staff))] %vD=%2; &d.%qL_motd_date %vD=secs(); &d.%qL_motd_set_by %vD=moniker(%#); @trigger me/tr.motd-change=%qL, %#;
+
+@set [v(d.bc)]/c.+motd/set=no_parse
+
+&c.+motd/set_no_target [v(d.bc)]=$+motd* *:@break strmatch(%1, *=*); @assert isstaff(%#)={ @trigger me/tr.error=%#, You must be staff to execute this command. }; &d.motd_player %vD=%1; &d.player_motd_date %vD=secs(); &d.player_motd_set_by %vD=moniker(%#); @trigger me/tr.motd-change=player, %#;
+
+@set [v(d.bc)]/c.+motd/set_no_target=no_parse
+
+@@ =============================================================================
+@@ +who, +3who
+@@ =============================================================================
+
+&f.get-player-status [v(d.bf)]=if(isstaff(%0), ulocal(f.get-staffer-status, %0, %1), if(hasflag(%0, marker1), ic, ooc))
+
+&filter.not_dark [v(d.bf)]=cor(isstaff(%1), andflags(%0, !d))
+
+&f.get-players [v(d.bf)]=filter(filter.not_dark, lwho(),,, %0)
+
+&f.get-location [v(d.bf)]=if(cand(hasflag(%0, unfindable), not(isstaff(%1))), Unfindable, name(loc(%0)))
+
+&layout.who_data [v(d.bf)]=strcat(ulocal(f.get-player-status, %0, %1), |, moniker(%0), |, xget(%0, alias), |, ulocal(f.get-location, %0, %1), |, if(hasflag(%0, connected),  ulocal(f.get-doing, %0, %1)), |, ulocal(f.get-idle, %0, %1))
+
+&layout.who [v(d.bf)]=strcat(header(Who's online, %0), %r, multicol(strcat(Status|Name|Alias|Location|[poll()]|Idle|, iter(ulocal(f.get-players), ulocal(layout.who_data, itext(0), %0),, |)), 8 * 10p * * 4, 1, |, %0), %r, footer(, %0))
+
+&c.+who [v(d.bc)]=$+who:@pemit %#=ulocal(layout.who, %#);
+
+@@ =============================================================================
+@@ +staff
+@@ =============================================================================
+
+&f.get-staffer-status [v(d.bf)]=if(cand(isstaff(%1), andflags(%0, Dc)), dark, if(andflags(%0, Dc), offline, if(hasflag(%0, connected), if(hasflag(%0, transparent), ansi(first(themecolors()), ON DUTY), off duty), if(hasflag(%0, vacation), vacation, offline))))
+
+&f.get-staff [v(d.bf)]=v(d.staff_list)
+
+&f.get-idle [v(d.bf)]=if(cand(not(isstaff(%1)), hasflag(%0, dark)), -, secs2hrs(idle(%0)))
+
+&f.get-doing [v(d.bf)]=if(cand(not(isstaff(%1)), hasflag(%0, dark)),, doing(%0))
+
+&layout.staff_data [v(d.bf)]=strcat(ulocal(f.get-staffer-status, %0, %1), |, moniker(%0), |, xget(%0, alias), |, xget(%0, position), |, if(hasflag(%0, connected), ulocal(f.get-doing, %0, %1)), |, ulocal(f.get-idle, %0, %1))
+
+&layout.staff [v(d.bf)]=strcat(header(All staff, %0), %r, multicol(strcat(Status|Name|Alias|Position|[poll()]|Idle|, iter(ulocal(f.get-staff), ulocal(layout.staff_data, itext(0), %0),, |)), 8 * 10p * * 4, 1, |, %0), %r, footer(, %0))
+
+&c.+staff [v(d.bc)]=$+staff:@pemit %#=ulocal(layout.staff, %#);
+
+&c.+staff/all [v(d.bc)]=$+staff/all:@pemit %#=ulocal(layout.staff, %#);
+
+&c.+staff/add [v(d.bc)]=$+staff/add *:@assert isstaff(%#)={ @trigger me/tr.error=%#, You must be staff to add staffers.; }; @assert t(setr(P, switch(%0, me, %#, pmatch(%0))))={ @trigger me/tr.error=%#, Could not find the player '%0'.; }; @break member(v(d.staff_list), %qP)={ @trigger me/tr.error=%#, moniker(%qP) is already on the staff list.; };  &d.staff_list %vD=setunion(v(d.staff_list), %qP); @trigger me/tr.success=%#, You have added [moniker(%qP)] to the staff list.;
+
+&c.+staff/del [v(d.bc)]=$+staff/* *:@break strmatch(%0, a*); @assert isstaff(%#)={ @trigger me/tr.error=%#, You must be staff to add staffers.; }; @assert t(setr(P, switch(%0, me, %#, pmatch(%1))))={ @trigger me/tr.error=%#, Could not find the staffer '%1'.; }; @assert member(v(d.staff_list), %qP)={ @trigger me/tr.error=%#, moniker(%qP) is not currently on the staff list.; }; &d.staff_list %vD=setdiff(v(d.staff_list), %qP); @moniker %qP=; @trigger me/tr.success=%#, You have removed [moniker(%qP)] from the staff list. [if(hasflag(%qP, wizard), Remember to use #1 to take away their wizard powers.)];
+
+&c.+duty [v(d.bc)]=$+duty:@assert isstaff(%#)={ @trigger me/tr.error=%#, This command only matters for staffers.; }; @set %#=[if(hasflag(%#, transparent), !)]transparent; @trigger me/tr.success=%#, You have set yourself [if(hasflag(%#, transparent), on, off)] duty.;
+
+&c.+dark [v(d.bc)]=$+dark:@assert isstaff(%#)={ @trigger me/tr.error=%#, You must be staff to use this command.; }; @set %#=[if(hasflag(%#, dark), !)]dark; @trigger me/tr.success=%#, You have set yourself [if(hasflag(%#, dark), dark, visible)].;
+
+@@ =============================================================================
+@@ +doing - aliases for @doing, @poll, etc.
+@@ =============================================================================
+
+&layout.doing_list [v(d.bf)]=strcat(header(Your @doing list, %0), %r, multicol(iter(lattr(%0/doing.*), strcat(inum(0)., |, xget(%0, itext(0))),, |), 3 *,, |), %r, footer(+doing/add <text> or +doing/del <number>, %0))
++doing/l
+
+&f.find-doing-by-number [v(d.bf)]=extract(lattr(%0/doing.*), %1, 1)
+
+&f.choose-random-doing [v(d.bf)]=pickrand(lattr(%0/doing.*))
+
+&c.+doing [v(d.bc)]=$+doing:@trigger me/tr.message=%#, The current poll is: [poll()]. Your @doing is: [doing(%#)];
+
+&c.+doing_set [v(d.bc)]=$+doing *:@force %#=@doing %0; @wait .1=@trigger me/tr.success=%#, Your @doing is: [doing(%#)];
+
+&c.+doing_set_random [v(d.bc)]=$+doing/r*:@assert t(lattr(%#/doing.*)); @force %#=@doing \[v(pickrand(lattr(%#/doing.*)))\]; @wait .1=@trigger me/tr.success=%#, Your randomly-chosen @doing of the day is: [doing(%#)];
+
+&c.+doing/list [v(d.bc)]=$+doing/l*:@pemit %#=ulocal(layout.doing_list, %#);
+
+&c.+doing/add [v(d.bc)]=$+doing/a*:@assert t(setr(D, rest(%0, if(strmatch(%0, *=*), =, %b))))={ @trigger me/tr.error=%#, Couldn't figure out what you want to add!; }; @assert valid(doing, %qD)={ @trigger me/tr.error=%#, '%qD' is not a valid @doing string.; }; @eval setq(C, inc(lmax(edit(lattr(%#/doing.*), DOING.,)))); &doing.%qC %#=%qD; @trigger me/tr.success=%#, Added a new @doing '%qD'.; @eval setq(A, setunion(xget(%#, aconnect), +doing/random, ;)); @aconnect %#=%qA;
+
+&c.+doing/delete [v(d.bc)]=$+doing/d*:@assert cand(t(strcat(setq(N, trim(%0)), setr(N, switch(%qN, *=*, rest(%qN, =), * *, last(%qN), %qN)))), isnum(%qN))={ @trigger me/tr.error=%#, Couldn't figure out which @doing you want to delete. Got '%qN'?; }; @assert t(setr(D, ulocal(f.find-doing-by-number, %#, %qN)))={ @trigger me/tr.error=%#, Can't find a @doing at position #%qN.; }; @eval setq(O, xget(%#, %qD)); @wipe %#/%qD; @trigger me/tr.success=%#, You deleted the @doing '%qO'. This does not unset your current @doing.;
+
+&c.+doing/poll [v(d.bc)]=$+doing/poll *:@assert isstaff(%#)={ @trigger me/tr.error=%#, You must be staff to set the poll.; }; @doing/header %0; @wall/emit/no_prefix strcat(alert(Poll), %b, moniker(%#) just changed the poll to:, %b, poll(), %b, +help Poll for more info.);
+
+@@ =============================================================================
+@@ +selfboot
+@@ =============================================================================
+
+&c.+selfboot [v(d.bc)]=$+selfboot:@assert gt(words(ports(%#)), 1)={ @trigger me/tr.error=%#, You don't have any frozen connections to boot.; }; @dolist rest(ports(%#))=@boot/port ##; @trigger me/tr.success=%#, You booted your frozen connections.;
+
+@@ =============================================================================
+@@ +view
+@@ =============================================================================
+
+&layout.view_list [v(d.bf)]=strcat(alert(Views), %b, if(t(%0), strcat(The following view, if(gt(words(%0), 1), s are, is), %b, available here:, %b, itemize(%0)), There are no views available in your current location.))
+
+&c.+view [v(d.bc)]=$+view:
 
 @@ Wrapping up:
 
