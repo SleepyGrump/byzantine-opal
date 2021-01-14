@@ -9,3 +9,4 @@
 
 &d.punctuation [v(d.bd)]=. , ? ! ; : ( ) < > { } * / - + " '
 
+&ooc [v(d.orp)]=1
