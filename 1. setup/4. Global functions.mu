@@ -175,13 +175,14 @@
 
 &f.globalpp.multicol [v(d.bf)]=strcat(setq(5, words(%1)), setq(0, ulocal(f.get-width, %4)), setq(1, v(d.body-left)), setq(2, v(d.body-right)), setq(3, sub(%q0, add(strlen(%q1), strlen(%q2), 4))), setq(6, ceil(fdiv(words(%0, %3), %q5))), setq(7, ulocal(f.apply-effect, iter(lnum(%q6), %q1,, @@), strlen(%q1))), setq(8, ulocal(f.apply-effect, iter(lnum(%q6), %q2,, @@), strlen(%q2))), iter(lnum(%q6), strcat(%b, mid(%q7, mul(itext(0), strlen(%q1)), strlen(%q1)), %b, setq(9, mid(iter(lnum(%q5), ansi(if(cand(t(%2), eq(itext(1), 0)), strcat(first(v(d.colors)), %b, u)), ljust(mid(extract(%0, add(mul(itext(1), %q5), inum(0)), 1, %3), 0, ulocal(f.get-column-width, %q3, inum(0), %1)), ulocal(f.get-column-width, %q3, inum(0), %1))),, %b), 0, %q3)), %q9, space(sub(%q3, strlen(%q9))), %b, mid(%q8, mul(itext(0), strlen(%q2)), strlen(%q2))),, %r))
 
-
 @@ %0: width of space available
 @@ %1: which width to grab
 @@ %2: all widths so we can calculate remaining space if * is passed
-&f.get-column-width [v(d.bf)]=strcat(setq(W, extract(%2, %1, 1)), if(member(*, %qW), strcat(setq(0,), null(iter(setr(L, trim(squish(edit(%2, *,)))), strcat(setq(C, extract(%qL, inum(0), 1)), setq(P, strmatch(%qC, *p)), setq(C, edit(%qC, p,)), setq(0, add(%q0, ulocal(f.calc-column-width, %qP, %0, %qC, %qL)))))), setq(1, sub(floor(fdiv(sub(%0, %q0), dec(words(%2, *)))), sub(words(%2), dec(words(%2, *))))), setq(E, mod(sub(%0, %q0), dec(words(%2, *)))), add(%q1, if(eq(%1, member(reverse(%2), *)), %qE))), strcat(setq(I, strmatch(%qW, *p)), setq(W, edit(%qW, p,)), ulocal(f.calc-column-width, %qI, %0, %qW, %2))))
+&f.get-column-width [v(d.bf)]=strcat(setq(W, extract(%2, %1, 1)), if(member(*, %qW), strcat(setq(0,), null(iter(setr(L, trim(squish(edit(%2, *,)))), strcat(setq(C, extract(%qL, inum(0), 1)), setq(P, strmatch(%qC, *p)), setq(C, edit(%qC, p,)), setq(0, add(%q0, ulocal(f.calc-column-width, %qP, %0, %qC, %qL)))))), setq(1, ulocal(f.calc-star-column-width, %0, %q0, %2)), setq(E, mod(sub(%0, %q0), dec(words(%2, *)))), add(%q1, if(eq(%1, member(reverse(%2), *)), %qE))), strcat(setq(I, strmatch(%qW, *p)), setq(W, edit(%qW, p,)), ulocal(f.calc-column-width, %qI, %0, %qW, %2))))
 
 &f.calc-column-width [v(d.bf)]=if(t(%0), floor(mul(%1, fdiv(%2, 100))), %2)
+
+&f.calc-star-column-width [v(d.bf)]=strcat(setq(S, dec(words(%2, *))), setq(R, sub(%0, add(%1, sub(words(%2), %qS)))), sub(floor(fdiv(%qR, %qS)), if(gt(%qS, 1), 1, 0)))
 
 @@ Aliases for the other commands.
 
@@ -194,38 +195,6 @@
 &f.globalpp.wfooter [v(d.bf)]=footer(%0, %1)
 
 &f.globalpp.wfooter [v(d.bf)]=footer(%0, %1)
-
-@@ %0 - the width of the screen
-@@ %1 - the number of columns
-@@ &f.calc-width [v(d.bf)]=sub(ceil(fdiv(%0, %1)), sub(%1, 1))
-
-@@ %0 - %#
-@@ %1 - minimum width
-@@ Output: a number between 1 and 6 for how many columns can fit on screen.
-@@ &f.get-max-columns [v(d.bf)]=strcat(setq(0, sub(ulocal(f.get-width, %0), 2)), setq(1, if(t(%1), %1, 10)), case(1, gt(%q1, ulocal(f.calc-width, %q0, 2)), 1, gt(%q1, ulocal(f.calc-width, %q0, 3)), 2, gt(%q1, ulocal(f.calc-width, %q0, 4)), 3, gt(%q1, ulocal(f.calc-width, %q0, 5)), 4, gt(%q1, ulocal(f.calc-width, %q0, 6)), 5, 6))
-
-@@ %0 - a list
-@@ %1 - delimiter (optional)
-@@ Output: the length of the longest item in a list.
-@@ &f.globalpp.getlongest [v(d.bf)]=strcat(setq(0, 0), null(iter(%0, if(gt(setr(1, strlen(itext(0))), %q0), setq(0, %q1)), if(t(%1), %1, %b))), %q0)
-
-@@ %0 - list of text
-@@ %1 - delimiter (optional)
-@@ %2 - user (optional)
-@@ %3 - margins (optional, default 1)
-@@ Output: the list separated into the number of columns that can fit on the screen, max 6.
-@@ &f.globalpp.fitcolumns [v(d.bf)]=strcat(setq(0, if(t(%1), %1, %b)), setq(1, ulocal(f.get-max-columns, %2, getlongest(%0, %q0))), boxtext(case(1, gt(%q1, 1), %0, and(lte(%q1, 1), strmatch(%q0, %b)), %0, edit(%0, %q0, %R)), if(gt(%q1, 1), %q0), if(gt(%q1, 1), %q1), %2, %3))
-
-
-@@ Function: wrap text for display, optionally columnizing it.
-@@ Arguments:
-@@  %0 - the text to box
-@@  %1 - the delimiter to split it by if a table is desired
-@@  %2 - the number of columns to display in a table (default 3)
-@@  %3 - the user this is getting shown to (optional)
-@@  %4 - the margins (optional, default 1)
-
-@@ &f.globalpp.boxtext [v(d.bf)]=strcat(setq(0, ulocal(f.get-width, if(t(%3), %3, %#))), setq(4, if(t(%4), %4, 1)), setq(1, sub(%q0, mul(%q4, 2))), if(or(t(%1), t(%2)), strcat(setq(2, if(t(%2), %2, 3)), setq(3, sub(%q2, 1)), setq(5, mod(%q1, %q2)), setq(3, add(%q3, %q5)), edit(table(%0, div(sub(%q1, %q3), %q2), %q1, %1), ^, space(%q4), %r, strcat(%r, space(%q4)))), wrap(%0, sub(%q1, if(not(mod(%q1, 2)), 1, 0)), left, space(%q4))))
 
 @@ Output: an entire duration string: 3d 4h 5m 57s
 @@ %0 - number of seconds to calculate the duration of
