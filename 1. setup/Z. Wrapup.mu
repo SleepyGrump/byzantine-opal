@@ -1,6 +1,25 @@
-@@ This must be done if you want the whole thing to work!
+@@ Set up parents for the 3 built-in default OOC rooms.
+
+@force me=@parent #0=[v(d.orp)]
+
+@force me=@parent #2=[v(d.orp)]
+
+@force me=@parent #11=[v(d.orp)]
+
+@@ Take all the SGP functions out of the master code room.
+
+@tel #4=#11
+@tel #5=#11
+@tel #6=#11
+@tel #7=#11
+@tel #8=#11
+@tel #9=#11
+
+@@ Get those functions we installed earlier working.
 
 @restart
+
+@@ =============================================================================
 
 /*
 IMPORTANT:
