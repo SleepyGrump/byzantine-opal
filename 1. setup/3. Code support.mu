@@ -1,4 +1,6 @@
-@aconnect [v(d.bc)]=@pemit %#=ulocal(layout.motd, %#);
+@aconnect [v(d.bc)]=@dolist lattr(me/tr.aconnect-*)={ @trigger me/##=%#; };
+
+@adisconnect [v(d.bc)]=@dolist lattr(me/tr.adisconnect-*)={ @trigger me/##=%#; };
 
 @startup [v(d.bf)]=@trigger me/tr.make-functions;
 
