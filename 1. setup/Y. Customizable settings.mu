@@ -11,6 +11,14 @@
 @@ Most games have a private staff-only channel called Monitor.
 &d.report-target [v(d.bd)]=Monitor
 
+@@ A few notes about color:
+@@ 1. Not everyone likes it.
+@@ 2. They can turn it off.
+@@ 3. Use it to give the feel of your game.
+@@ 4. Never use it for important text, it can obscure the meaning.
+@@ 5. A little goes a long way.
+@@ 6. Definitely change the defaults.
+
 @@ Effect controls the color of the header, footer, and divider functions.
 @@ -
 @@ Available effects are:
@@ -125,3 +133,6 @@
 @@ ][ text goes here and there is surely going to be a lot of text whee texti ][
 @@ .:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.
 @@ : text goes here and there is surely going to be a lot of text whee texting :
+
+@@ The emit prefix that comes out when people use "ooc text" to talk.
+&d.ooc_text [v(d.bd)]=<OOC>
