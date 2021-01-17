@@ -50,12 +50,6 @@
 
 &d.who-sort-order [v(d.bd)]=Idle|Status
 
-&filter.not_dark [v(d.bf)]=cor(isstaff(%1), andflags(%0, !Dc))
-
-&filter.name [v(d.bf)]=strmatch(name(%0), %1*)
-
-&filter.watched [v(d.bf)]=t(member(xget(%1, friends), %0))
-
 &f.hilite-text [v(d.bf)]=ansi(if(ulocal(filter.watched, %0, %1), first(themecolors())), %2)
 
 &f.get-status [v(d.bf)]=ulocal(f.hilite-text, %0, %1, if(isstaff(%0), ulocal(f.get-staffer-status, %0, %1), if(hasattrp(loc(%0), OOC), ooc, ic)))
