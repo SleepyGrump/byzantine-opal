@@ -6,13 +6,15 @@
 
 &d.allowed-who-fields [v(d.bd)]=Status|Name|Alias|Location|Doing|Idle|Gender|DBref|Position|Note
 
-&d.who-field-widths [v(d.bd)]=8 * 10p * * 4 10 5 * *
+&d.who-field-widths [v(d.bd)]=8 12 10 * * 4 10 5 * *
 
 &d.default-who-fields [v(d.bd)]=Status|Idle|Name|Location|Doing|Position
 
 &d.default-watch-fields [v(d.bd)]=Status|Idle|Name|Location|Doing|Note
 
 &d.default-notes-fields [v(d.bd)]=Status|Idle|Name|Note
+
+&d.default-staff-fields [v(d.bd)]=Status|Idle|Name|Alias|Position|Doing
 
 &d.3who-columns [v(d.bd)]=Status|Name|Idle
 
@@ -22,7 +24,9 @@
 
 &f.hilite-text [v(d.bf)]=ansi(if(ulocal(filter.watched, %0, %1), first(themecolors())), %2)
 
-&f.get-players [v(d.bf)]=strcat(setq(P, filter(filter.not_dark, lwho(),,, %0)), null(iter(ulocal(f.get-sort-order, %0), setq(P, ulocal(f.sort.by_[itext(0)], edit(%qP, %b, |), %0)), |, |)), edit(%qP, |, %b))
+&f.sort-players [v(d.bf)]=strcat(setq(P,), null(iter(ulocal(f.get-sort-order, %0), setq(P, ulocal(f.sort.by_[itext(0)], edit(%0, %b, |), %1)), |, |)), edit(%qP, |, %b))
+
+&f.get-players [v(d.bf)]=strcat(setq(P, filter(filter.not_dark, lwho(),,, %0)), ulocal(f.sort-players, %qP, %0))
 
 &f.get-fields [v(d.bf)]=strcat(setq(F,), null(iter(default(%0/who-fields, %1), if(member(v(d.allowed-who-fields), itext(0), |), setq(F, strcat(%qF, |, itext(0)))), |)), trim(squish(%qF, |), b, |))
 
@@ -36,21 +40,23 @@
 
 &layout.who_footer [v(d.bf)]=cat(words(%0), connected, /, ulocal(f.get-unique-count, %0), unique, /, connrecord(), record)
 
-&layout.who [v(d.bf)]=strcat(setq(P, ulocal(f.get-players, %0)), if(t(%1), setq(P, filter(filter.name, %qP,,, %1))), if(t(%2), setq(P, filter(filter.watched, %qP,,, %0))), header(strcat(Who's online,  if(t(%1), %bnamed '%1'),  if(t(%2), %bfrom your +watch list)), %0), %r,multicol(strcat(edit(setr(F, ulocal(f.get-fields, %0, v(d.default-[if(t(%2), %2, who)]-fields))), Doing, poll()), |, iter(%qP, ulocal(layout.who_data, itext(0), %0, %qF),, |)), ulocal(f.get-field-widths, %qF), 1, |, %0), %r, footer(ulocal(layout.who_footer, %qP), %0))
+&layout.who [v(d.bf)]=strcat(header(Who's online, %0), %r,multicol(strcat(edit(setr(F, ulocal(f.get-fields, %0, v(d.default-[if(t(%2), %2, who)]-fields))), Doing, poll()), |, iter(%1, ulocal(layout.who_data, itext(0), %0, %qF),, |)), ulocal(f.get-field-widths, %qF), 1, |, %0), %r, footer(ulocal(layout.who_footer, %1), %0))
 
 &layout.3who [v(d.bf)]=strcat(setq(C, edit(setr(F, v(d.3who-columns)), Doing, poll())), header(Who's online - 3who, %0), %r, multicol(strcat(%qC|%qC|%qC, |, iter(setr(P, ulocal(f.get-players, %0)), ulocal(layout.who_data, itext(0), %0, %qF),, |)), setr(W, ulocal(f.get-field-widths, %qF)) %qW %qW, 1, |, %0), %r, footer(ulocal(layout.who_footer, %qP), %0))
 
 &layout.2who [v(d.bf)]=strcat(setq(C, edit(setr(F, v(d.2who-columns)), Doing, poll())), header(Who's online - 2who, %0), %r, multicol(strcat(%qC|%qC, |, iter(setr(P, ulocal(f.get-players, %0)), ulocal(layout.who_data, itext(0), %0, %qF),, |)), setr(W, ulocal(f.get-field-widths, %qF)) %qW, 1, |, %0), %r, footer(ulocal(layout.who_footer, %qP), %0))
 
-&c.+who [v(d.bc)]=$+who:@pemit %#=ulocal(layout.who, %#);
+&c.+who [v(d.bc)]=$+who:@pemit %#=ulocal(layout.who, %#, ulocal(f.get-players, %#));
 
-&c.+who_name [v(d.bc)]=$+who *:@pemit %#=ulocal(layout.who, %#, %0);
+&c.+who_name [v(d.bc)]=$+who *:@pemit %#=ulocal(layout.who, %#, filter(filter.name, ulocal(f.get-players, %#),,, %0));
 
-&c.+who/notes [v(d.bc)]=$+who/n*:@break strmatch(%0, *=*); @pemit %#=ulocal(layout.who, %#,, notes);
+&c.+who/notes [v(d.bc)]=$+who/n*:@break strmatch(%0, *=*); @pemit %#=ulocal(layout.who, %#,  ulocal(f.get-players, %#), notes);
 
-&c.+who/sort [v(d.bc)]=$+who/sort *:@break t(setr(N, setdiff(v(d.allowed-who-fields), edit(%0, %b, |), |)))={ @trigger me/tr.error=%#, strcat(The field, if(gt(%qN, 1), s), ', itemize(%qN, |), ', if(gt(%qN, 1), are, is), %b, not allowed on the +who sort list.); }; &who-sort %#=edit(%0, %b, |); @trigger me/tr.success=%#, Your +who will now be sorted by [itemize(%0)].; @pemit %#=ulocal(layout.who, %#);
+&c.+who/sort [v(d.bc)]=$+who/sort *:@break t(setr(N, setdiff(edit(title(rest(%0)), %b, |), v(d.allowed-who-fields), |)))={ @trigger me/tr.error=%#, strcat(The field, if(gt(%qN, 1), s), ', itemize(%qN, |), ', if(gt(%qN, 1), are, is), %b, not allowed on the +who sort list.); }; &who-sort %#=edit(%0, %b, |); @trigger me/tr.success=%#, Your +who will now be sorted by [itemize(%0)].; @force %#=+who;
 
-&c.+who/columns [v(d.bc)]=$+who/c*:@break t(setr(N, setdiff(edit(title(rest(%0)), %b, |), v(d.allowed-who-fields), |)))={ @trigger me/tr.error=%#, strcat(The field, if(gt(%qN, 1), s), ', itemize(%qN, |), ', if(gt(%qN, 1), are, is), %b, not allowed on the +who list.); }; &who-fields %#=edit(title(rest(%0)), %b, |); @trigger me/tr.success=%#, Your +who will now display the [if(t(rest(%0)), columns [itemize(title(rest(%0)))], default columns)].; @pemit %#=ulocal(layout.who, %#);
+@@ TODO: Test sorting. Sort by position doesn't seem to be working.
+
+&c.+who/columns [v(d.bc)]=$+who/c*:@break t(setr(N, setdiff(edit(title(rest(%0)), %b, |), v(d.allowed-who-fields), |)))={ @trigger me/tr.error=%#, strcat(The field, if(gt(%qN, 1), s), ', itemize(%qN, |), ', if(gt(%qN, 1), are, is), %b, not allowed on the +who list.); }; &who-fields %#=edit(title(rest(%0)), %b, |); @trigger me/tr.success=%#, Your +who will now display the [if(t(rest(%0)), columns [itemize(title(rest(%0)))], default columns)].; @force %#=+who;
 
 &c.+3who [v(d.bc)]=$+3who:@pemit %#=ulocal(layout.3who, %#);
 
@@ -81,7 +87,7 @@
 
 &layout.watch [v(d.bf)]=strcat(setq(P, xget(%0, friends)), header(Your +watch list, %0), %r, multicol(strcat(edit(setr(F, ulocal(f.get-fields, %0, v(d.default-watch-fields))), Doing, poll()), |, iter(%qP, ulocal(layout.who_data, itext(0), %0, %qF),, |)), ulocal(f.get-field-widths, %qF), 1, |, %0), %r, footer(+watch/del or +who/unwatch <name> to remove someone, %0))
 
-&c.+watch [v(d.bc)]=$+watch:@assert hasattr(%#, friends)={ @trigger me/tr.error=%#, You don't have anyone on your +watch list. +watch/add to add someone!; }; @assert t(filter(filter.not_dark, xget(%#, friends),,, %#))={ @trigger me/tr.error=%#, Looks like none of your friends are on right now.; }; @pemit %#=ulocal(layout.who, %#,, watch);
+&c.+watch [v(d.bc)]=$+watch:@assert hasattr(%#, friends)={ @trigger me/tr.error=%#, You don't have anyone on your +watch list. +watch/add to add someone!; }; @assert t(filter(filter.not_dark, xget(%#, friends),,, %#))={ @trigger me/tr.error=%#, Looks like none of your friends are on right now.; }; @pemit %#=ulocal(layout.who, %#, filter(filter.watched, ulocal(f.get-players, %#),,, %#), watch);
 
 &c.+watch/list [v(d.bc)]=$+watch/l*:@assert hasattr(%#, friends)={ @trigger me/tr.error=%#, You don't have anyone on your +watch list. +watch/add <name> to add someone!; }; @pemit %#=ulocal(layout.watch, %#);
 
@@ -127,10 +133,8 @@
 @@ +staff
 @@ =============================================================================
 
-&layout.staff_data [v(d.bf)]=strcat(ulocal(f.get-staffer-status, %0, %1), |, moniker(%0), |, xget(%0, alias), |, xget(%0, position), |, if(hasflag(%0, connected), ulocal(f.get-doing, %0, %1)), |, ulocal(f.get-idle, %0, %1))
+&layout.staff [v(d.bf)]=strcat(header(%2, %0), %r,multicol(strcat(edit(setr(F, ulocal(f.get-fields, %0, v(d.default-staff-fields))), Doing, poll()), |, iter(%1, ulocal(layout.who_data, itext(0), %0, %qF),, |)), ulocal(f.get-field-widths, %qF), 1, |, %0), %r, footer(ulocal(layout.who_footer, %1), %0))
 
-&layout.staff [v(d.bf)]=strcat(header(All staff, %0), %r, multicol(strcat(Status|Name|Alias|Position|[poll()]|Idle|, iter(ulocal(f.get-staff), ulocal(layout.staff_data, itext(0), %0),, |)), 8 * 10p * * 4, 1, |, %0), %r, footer(, %0))
+&c.+staff [v(d.bc)]=$+staff:@pemit %#=ulocal(layout.staff, %#, ulocal(f.sort-players, filter(filter.isstaff, ulocal(f.get-players, %#)), %#), Connected staff);
 
-&c.+staff [v(d.bc)]=$+staff:@pemit %#=ulocal(layout.staff, %#);
-
-&c.+staff/all [v(d.bc)]=$+staff/all:@pemit %#=ulocal(layout.staff, %#);
+&c.+staff/all [v(d.bc)]=$+staff/all:@pemit %#=ulocal(layout.staff, %#, ulocal(f.sort-players, ulocal(f.get-staff), %#), All staff);

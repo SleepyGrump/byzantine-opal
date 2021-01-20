@@ -29,3 +29,13 @@
 &c.+motd/set_no_target [v(d.bc)]=$+motd* *:@break strmatch(%1, *=*); @assert isstaff(%#)={ @trigger me/tr.error=%#, You must be staff to execute this command. }; &d.motd_player %vD=%1; &d.player_motd_date %vD=secs(); &d.player_motd_set_by %vD=moniker(%#); @trigger me/tr.motd-change=player, %#;
 
 @set [v(d.bc)]/c.+motd/set_no_target=no_parse
+
+@@ =============================================================================
+@@ +glance
+@@ =============================================================================
+
+&layout.glance_line [v(d.bf)]=strcat(moniker(%0), |, first(secs2hrs(idle(%0))), |, default(%0/short-desc, ansi(xh, if(member(%0, %1), &short-desc me=<short desc> to set your short-desc., No short-desc set.))))
+
+&layout.glance [v(d.bf)]=strcat(setq(P, filter(filter.is_connected_player, lcon(loc(%0)))), setq(O, filter(filter.isobject, lcon(loc(%0)))), header(At a glance..., %0), %r, formattext(xget(loc(%0), short-desc), 0, %0), %r, divider(People and things present...), %r, multicol(iter(%qP %qO, ulocal(layout.glance_line, itext(0), %0),, |), 20 4 *, 0, |, %0), %r, footer(l <name> for more, %0))
+
+&c.+glance [v(d.bc)]=$+glance:@pemit %#=ulocal(layout.glance, %#);

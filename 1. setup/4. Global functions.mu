@@ -171,9 +171,25 @@
 @@ %q7: Left text layout
 @@ %q8: Right text layout
 @@ %q9: temp var for line output
-@@ Output: A table formatted according to the given column widths.
+@@ %qT: wrapped text
+@@ %qW: Column widths, calculated
+@@ Output: A table formatted according to the given column widths. Contents that extend past the given width will be wrapped to the next line, pushing the whole thing down a row.
 
-&f.globalpp.multicol [v(d.bf)]=strcat(setq(5, words(%1)), setq(0, ulocal(f.get-width, %4)), setq(1, v(d.body-left)), setq(2, v(d.body-right)), setq(3, sub(%q0, add(strlen(%q1), strlen(%q2), 4))), setq(6, ceil(fdiv(words(%0, %3), %q5))), setq(7, ulocal(f.apply-effect, iter(lnum(%q6), %q1,, @@), strlen(%q1))), setq(8, ulocal(f.apply-effect, iter(lnum(%q6), %q2,, @@), strlen(%q2))), iter(lnum(%q6), strcat(%b, mid(%q7, mul(itext(0), strlen(%q1)), strlen(%q1)), %b, setq(9, mid(iter(lnum(%q5), ansi(if(cand(t(%2), eq(itext(1), 0)), strcat(first(v(d.colors)), %b, u)), ljust(mid(extract(%0, add(mul(itext(1), %q5), inum(0)), 1, %3), 0, ulocal(f.get-column-width, %q3, inum(0), %1)), ulocal(f.get-column-width, %q3, inum(0), %1))),, %b), 0, %q3)), %q9, space(sub(%q3, strlen(%q9))), %b, mid(%q8, mul(itext(0), strlen(%q2)), strlen(%q2))),, %r))
+&f.globalpp.multicol [v(d.bf)]=strcat(setq(0, ulocal(f.get-width, %4)), setq(1, v(d.body-left)), setq(2, v(d.body-right)), setq(3, sub(%q0, add(strlen(%q1), strlen(%q2), 4))), setq(W,), null(iter(%1, setq(W, cat(%qW, ulocal(f.get-column-width, %q3, inum(0), %1))))), setq(W, trim(%qW)), setq(5, words(%1)), setq(T, trim(ulocal(f.wrap-text, %0, %qW, %3), b, %3@@BLANK@@)), setq(6, ceil(fdiv(words(%qT, %3), %q5))), setq(7, ulocal(f.apply-effect, iter(lnum(%q6), %q1,, @@), strlen(%q1))), setq(8, ulocal(f.apply-effect, iter(lnum(%q6), %q2,, @@), strlen(%q2))), iter(lnum(%q6), strcat(%b, mid(%q7, mul(itext(0), strlen(%q1)), strlen(%q1)), %b, setq(9, mid(iter(lnum(%q5), ansi(if(cand(t(%2), eq(itext(1), 0)), strcat(first(v(d.colors)), %b, u)), ljust(mid(edit(extract(%qT, add(mul(itext(1), %q5), inum(0)), 1, %3), @@BLANK@@,), 0, extract(%qW, inum(0), 1)), extract(%qW, inum(0), 1))),, %b), 0, %q3)), %q9, space(sub(%q3, strlen(%q9))), %b, mid(%q8, mul(itext(0), strlen(%q2)), strlen(%q2))),, %r))
+
+@@ %0: Text to arrange.
+@@ %1: Columns to arrange it in.
+@@ %2: Delimiter.
+&f.wrap-text [v(d.bf)]=iter(lnum(add(div(words(%0, %2), words(%1)), if(gt(mod(words(%0, %2), words(%1)), 0), 1, 0))), ulocal(f.get-rows-from-column, extract(%0, inc(mul(itext(0), words(%1))), words(%1), %2), %1, %2),, @@)
+
+@@ %0: Text to columnate.
+@@ %1: Column widths to generate
+@@ %2: Delimiter
+@@ %qM: How many rows this will come out to.
+@@ %qR: The result.
+&f.get-rows-from-column [v(d.bf)]=strcat(setq(M, 0), null(iter(%1, strcat(setq(A, wrap(extract(%0, inum(0), 1, %2), itext(0), l,,,, if(t(%2), %2, %b))), if(gt(words(%qA, %2), %qM), setq(M, words(%qA, %2)))))), setq(R, repeat(@@BLANK@@%2, mul(%qM, words(%1)))), setq(R, %qR@@BLANK@@), null(iter(%1, strcat(setq(A, wrap(extract(%0, inum(0), 1, %2), itext(0), l,,,, if(t(%2), %2, %b))), iter(%qA, setq(R, replace(if(not(t(%2)), edit(%qR, %b, %2), %qR), add(inum(1), mul(dec(inum(0)), words(%1))), trim(itext(0)), %2, %2)), %2)))), %qR)
+
+&f.get-correct-width [v(d.bf)]=extract(repeat(%0%b, %1), %1, 1)
 
 @@ %0: width of space available
 @@ %1: which width to grab

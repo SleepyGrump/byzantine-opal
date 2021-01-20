@@ -134,5 +134,10 @@
 @@ .:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.
 @@ : text goes here and there is surely going to be a lot of text whee texting :
 
-@@ The emit prefix that comes out when people use "ooc text" to talk.
+@@ The emit prefix that comes out when people use "ooc <text>" to talk.
 &d.ooc_text [v(d.bd)]=<OOC>
+
+@@ Default poll (shows when you type DOING or +who). Max length is 45 characters.
+&d.default-poll [v(d.bd)]=Whatcha doing?
+
+

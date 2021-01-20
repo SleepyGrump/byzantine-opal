@@ -2,7 +2,9 @@
 
 @adisconnect [v(d.bc)]=@dolist lattr(me/tr.adisconnect-*)={ @trigger me/##=%#; };
 
-@startup [v(d.bf)]=@trigger me/tr.make-functions;
+@@ TODO: Maybe add dynamic startups to this as well? +doing/poll/random?
+
+@startup [v(d.bf)]=@trigger me/tr.make-functions; @doing/header [v(d.default-poll)];
 
 &tr.make-functions [v(d.bf)]=@dolist lattr(me/f.global.*)=@function rest(rest(##, .), .)=me/##; @dolist lattr(me/f.globalp.*)=@function/preserve rest(rest(##, .), .)=me/##; @dolist lattr(me/f.globalpp.*)=@function/preserve/privilege rest(rest(##, .), .)=me/##;
 
@@ -18,6 +20,12 @@
 
 &filter.watched [v(d.bf)]=t(member(xget(%1, friends), %0))
 
+&filter.isobject [v(d.bf)]=hastype(%0, THING)
+
+&filter.isplayer [v(d.bf)]=hastype(%0, PLAYER)
+
+&filter.is_connected_player [v(d.bf)]=cand(hastype(%0, PLAYER), hasflag(%0, CONNECTED))
+
 @@ %0: watcher
 @@ %1: target
 &filter.watch_on [v(d.bf)]=not(t(default(%0/watch.off, 0)))
@@ -32,13 +40,17 @@
 
 &f.sort-alpha [v(d.bf)]=sort(%0, ?, |, |)
 
-&f.sort.by_idle [v(d.bf)]=strcat(setq(S, iter(%0, ulocal(f.get-idle, itext(0), %1), |, |)), munge(f.sort-alpha, %qS, edit(%0, %b, |), |))
+&f.sort-idle [v(d.bf)]=comp(if(lt(%0, 0), 999999999, %0), if(lt(%1, 0), 999999999, %1))
+
+&f.sortby-idle [v(d.bf)]=sortby(f.sort-idle, %0, |, |)
+
+&f.sort.by_idle [v(d.bf)]=strcat(setq(S, iter(%0, ulocal(f.get-idle-secs, itext(0), %1), |, |)), munge(f.sortby-idle, %qS, edit(%0, %b, |), |))
 
 &f.sort.by_status [v(d.bf)]=strcat(setq(S, iter(%0, ulocal(f.get-status, itext(0), %1), |, |)), munge(f.sort-alpha, %qS, edit(%0, %b, |), |))
 
 &f.sort.by_name [v(d.bf)]=strcat(setq(S, iter(%0, moniker(itext(0)), |, |)), munge(f.sort-alpha, %qS, edit(%0, %b, |), |))
 
-&f.sort.by_alias [v(d.bf)]=strcat(setq(S, iter(%0, alias(itext(0)), |, |)), munge(f.sort-alpha, %qS, edit(%0, %b, |), |))
+&f.sort.by_alias [v(d.bf)]=strcat(setq(S, iter(%0, xget(itext(0), alias), |, |)), munge(f.sort-alpha, %qS, edit(%0, %b, |), |))
 
 &f.sort.by_location [v(d.bf)]=strcat(setq(S, iter(%0, ulocal(f.get-location, itext(0), %1), |, |)), munge(f.sort-alpha, %qS, edit(%0, %b, |), |))
 
@@ -68,7 +80,7 @@
 
 &f.get-name [v(d.bf)]=ulocal(f.hilite-text, %0, %1, moniker(%0))
 
-&f.get-alias [v(d.bf)]=ulocal(f.hilite-text, %0, %1, alias(%0))
+&f.get-alias [v(d.bf)]=ulocal(f.hilite-text, %0, %1, xget(%0, alias))
 
 &f.get-dbref [v(d.bf)]=%0
 
@@ -78,6 +90,8 @@
 
 &f.get-staff [v(d.bf)]=v(d.staff_list)
 
-&f.get-idle [v(d.bf)]=if(cand(not(isstaff(%1)), hasflag(%0, dark)), -, secs2hrs(idle(%0)))
+&f.get-idle [v(d.bf)]=if(cand(not(isstaff(%1)), hasflag(%0, dark)), -, first(secs2hrs(idle(%0))))
 
-&f.get-doing [v(d.bf)]=if(cand(not(isstaff(%1)), hasflag(%0, dark)),, doing(%0))
+&f.get-idle-secs [v(d.bf)]=if(cand(not(isstaff(%1)), hasflag(%0, dark)), -, idle(%0))
+
+&f.get-doing [v(d.bf)]=if(cand(ulocal(filter.is_connected_player, %0), not(hasflag(%0, dark))), doing(%0))
