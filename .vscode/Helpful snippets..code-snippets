@@ -15,6 +15,11 @@
 	// 	],
 	// 	"description": "Log output to console"
 	// }
+	"Create new code objects": {
+		"prefix": "@cr",
+		"body": "@create $1 Functions <$2F>=10\r\n@set $2=SAFE INHERIT\r\n@force me=&d.$2f me=[num($2F)]\r\n\r\n@create $1 Commands <$2C>=10\r\n@set $2C=SAFE INHERIT OPAQUE\r\n@parent $2C=$2F\r\n@force me=&d.$2c me=[num($2C)]\r\n\r\n@tel [v(d.$2f)]=[v(d.$2c)]\r\n",
+		"description": "creating new code objects"
+	},
 	"Insert standard command": {
 		"prefix": "&c.",
 		"body": "&c.+${1:command_name} [v(d.$2c)]=$+${1:command_name}$3:$4; @trigger me/tr.success=%#, $5;\r\n",
