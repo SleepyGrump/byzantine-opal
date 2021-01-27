@@ -64,23 +64,29 @@
 
 &f.sort-alpha [v(d.bf)]=sort(%0, ?, |, |)
 
-&f.sort-dbref [v(d.bf)]=comp(name(%0), name(%1))
+&f.sort-dbref [v(d.bf)]=comp(lcstr(name(%0)), lcstr(name(%1)))
 
-&f.sort-idle [v(d.bf)]=comp(if(lt(%0, 0), 999999999, %0), if(lt(%1, 0), 999999999, %1))
+&f.sort-idle [v(d.bf)]=strcat(setq(0, edit(%0, -, 999999999)), setq(1, edit(%1, -, 999999999)), case(1, gt(%q0, %q1), 1, lt(%q0, %q1), -1, 0))
 
 &f.sortby-idle [v(d.bf)]=sortby(f.sort-idle, %0, |, |)
 
 &f.sort.by_idle [v(d.bf)]=strcat(setq(S, iter(%0, ulocal(f.get-idle-secs, itext(0), %1), |, |)), munge(f.sortby-idle, %qS, edit(%0, %b, |), |))
 
-&f.sort.by_status [v(d.bf)]=strcat(setq(S, iter(%0, ulocal(f.get-status, itext(0), %1), |, |)), munge(f.sort-alpha, %qS, edit(%0, %b, |), |))
+&f.rank-status [v(d.bf)]=edit(strip(%0), ic, 1, ooc, 2, ON DUTY, 3, off duty, 4, 0)
 
-&f.sort.by_name [v(d.bf)]=strcat(setq(S, iter(%0, moniker(itext(0)), |, |)), munge(f.sort-alpha, %qS, edit(%0, %b, |), |))
+&f.sort-status [v(d.bf)]=strcat(setq(0, ulocal(f.rank-status, %0)), setq(1, ulocal(f.rank-status, %1)), case(1, gt(%q0, %q1), 1, lt(%q0, %q1), -1, 0))
 
-&f.sort.by_alias [v(d.bf)]=strcat(setq(S, iter(%0, xget(itext(0), alias), |, |)), munge(f.sort-alpha, %qS, edit(%0, %b, |), |))
+&f.sortby-status [v(d.bf)]=sortby(f.sort-status, %0, |, |)
+
+&f.sort.by_status [v(d.bf)]=strcat(setq(S, iter(%0, ulocal(f.get-status, itext(0), %1), |, |)), munge(f.sortby-status, %qS, edit(%0, %b, |), |))
+
+&f.sort.by_name [v(d.bf)]=strcat(setq(S, iter(%0, lcstr(name(itext(0))), |, |)), munge(f.sort-alpha, %qS, edit(%0, %b, |), |))
+
+&f.sort.by_alias [v(d.bf)]=strcat(setq(S, iter(%0, lcstr(xget(itext(0), alias)), |, |)), munge(f.sort-alpha, %qS, edit(%0, %b, |), |))
 
 &f.sort.by_location [v(d.bf)]=strcat(setq(S, iter(%0, ulocal(f.get-location, itext(0), %1), |, |)), munge(f.sort-alpha, %qS, edit(%0, %b, |), |))
 
-&f.sort.by_doing [v(d.bf)]=strcat(setq(S, iter(%0, doing(itext(0)),, |)), munge(f.sort-alpha, %qS, edit(%0, %b, |), |))
+&f.sort.by_doing [v(d.bf)]=strcat(setq(S, iter(%0, lcstr(ulocal(f.get-doing, itext(0), %1)), |, |)), munge(f.sort-alpha, %qS, edit(%0, %b, |), |))
 
 &f.sort.by_gender [v(d.bf)]=strcat(setq(S, iter(%0, ulocal(f.get-gender, itext(0)), |, |)), munge(f.sort-alpha, %qS, edit(%0, %b, |), |))
 
@@ -88,13 +94,17 @@
 
 &f.sort.by_note [v(d.bf)]=strcat(setq(S, iter(%0, ulocal(f.get-note, itext(0), %1), |, |)), munge(f.sort-alpha, %qS, edit(%0, %b, |), |))
 
-&f.sort.by_position [v(d.bf)]=strcat(setq(S, iter(%0, xget(itext(0), position), |, |)), munge(f.sort-alpha, %qS, edit(%0, %b, |), |))
+&f.sort.by_position [v(d.bf)]=strcat(setq(S, iter(%0, lcstr(ulocal(f.get-position, itext(0), %1)), |, |)), munge(f.sort-alpha, %qS, edit(%0, %b, |), |))
 
-&f.sort.by_short-desc [v(d.bf)]=strcat(setq(S, iter(%0, xget(itext(0), short-desc), |, |)), munge(f.sort-alpha, %qS, edit(%0, %b, |), |))
+&f.sort.by_short-desc [v(d.bf)]=strcat(setq(S, iter(%0, lcstr(ulocal(f.get-short-desc, itext(0), %1)), |, |)), munge(f.sort-alpha, %qS, edit(%0, %b, |), |))
 
 &f.get-fields [v(d.bf)]=strcat(setq(F,), null(iter(default(%0/d.%1-fields, %2), if(member(v(d.allowed-who-fields), itext(0), |), setq(F, strcat(%qF, |, itext(0)))), |)), trim(squish(%qF, |), b, |))
 
 &f.get-field-widths [v(d.bf)]=iter(%0, if(cand(member(object, %1), member(Name, itext(0))), *, extract(v(d.who-field-widths), member(v(d.allowed-who-fields), itext(0), |), 1)), |)
+
+&f.sort-players [v(d.bf)]=strcat(setq(P,), null(iter(ulocal(f.get-sort-order, %1, %2), setq(P, ulocal(f.sort.by_[itext(0)], edit(%0, %b, |), %1)), |, |)), edit(%qP, |, %b))
+
+&f.get-sort-order [v(d.bf)]=strcat(setq(S,), null(iter(default(%0/d.%1-sort, v(d.who-sort-order)), if(member(v(d.allowed-who-fields), itext(0), |), setq(S, %qS|[itext(0)])), |)), setq(S, trim(%qS, b, |)), %qS)
 
 @@ =============================================================================
 @@ Functions
@@ -132,7 +142,7 @@
 
 &f.get-idle-secs [v(d.bf)]=if(cand(not(isstaff(%1)), hasflag(%0, dark)), -, idle(%0))
 
-&f.get-doing [v(d.bf)]=if(cand(ulocal(filter.is_connected_player, %0), not(hasflag(%0, dark))), doing(%0))
+&f.get-doing [v(d.bf)]=if(ulocal(filter.not_dark, %0, %1), doing(%0))
 
 &f.get-travel-key [v(d.bf)]=xget(%0, d.travel-key)
 
@@ -148,15 +158,12 @@
 @@ %1: Target
 &f.can-sender-message-target [v(d.bf)]=cor(isstaff(%0), member(xget(%1, whitelisted-PCs), %0), not(cor(t(xget(%1, block-all)), member(xget(%1, blocked-PCs), %0))))
 
-&layout.player-info [v(d.bf)]=strcat(terminfo(%0), -, height(%0), -, width(%0), -, colordepth(%0), -, host(%0))
-
 &layout.who-list [v(d.bf)]=multicol(strcat(edit(setr(F, ulocal(f.get-fields, %1, %2, v(d.default-%2-fields))), Doing, poll()), |, iter(%0, ulocal(layout.who_data, itext(0), %1, %qF),, |)), ulocal(f.get-field-widths, %qF, %2), 1, |, %1)
 
 @@ =============================================================================
-@@ Triggers
+@@ Triggers - these must be globally available to all descendents, so belong on
+@@ the Functions object.
 @@ =============================================================================
-
-&tr.aconnect-player-info [v(d.bf)]=@set %0=_player-info:[setr(0, ulocal(layout.player-info, %0))]|[remove(xget(%0, _player-info), %q0, |, |)];
 
 &tr.error [v(d.bf)]=@pemit %0=cat(alert(Error), %1);
 

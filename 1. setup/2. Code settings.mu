@@ -31,9 +31,9 @@
 
 &d.travel-key [v(d.ic)]=IC
 
-&layout.conformat [v(d.rp)]=strcat(divider(People, %1), %r, ulocal(layout.who-list, %0, %1, room))
+&layout.conformat [v(d.rp)]=strcat(divider(People, %1), %r, whofields(%0, %1, room))
 
-&layout.objects [v(d.rp)]=strcat(divider(Objects, %1), %r, ulocal(layout.who-list, %0, %1, object))
+&layout.objects [v(d.rp)]=strcat(divider(Objects, %1), %r, whofields(%0, %1, object))
 
 &layout.commercial-exits [v(d.rp)]=ulocal(layout.exits, filter(filter.is-exit-commercial, %1), Commercial, %0)
 
@@ -53,7 +53,7 @@
 
 @nameformat [v(d.rp)]=header(name(me), %#)
 
-@conformat [v(d.rp)]=strcat(if(t(setr(0, filter(filter.not_dark, lcon(me),,, %#))), ulocal(layout.conformat, %q0, %#)), if(t(setr(1, filter(filter.visible-objects, lcon(me),,, %#))), ulocal(layout.objects, %q1, %#)), if(not(t(words(lexits(me)))), strcat(%r, footer(No exits, %#))))
+@conformat [v(d.rp)]=strcat(if(t(setr(0, filter(filter.not_dark, lcon(me),,, %#))), ulocal(layout.conformat, whosort(%q0, %#, room), %#)), if(t(setr(1, filter(filter.visible-objects, lcon(me),,, %#))), ulocal(layout.objects, whosort(%q1, %#, object), %#)), if(not(t(words(lexits(me)))), strcat(%r, footer(No exits, %#))))
 
 @exitformat [v(d.rp)]=ulocal(layout.exitformat, %#)
 
@@ -73,7 +73,8 @@
 
 &d.2who-columns [v(d.bd)]=Status|Name|Idle|Doing
 
-&d.who-sort-order [v(d.bd)]=Idle|Status
+@@ Sort order rolls left to right, so the last search is the most recent and will dominate the output.
+&d.who-sort-order [v(d.bd)]=Idle
 
 &d.default-room-fields [v(d.bd)]=Name|Idle|Short-desc
 

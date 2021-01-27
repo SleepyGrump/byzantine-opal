@@ -254,6 +254,15 @@
 @@ %1: Viewer
 &f.globalpp.shortdesc [v(d.bf)]=strcat(setq(0, default(%0/short-desc, ansi(xh, if(member(%0, %1), &short-desc me=<short desc> to set your short-desc., No short-desc set.)))), setq(1, v(d.max-shortdesc-length)), if(gt(strlen(%q0), %q1), mid(%q0, 0, sub(%q1, 3))..., %q0))
 
+@@ Output: The list sorted by the target's who field settings
+@@ %0: list of dbrefs
+@@ %1: Viewer
+@@ %2: which field list to sort by
+&f.globalpp.whosort [v(d.bf)]=if(member(edit(lcstr(lattr(%vD/d.default-*-fields)), d.default-,, -fields,), lcstr(%2)), strcat(setq(P,), null(iter(ulocal(f.get-sort-order, %1, %2), setq(P, ulocal(f.sort.by_[itext(0)], edit(%0, %b, |), %1)), |, |)), edit(%qP, |, %b)), #-1 %2 FIELD LIST NOT FOUND)
+
+@@ Output: the data of each object for the target's who field settings
+&f.globalpp.whofields [v(d.bf)]=if(member(edit(lcstr(lattr(%vD/d.default-*-fields)), d.default-,, -fields,), lcstr(%2)), ulocal(layout.who-list, %0, %1, %2), #-1 %2 FIELD LIST NOT FOUND)
+
 &layout.debug [v(d.bf)]=strcat(alert(timefmt($X) debug), From, %b, moniker(%0), :%b, %1)
 
 &layout.debug_flag [v(d.bf)]=strcat(Debugging, %b, if(%1, enabled, disabled), %b, on, %b, moniker(%0)., if(%1, strcat(%b, Output will go to, %b, v(d.debug-target).)))

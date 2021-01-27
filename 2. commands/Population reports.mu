@@ -4,13 +4,13 @@
 @@ +who, +3who, +2who, etc.
 @@ =============================================================================
 
+&layout.player-info [v(d.bf)]=strcat(terminfo(%0), -, height(%0), -, width(%0), -, colordepth(%0), -, host(%0))
+
+&tr.aconnect-player-info [v(d.bc)]=@set %0=_player-info:[setr(0, ulocal(layout.player-info, %0))]|[remove(xget(%0, _player-info), %q0, |, |)];
+
 &f.hilite-text [v(d.bf)]=ansi(if(ulocal(filter.watched, %0, %1), first(themecolors())), %2)
 
-&f.sort-players [v(d.bf)]=strcat(setq(P,), null(iter(ulocal(f.get-sort-order, %0, %2), setq(P, ulocal(f.sort.by_[itext(0)], edit(%0, %b, |), %1)), |, |)), edit(%qP, |, %b))
-
 &f.get-players [v(d.bf)]=strcat(setq(P, filter(filter.not_dark, lwho(),,, %0)), ulocal(f.sort-players, %qP, %0, %1))
-
-&f.get-sort-order [v(d.bf)]=strcat(setq(S,), null(iter(default(%0/d.%1-sort, v(d.who-sort-order)), if(member(v(d.allowed-who-fields), itext(0), |), setq(S, %qS|[itext(0)])), |)), setq(S, trim(%qS, b, |)), %qS)
 
 &f.get-unique-count [v(d.bf)]=strcat(setq(0, 0), setq(1,), null(iter(%0, if(member(%q1, setr(2, xget(itext(0), lastip)), |),, strcat(setq(0, add(%q0, 1)), setq(1, setunion(%q1, %q2, |)))))), %q0)
 
@@ -32,11 +32,15 @@
 
 &c.+who/notes [v(d.bc)]=$+who/n*:@break strmatch(%0, *=*); @pemit %#=ulocal(layout.who, %#,  ulocal(f.get-players, %#, notes), notes, Who's online - with notes);
 
-&c.+who/sort [v(d.bc)]=$+who/sort *:@eval strcat(setq(F, switch(%1, *=*, rest(%1, =), %1)), setq(W, edit(%1, +,)), setq(W, switch(%qW, *=*, first(%qW, =), who)), if(eq(strlen(%qW), 0), setq(W, who)), setq(F, edit(title(%qF), %b, |))); @assert switch(%qW, s*, 1, wa*, 1, n*, 1, wh*, 1, 0)={ @trigger me/tr.error=%#, '%qW' is not a recognized list you can sort. Valid options are [itemize(edit(lcstr(lattr(%vD/d.default-*-fields)), d.default-,, -fields,))].; }; @break t(setr(N, setdiff(%qF, v(d.allowed-who-fields), |)))={ @trigger me/tr.error=%#, strcat(The field, if(gt(%qN, 1), s), %b, ', itemize(%qN, |), ', %b, if(gt(%qN, 1), are, is), %b, not allowed on the [switch(%qW, s*, +staff, wa*, +watch, n*, +who/notes, +who)] sort list.); }; &d.%qW-sort %#=%qF; @trigger me/tr.success=%#, Your [switch(%qW, s*, +staff, wa*, +watch, n*, +who/notes, +who)] will now be sorted by the [if(t(%qF), columns [itemize(%qF, |)], default columns)].; @force %#=[switch(%qW, s*, +staff, wa*, +watch, n*, +who/notes, +who)];
+&f.get-friendly-who-list-name [v(d.bf)]=switch(%0, room, player list in rooms, object, object list in rooms, note, +who/notes, +%0)
 
-@@ TODO: Test sorting. Sort by position doesn't seem to be working.
+&c.+who/sort_text [v(d.bc)]=$+who/s* *:@eval strcat(setq(F, switch(%1, *=*, rest(%1, =), %1)), setq(W, edit(%1, +,)), setq(W, switch(%qW, *=*, first(%qW, =), who)), if(eq(strlen(%qW), 0), setq(W, who)), setq(F, edit(title(%qF), %b, |))); @assert member(edit(lcstr(lattr(%vD/d.default-*-fields)), d.default-,, -fields,), lcstr(%qW))={ @trigger me/tr.error=%#, '%qW' is not a recognized list you can sort. Valid options are [itemize(edit(lcstr(lattr(%vD/d.default-*-fields)), d.default-,, -fields,))].; }; @break t(setr(N, setdiff(%qF, v(d.allowed-who-fields), |)))={ @trigger me/tr.error=%#, strcat(The field, if(gt(%qN, 1), s), %b, ', itemize(%qN, |), ', %b, if(gt(%qN, 1), are, is), %b, not allowed on the %qW sort list. Valid options are [itemize(v(d.allowed-who-fields), |)].); }; &d.%qW-sort %#=revwords(%qF, |); @trigger me/tr.success=%#, Your [ulocal(f.get-friendly-who-list-name, %qW)] will now be sorted by the [if(t(%qF), column[if(gt(words(%qF, |), 1), s)] [itemize(%qF, |)], default columns)].; @force %#=[switch(%qW, room, look, object, look, n*, +who/notes, +%qW)];
 
-&c.+who/columns [v(d.bc)]=$+who/c* *:@eval strcat(setq(F, switch(%1, *=*, rest(%1, =), %1)), setq(W, edit(%1, +,)), setq(W, switch(%qW, *=*, first(%qW, =), who)), if(eq(strlen(%qW), 0), setq(W, who)), setq(F, edit(title(%qF), %b, |))); @assert switch(%qW, s*, 1, wa*, 1, n*, 1, wh*, 1, 0)={ @trigger me/tr.error=%#, '%qW' is not a recognized list you can set columns for. Valid options are [itemize(edit(lcstr(lattr(%vD/d.default-*-fields)), d.default-,, -fields,))].; }; @break t(setr(N, setdiff(%qF, v(d.allowed-who-fields), |)))={ @trigger me/tr.error=%#, strcat(The field, if(gt(%qN, 1), s), %b, ', itemize(%qN, |), ', %b, if(gt(%qN, 1), are, is), %b, not allowed on the [switch(%qW, s*, +staff, wa*, +watch, n*, +who/notes, +who)] list.); }; &d.%qW-fields %#=%qF; @trigger me/tr.success=%#, Your [switch(%qW, s*, +staff, wa*, +watch, n*, +who/notes, +who)] will now display the [if(t(%qF), columns [itemize(%qF, |)], default columns)].; @force %#=[switch(%qW, s*, +staff, wa*, +watch, n*, +who/notes, +who)];
+&c.+who/sort [v(d.bc)]=$+who/s*:@break strmatch(%0, * *); @force %#=+who/s%0 =;
+
+&c.+who/columns_text [v(d.bc)]=$+who/c* *:@eval strcat(setq(F, switch(%1, *=*, rest(%1, =), %1)), setq(W, edit(%1, +,)), setq(W, switch(%qW, *=*, first(%qW, =), who)), if(eq(strlen(%qW), 0), setq(W, who)), setq(F, edit(title(%qF), %b, |))); @assert member(edit(lcstr(lattr(%vD/d.default-*-fields)), d.default-,, -fields,), lcstr(%qW))={ @trigger me/tr.error=%#, '%qW' is not a recognized list you can set columns for. Valid options are [itemize(edit(lcstr(lattr(%vD/d.default-*-fields)), d.default-,, -fields,))].; }; @break t(setr(N, setdiff(%qF, v(d.allowed-who-fields), |)))={ @trigger me/tr.error=%#, strcat(The field, if(gt(%qN, 1), s), %b, ', itemize(%qN, |), ', %b, if(gt(%qN, 1), are, is), %b, not allowed on the %qW column list. Valid options are [itemize(v(d.allowed-who-fields), |)].); }; &d.%qW-fields %#=%qF; @trigger me/tr.success=%#, Your [ulocal(f.get-friendly-who-list-name, %qW)] will now display the [if(t(%qF), column[if(gt(words(%qF, |), 1), s)] [itemize(%qF, |)], default columns)].; @force %#=[switch(%qW, room, look, object, look, n*, +who/notes, +%qW)];
+
+&c.+who/columns [v(d.bc)]=$+who/c*:@break strmatch(%0, * *); @force %#=+who/c%0 =;
 
 &c.+3who [v(d.bc)]=$+3who:@pemit %#=ulocal(layout.3who, %#);
 
