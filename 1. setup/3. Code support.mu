@@ -98,14 +98,6 @@
 
 &f.sort.by_short-desc [v(d.bf)]=strcat(setq(S, iter(%0, lcstr(ulocal(f.get-short-desc, itext(0), %1)), |, |)), munge(f.sort-alpha, %qS, edit(%0, %b, |), |))
 
-&f.get-fields [v(d.bf)]=strcat(setq(F,), null(iter(default(%0/d.%1-fields, %2), if(member(v(d.allowed-who-fields), itext(0), |), setq(F, strcat(%qF, |, itext(0)))), |)), trim(squish(%qF, |), b, |))
-
-&f.get-field-widths [v(d.bf)]=iter(%0, if(cand(member(object, %1), member(Name, itext(0))), *, extract(v(d.who-field-widths), member(v(d.allowed-who-fields), itext(0), |), 1)), |)
-
-&f.sort-players [v(d.bf)]=strcat(setq(P,), null(iter(ulocal(f.get-sort-order, %1, %2), setq(P, ulocal(f.sort.by_[itext(0)], edit(%0, %b, |), %1)), |, |)), edit(%qP, |, %b))
-
-&f.get-sort-order [v(d.bf)]=strcat(setq(S,), null(iter(default(%0/d.%1-sort, v(d.who-sort-order)), if(member(v(d.allowed-who-fields), itext(0), |), setq(S, %qS|[itext(0)])), |)), setq(S, trim(%qS, b, |)), %qS)
-
 @@ =============================================================================
 @@ Functions
 @@ =============================================================================
@@ -157,8 +149,6 @@
 @@ %0: Sender
 @@ %1: Target
 &f.can-sender-message-target [v(d.bf)]=cor(isstaff(%0), member(xget(%1, whitelisted-PCs), %0), not(cor(t(xget(%1, block-all)), member(xget(%1, blocked-PCs), %0))))
-
-&layout.who-list [v(d.bf)]=multicol(strcat(edit(setr(F, ulocal(f.get-fields, %1, %2, v(d.default-%2-fields))), Doing, poll()), |, iter(%0, ulocal(layout.who_data, itext(0), %1, %qF),, |)), ulocal(f.get-field-widths, %qF, %2), 1, |, %1)
 
 @@ =============================================================================
 @@ Triggers - these must be globally available to all descendents, so belong on

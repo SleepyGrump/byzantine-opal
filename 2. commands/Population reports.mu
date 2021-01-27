@@ -14,13 +14,11 @@
 
 &f.get-unique-count [v(d.bf)]=strcat(setq(0, 0), setq(1,), null(iter(%0, if(member(%q1, setr(2, xget(itext(0), lastip)), |),, strcat(setq(0, add(%q0, 1)), setq(1, setunion(%q1, %q2, |)))))), %q0)
 
-&layout.who_data [v(d.bf)]=iter(%2, ulocal(f.get-[itext(0)], %0, %1), |, |)
-
 &layout.who_footer [v(d.bf)]=cat(words(%0), connected, /, ulocal(f.get-unique-count, %0), unique, /, connrecord(), record)
 
 &layout.watch_footer [v(d.bf)]=cat(words(%0) out of, words(xget(%1, friends)), watched players displayed)
 
-&layout.who [v(d.bf)]=strcat(setq(D, if(t(%2), %2, who)), header(%3, %0), %r, ulocal(layout.who-list, %1, %0, %qD, %qD), %r, footer(ulocal(layout.%qD_footer, %1, %0), %0))
+&layout.who [v(d.bf)]=strcat(setq(D, if(t(%2), %2, who)), header(%3, %0), %r, whofields(%1, %0, %qD, %qD), %r, footer(ulocal(layout.%qD_footer, %1, %0), %0))
 
 &layout.3who [v(d.bf)]=strcat(setq(C, edit(setr(F, v(d.3who-columns)), Doing, poll())), header(Who's online - 3who, %0), %r, multicol(strcat(%qC|%qC|%qC, |, iter(setr(P, ulocal(f.get-players, %0, who)), ulocal(layout.who_data, itext(0), %0, %qF),, |)), setr(W, ulocal(f.get-field-widths, %qF)) %qW %qW, 1, |, %0), %r, footer(ulocal(layout.who_footer, %qP), %0))
 

@@ -254,6 +254,18 @@
 @@ %1: Viewer
 &f.globalpp.shortdesc [v(d.bf)]=strcat(setq(0, default(%0/short-desc, ansi(xh, if(member(%0, %1), &short-desc me=<short desc> to set your short-desc., No short-desc set.)))), setq(1, v(d.max-shortdesc-length)), if(gt(strlen(%q0), %q1), mid(%q0, 0, sub(%q1, 3))..., %q0))
 
+&f.get-fields [v(d.bf)]=strcat(setq(F,), null(iter(default(%0/d.%1-fields, %2), if(member(v(d.allowed-who-fields), itext(0), |), setq(F, strcat(%qF, |, itext(0)))), |)), trim(squish(%qF, |), b, |))
+
+&f.get-field-widths [v(d.bf)]=iter(%0, if(cand(member(object, %1), member(Name, itext(0))), *, extract(v(d.who-field-widths), member(v(d.allowed-who-fields), itext(0), |), 1)), |)
+
+&f.sort-players [v(d.bf)]=strcat(setq(P,), null(iter(ulocal(f.get-sort-order, %1, %2), setq(P, ulocal(f.sort.by_[itext(0)], edit(%0, %b, |), %1)), |, |)), edit(%qP, |, %b))
+
+&f.get-sort-order [v(d.bf)]=strcat(setq(S,), null(iter(default(%0/d.%1-sort, v(d.who-sort-order)), if(member(v(d.allowed-who-fields), itext(0), |), setq(S, %qS|[itext(0)])), |)), setq(S, trim(%qS, b, |)), %qS)
+
+&layout.who-list [v(d.bf)]=multicol(strcat(edit(setr(F, ulocal(f.get-fields, %1, %2, v(d.default-%2-fields))), Doing, poll()), |, iter(%0, ulocal(layout.who_data, itext(0), %1, %qF),, |)), ulocal(f.get-field-widths, %qF, %2), 1, |, %1)
+
+&layout.who_data [v(d.bf)]=iter(%2, ulocal(f.get-[itext(0)], %0, %1), |, |)
+
 @@ Output: The list sorted by the target's who field settings
 @@ %0: list of dbrefs
 @@ %1: Viewer
