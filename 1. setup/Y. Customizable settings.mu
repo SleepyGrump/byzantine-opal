@@ -133,6 +133,8 @@
 @@ ][ text goes here and there is surely going to be a lot of text whee texti ][
 @@ .:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.
 @@ : text goes here and there is surely going to be a lot of text whee texting :
+@@ /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/
+@@ /=/ text goes here and there is surely going to be a lot of text whee tex /=/
 
 @@ The emit prefix that comes out when people use "ooc <text>" to talk.
 &d.ooc_text [v(d.bd)]=<OOC>
@@ -140,4 +142,17 @@
 @@ Default poll (shows when you type DOING or +who). Max length is 45 characters.
 &d.default-poll [v(d.bd)]=Whatcha doing?
 
+@@ Travel categories, separated by |. These will be specific to your game and could include categories like "Retail" or "Market" depending on your setting. Your players will group their businesses under these categories. The only default is "OOC", so that you can add OOC destinations like the OOC room, the RP Nexus, Chargen, etc.
+&d.travel.categories [v(d.bd)]=OOC
+
+@@ All communication in room # will go to this channel. You can add as many of these as you like. Users will be alerted that they need to join the channel to see the rest of the conversation if they're not already on the channel. To disable, just remove this attribute. This functionality can be used to direct convo from, say, the Chargen room to the Chargen channel, the OOC room to the Public channel, etc.
+&d.redirect-poses.#0 [v(d.bd)]=Public
+
+@@ Set this to the DBref of your quiet room and any other room you want silent.
+@force me=&d.gag-emits [v(d.bd)]=[v(d.qr)]
+
+@@ Default meeting timeout in seconds. Sometimes the default 10m is too short!
+&d.meeting-timeout [v(d.bd)]=600
+
+&d.default-out-exit [v(d.bd)]=Out <O>;o;out;exit;
 

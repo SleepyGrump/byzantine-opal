@@ -2,8 +2,9 @@
 
 &f.globalpp.isstaff [v(d.bf)]=or(member(v(d.staff_list), pmatch(%0)), orflags(%0, WZw))
 
-
 @@ On with the custom stuff below!
+
+&f.globalpp.isapproved [v(d.bf)]=hasflag(%0, APPROVED)
 
 &f.get-ansi [v(d.bf)]=extract(%0, if(lte(%1, words(%0)), %1, inc(mod(%1, words(%0)))), 1)
 
@@ -248,6 +249,10 @@
 @@ %0 - the string to title-case
 &f.globalpp.title [v(d.bf)]=iter(%0, if(ulocal(f.should-word-be-capitalized, itext(0), inum(0)), capstr(itext(0)), itext(0)))
 
+@@ Output: The target's shortdesc
+@@ %0: Person, place, or thing
+@@ %1: Viewer
+&f.globalpp.shortdesc [v(d.bf)]=strcat(setq(0, default(%0/short-desc, ansi(xh, if(member(%0, %1), &short-desc me=<short desc> to set your short-desc., No short-desc set.)))), setq(1, v(d.max-shortdesc-length)), if(gt(strlen(%q0), %q1), mid(%q0, 0, sub(%q1, 3))..., %q0))
 
 &layout.debug [v(d.bf)]=strcat(alert(timefmt($X) debug), From, %b, moniker(%0), :%b, %1)
 

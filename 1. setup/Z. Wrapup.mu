@@ -1,11 +1,3 @@
-@@ Set up parents for the 3 built-in default OOC rooms.
-
-@force me=@parent #0=[v(d.orp)]
-
-@force me=@parent #2=[v(d.orp)]
-
-@force me=@parent #11=[v(d.orp)]
-
 @@ Take all the SGP functions out of the master code room.
 
 @tel #4=#11
@@ -26,9 +18,7 @@ IMPORTANT:
 
 If you have not already done so, in your netmux.conf, add the following lines:
 
-player_flags ansi color256 ascii keepalive
-
-# You may also want:
+player_flags ansi color256 keepalive
 
 flag_name marker0 approved
 flag_access marker0 wizard
@@ -37,6 +27,26 @@ public_channel Public
 guests_channel Public
 
 idle_timeout 86400
+
+# These numbers should match the dbrefs of the various objects you built in Step 0!
+room_parent 123
+exit_parent 234
+player_parent 345
+guest_parent 456
+hook_obj 567
+
+# For the channel forwarding and pose notices:
+
+hook_cmd pose before permit
+hook_cmd npose before permit
+hook_cmd : before permit
+hook_cmd ; before permit
+hook_cmd say before permit
+hook_cmd nsay before permit
+hook_cmd " before permit
+hook_cmd @emit before permit
+hook_cmd \ before permit
+hook_cmd @remit before permit
 
 # If you plan on installing the SQL commands, you will need:
 

@@ -10,9 +10,9 @@
 
 &layout.ooc_text [v(d.bf)]=cat(ulocal(d.ooc_text), moniker(%0), says, "%1")
 
-&c.ooc [v(d.bc)]=$ooc *:@remit loc(%#)=ulocal(layout.ooc_[switch(%0, :*, action, ;*, apostrophe, text)], %#, %0);
+&c.ooc [v(d.bc)]=$ooc *:@trigger me/tr.remit=loc(%#), ulocal(layout.ooc_[switch(%0, :*, action, ;*, apostrophe, text)], %#, %0), %#;
 
-&c.ooc_single-quote [v(d.bc)]=$'*:@remit loc(%#)=ulocal(layout.ooc_[switch(%0, :*, action, ;*, apostrophe, text)], %#, %0)
+&c.ooc_single-quote [v(d.bc)]=$'*:@trigger me/tr.remit=loc(%#), ulocal(layout.ooc_[switch(%0, :*, action, ;*, apostrophe, text)], %#, %0), %#;
 
 @@ =============================================================================
 @@ msg, +txt, +phone, etc - includes a voicemail system.
@@ -74,17 +74,15 @@
 
 @@ %0 - sender
 @@ %1 - title
-&layout.title [v(d.bc)]=if(t(%1), udefault(%0/msg-send-%1, strcat(%ch<%cn, %1, %ch>%cn)), %ch<%cnmessage%ch>%cn)
+&layout.title [v(d.bf)]=if(t(%1), udefault(%0/msg-send-%1, strcat(%ch<%cn, %1, %ch>%cn)), %ch<%cnmessage%ch>%cn)
 
 @@ %0 - sender
 @@ %1 - recipients
 @@ %2 - type
 @@ %3 - message
-&layout.msg [v(d.bc)]=strcat(ulocal(layout.title, %0, %2), %b, To, %b, itemize(iter(%1, name(itext(0)), |, |), |), :, %b, switch(%3, :*, name(%0) [rest(%3, :)], ;*, name(%0)[rest(%3, ;)], |*, %([name(%0)]%) [rest(%3, |)], name(%0) sends%, "%3"))
+&layout.msg [v(d.bf)]=strcat(ulocal(layout.title, %0, %2), %b, To, %b, itemize(iter(%1, name(itext(0)), |, |), |), :, %b, switch(%3, :*, name(%0) [rest(%3, :)], ;*, name(%0)[rest(%3, ;)], |*, %([name(%0)]%) [rest(%3, |)], name(%0) sends%, "%3"))
 
-&switch.msg [v(d.bc)]=@break t(xget(%1, msg-receive-off))={@pemit %1=alert(MSG) You cannot send messages while your ability to receive messages is turned off. Type msg/on to enable the message system.;};@break not(t(%0))={@trigger me/switch.msg.summary=%1;};@eval setq(T, if(not(strmatch(%0, %b*)), strip(first(%0), /), xget(%1, last-msg-type)));@eval setq(L, switch(trim(%0), /* *=*, first(rest(%0), =), *=*, first(%0, =), edit(xget(%1, last-msg-target), |, %b)));@eval setq(V, trim(switch(%0, *=*, rest(%0, =), /* *, rest(%0), /*,, %0)));@break not(t(%qV))={@trigger me/switch.msg.summary=%1;};@eval strcat(setq(P, iter(%qL, case(itext(0), me, %1, pmatch(itext(0))),, |)), setq(P, setunion(%qP, %qP, |)));@eval iter(%qP, if(not(t(itext(0))), setq(E, %qE Could not find player '[if(t(%qL), extract(%qL, inum(0), 1), itext(0))]' ([itext(0)]).)), |); @break not(t(%qP))={@pemit %1=alert(MSG) You need to choose someone to send the message to. }; @break t(squish(trim(%qE)))={@pemit %1=alert(MSG) %qE;};@set %1=last-msg-target:%qP;@if t(%qT)={@set %1=last-msg-type:%qT;};@pemit %1=ulocal(layout.msg, %1, %qP, %qT, %qV);@dolist/delimit | [setdiff(setunion(%qP, %qP, |), %1, |)]={@switch/first 1=hasattr(##, msg-hide-%1), {}, hasattr(##, msg-block-%1), {@pemit %1=alert(MSG BLOCKED) [name(##)] has blocked you[if(match(setr(B, u(##/msg-block-%1)), 1), ., %bbecause: %qB)];}, and(or(t(xget(##, msg-receive-off)), not(hasflag(##, connect))), gte(words(lattr(##/_msg-*)), 50)), {@pemit %1=alert(MSG NOT DELIVERED) [name(##)] is not available and [poss(##)] message queue is full. Resend your message later.;}, or(t(xget(##, msg-receive-off)), not(hasflag(##, connect))), {&_msg-[secs()] ##=ulocal(layout.msg, %1, %qP, %qT, %qV);@pemit %1=alert(MSG DELAYED) Added message to [name(##)]'s message queue.;}, {@pemit ##=ulocal(layout.msg, %1, %qP, %qT, %qV);}}
+&switch.msg [v(d.bc)]=@break t(xget(%1, msg-receive-off))={@trigger me/tr.error=%1, You cannot send messages while your ability to receive messages is turned off. Type msg/on to enable the message system.;};@break not(t(%0))={@trigger me/switch.msg.summary=%1;};@eval setq(T, if(not(strmatch(%0, %b*)), strip(first(%0), /), xget(%1, last-msg-type)));@eval setq(L, switch(trim(%0), /* *=*, first(rest(%0), =), *=*, first(%0, =), edit(xget(%1, last-msg-target), |, %b)));@eval setq(V, trim(switch(%0, *=*, rest(%0, =), /* *, rest(%0), /*,, %0)));@break not(t(%qV))={@trigger me/switch.msg.summary=%1;};@eval strcat(setq(P, iter(%qL, case(itext(0), me, %1, pmatch(itext(0))),, |)), setq(P, setunion(%qP, %qP, |)));@eval iter(%qP, if(not(t(itext(0))), setq(E, %qE Could not find player '[if(t(%qL), extract(%qL, inum(0), 1), itext(0))]' ([itext(0)]).)), |); @break not(t(%qP))={@trigger me/tr.error=%1, You need to choose someone to send the message to. }; @break t(squish(trim(%qE)))={@trigger me/tr.error=%1, %qE;};@set %1=last-msg-target:%qP;@if t(%qT)={@set %1=last-msg-type:%qT;};@pemit %1=ulocal(layout.msg, %1, %qP, %qT, %qV);@dolist/delimit | [setdiff(setunion(%qP, %qP, |), %1, |)]={@switch/first 1=hasattr(##, msg-hide-%1), {}, hasattr(##, msg-block-%1), {@pemit %1=alert(MSG BLOCKED) [name(##)] has blocked you[if(match(setr(B, u(##/msg-block-%1)), 1), ., %bbecause: %qB)];}, and(or(t(xget(##, msg-receive-off)), not(hasflag(##, connect))), gte(words(lattr(##/_msg-*)), 50)), {@pemit %1=alert(MSG NOT DELIVERED) [name(##)] is not available and [poss(##)] message queue is full. Resend your message later.;}, or(t(xget(##, msg-receive-off)), not(hasflag(##, connect))), {&_msg-[secs()] ##=ulocal(layout.msg, %1, %qP, %qT, %qV);@pemit %1=alert(MSG DELAYED) Added message to [name(##)]'s message queue.;}, {@pemit ##=ulocal(layout.msg, %1, %qP, %qT, %qV);}}
 
 @set [v(d.bc)]/switch.msg=no_parse
-
-
 
