@@ -49,7 +49,7 @@ TODO: Make the search sub-categories list the name it resolved to.
 
 &f.get-page-example [v(d.bf)]=trim(rest(extract(%0, 5, 1, |), =), b, %r)
 
-&f.get-page-links [v(d.bf)]=trim(edit(rest(extract(%0, 6, 4, |), =), link1=,, link2=,, link3=,, link4=,), b, %r)
+&f.get-page-links [v(d.bf)]=trim(squish(edit(rest(extract(%0, 6, 4, |), =), link1=,, link2=,, link3=,, link4=,), |), b, %r)
 
 &f.get-page-categories [v(d.bf)]=trim(rest(extract(%0, 10, 2, |), =), b, %r)
 
@@ -59,7 +59,7 @@ TODO: Make the search sub-categories list the name it resolved to.
 
 &layout.help-page [v(d.bf)]=strcat(header(ulocal(f.get-page-topic, %0), %1), %r, formattext(strcat(ulocal(f.get-page-short, %0), %r%r, ulocal(f.get-page-detail, %0)), 1, %1), %r, ulocal(layout.examples, %0, %1), %r, ulocal(layout.see_also, %0, %1), %r, footer(+help for more, %1))
 
-&f.format-results [v(d.bf)]=edit(trim(trim(translate(%0, p), b, lit(%r))), lit(%r), %r, %r%r%r, %r%r, lit(%(), %(, lit(%)), %), lit(%[), %[, lit(%]), %])
+&f.format-results [v(d.bf)]=edit(trim(trim(translate(%0, p), b, lit(%r))), lit(%r), %r, %r%r%r, %r%r, lit(%(), %(, lit(%)), %), lit(%[), %[, lit(%]), %], ''', ansi(first(themecolors()), *), '', ansi(first(themecolors()), /))
 
 &layout.list-category [v(d.bf)]=strcat(header(%0, %2), %r, formatcolumns(%1, v(d.default-row-delimeter), %2) %r, footer(+help <file name> for more., %2))
 
