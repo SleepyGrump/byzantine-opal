@@ -12,4 +12,4 @@
 
 &c.+dark [v(d.bc)]=$+dark:@assert isstaff(%#)={ @trigger me/tr.error=%#, You must be staff to use this command.; }; @set %#=[if(hasflag(%#, dark), !)]dark; @trigger me/tr.success=%#, You have set yourself [if(hasflag(%#, dark), dark, visible)].;
 
-&c.+staffnote [v(d.bc)]=$+staffnote *=*:@assert isstaff(%#)={ @trigger me/tr.error=%#, You must be staff to use this command.; }; @assert t(setr(P, ulocal(f.find-player, %0, %#)))={ @trigger me/tr.error=%#, ; };  &_d.staff-notes %qP=%1; @trigger me/tr.success=%#, ;
+&c.+staffnote [v(d.bc)]=$+staffnote *=*:@assert isstaff(%#)={ @trigger me/tr.error=%#, You must be staff to use this command.; }; @assert t(setr(P, ulocal(f.find-player, %0, %#)))={ @trigger me/tr.error=%#, Could not find a player named '%0'.; }; &_d.staff-notes %qP=%1; @trigger me/tr.success=%#, moniker(%qP)'s staff note now reads: %1;

@@ -34,6 +34,10 @@
 
 &d.travel-key [v(d.ooc)]=OOCROOM
 
+@force me=&d.default-ooc-room [v(d.bd)]=[v(d.ooc)]
+
+@force me=&d.default-ic-room [v(d.bd)]=[v(d.ic)]
+
 &d.travel-categories [v(d.ooc)]=OOC
 
 &d.travel-key [v(d.ic)]=IC

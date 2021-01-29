@@ -255,7 +255,7 @@
 
 &tr.pemit [v(d.bf)]=@break t(words(setr(N, trim(squish(iter(%0, if(ulocal(f.can-sender-message-target, %2, itext(0)),, itext(0))))))))={ @trigger me/tr.error=%2, Sorry%, [itemize(iter(%qN, moniker(itext(0)),, |), |)] [case(words(%qN), 1, is, are)] not accepting messages.; }; @pemit %0=%1;
 
-&tr.travel_to_destination [v(d.bf)]=@assert eq(words(%0), 1)={ @trigger me/tr.error=%1, The key you gave resolved to [words(%0)] destinations. Please try again.; }; @assert cor(ulocal(lock.isapproved_or_staff, %1), ulocal(f.is-location-ooc, %0))={ @trigger me/tr.error=%1, You are not approved or staff so can't use +travel to go IC yet.; }; &last-location %1=loc(%1); @trigger me/tr.remit-quiet=loc(%1), ulocal(layout.travel_departure, %1), %1; @tel %1=%0; @trigger me/tr.remit-quiet=%0, ulocal(layout.travel_arrival, %1), %1;
+&tr.travel_to_destination [v(d.bf)]=@assert eq(words(%0), 1)={ @trigger me/tr.error=%1, The key you gave resolved to [words(%0)] destinations. Please try again.; }; @assert cor(ulocal(lock.isapproved_or_staff, %1), ulocal(f.is-location-ooc, %0))={ @trigger me/tr.error=%1, You are not approved or staff so can't use +travel to go IC yet.; }; &_last-[if(hasattrp(loc(%1), ooc), ooc, ic)]-location %1=loc(%1); @trigger me/tr.remit-quiet=loc(%1), ulocal(layout.travel_departure, %1), %1; @tel %1=%0; @trigger me/tr.remit-quiet=%0, ulocal(layout.travel_arrival, %1), %1;
 
 &tr.report_query_error [v(d.bf)]=if(cand(not(t(%1)), t(strlen(%1))), report(num(me), ulocal(layout.report_query_error, %0, %1, %2)))
 
