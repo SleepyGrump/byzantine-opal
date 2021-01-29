@@ -6,7 +6,7 @@
 
 &layout.player-info [v(d.bf)]=strcat(terminfo(%0), -, height(%0), -, width(%0), -, colordepth(%0), -, host(%0))
 
-&tr.aconnect-player-info [v(d.bc)]=@set %0=_player-info:[setr(0, ulocal(layout.player-info, %0))]|[remove(xget(%0, _player-info), %q0, |, |)];
+&tr.aconnect-player-info [v(d.bc)]=@set %0=_player-info:[setr(0, ulocal(layout.player-info, %0))]|[remove(xget(%0, _player-info), %q0, |, |)]; @set %0=_last-conn:[secs()];
 
 &f.hilite-text [v(d.bf)]=ansi(if(ulocal(filter.watched, %0, %1), first(themecolors())), %2)
 
@@ -32,11 +32,25 @@
 
 &f.get-friendly-who-list-name [v(d.bf)]=switch(%0, room, player list in rooms, object, object list in rooms, note, +who/notes, +%0)
 
-&c.+who/sort_text [v(d.bc)]=$+who/s* *:@eval strcat(setq(F, switch(%1, *=*, rest(%1, =), %1)), setq(W, edit(%1, +,)), setq(W, switch(%qW, *=*, first(%qW, =), who)), if(eq(strlen(%qW), 0), setq(W, who)), setq(F, edit(title(%qF), %b, |))); @assert member(edit(lcstr(lattr(%vD/d.default-*-fields)), d.default-,, -fields,), lcstr(%qW))={ @trigger me/tr.error=%#, '%qW' is not a recognized list you can sort. Valid options are [itemize(edit(lcstr(lattr(%vD/d.default-*-fields)), d.default-,, -fields,))].; }; @break t(setr(N, setdiff(%qF, v(d.allowed-who-fields), |)))={ @trigger me/tr.error=%#, strcat(The field, if(gt(%qN, 1), s), %b, ', itemize(%qN, |), ', %b, if(gt(%qN, 1), are, is), %b, not allowed on the %qW sort list. Valid options are [itemize(v(d.allowed-who-fields), |)].); }; &d.%qW-sort %#=revwords(%qF, |); @trigger me/tr.success=%#, Your [ulocal(f.get-friendly-who-list-name, %qW)] will now be sorted by the [if(t(%qF), column[if(gt(words(%qF, |), 1), s)] [itemize(%qF, |)], default columns)].; @force %#=[switch(%qW, room, look, object, look, n*, +who/notes, +%qW)];
+&f.get-available-who-columns [v(d.bf)]=setdiff(v(d.allowed-who-fields), if(isstaff(%0),, v(d.staff-only-who-fields)), |)
+
+&f.get-valid-who-column [v(d.bf)]=trim(squish(iter(%1, grab(%0, itext(0)*, |), |, |), |), b, |)
+
+th ulocal(v(d.bf)/f.get-valid-who-column, ulocal(v(d.bf)/f.get-available-who-columns, %#), position|asdf)
++who/sort who=adsf
+
+
+&f.is-valid-who-list [v(d.bf)]=t(member(edit(lcstr(lattr(%vD/d.default-*-fields)), d.default-,, -fields,), lcstr(%0)))
+
+&f.get-valid-who-list [v(d.bf)]=edit(lcstr(lattr(%vD/d.default-*-fields)), d.default-,, -fields,)
+
+&f.get-who-field-error [v(d.bf)]=strcat(setq(N, setdiff(%1, %0, |)), The field, if(gt(words(%qN, |), 1), s), %b, ', itemize(%qN, |), ', %b, if(gt(words(%qN, |), 1), are, is), %b, not allowed on the %2 list. Valid options are [itemize(edit(%3, %b, _), |)].)
+
+&c.+who/sort_text [v(d.bc)]=$+who/s* *:@eval strcat(setq(F, switch(%1, *=*, rest(%1, =), %1)), setq(W, edit(%1, +,)), setq(W, switch(%qW, *=*, first(%qW, =), who)), if(eq(strlen(%qW), 0), setq(W, who)), setq(F, edit(title(%qF), %b, |, _, %b))); @assert ulocal(f.is-valid-who-list, %qW)={ @trigger me/tr.error=%#, '%qW' is not a recognized destination list you can sort. Valid options are [itemize(ulocal(f.get-valid-who-list))].; }; @break cand(neq(words(%qF, |), 0), neq(words(setr(N, ulocal(f.get-valid-who-column, setr(A, ulocal(f.get-available-who-columns, %#)), %qF)), |), words(%qF, |)))={ @trigger me/tr.error=%#, ulocal(f.get-who-field-error, %qN, %qF, %qW, %qA); }; &d.%qW-sort %#=revwords(%qN, |); @trigger me/tr.success=%#, Your [ulocal(f.get-friendly-who-list-name, %qW)] will now be sorted by the [if(t(%qN), column[if(gt(words(%qN, |), 1), s)] [itemize(%qN, |)], default columns)].; @force %#=[switch(%qW, room, look, object, look, n*, +who/notes, +%qW)];
 
 &c.+who/sort [v(d.bc)]=$+who/s*:@break strmatch(%0, * *); @force %#=+who/s%0 =;
 
-&c.+who/columns_text [v(d.bc)]=$+who/c* *:@eval strcat(setq(F, switch(%1, *=*, rest(%1, =), %1)), setq(W, edit(%1, +,)), setq(W, switch(%qW, *=*, first(%qW, =), who)), if(eq(strlen(%qW), 0), setq(W, who)), setq(F, edit(title(%qF), %b, |))); @assert member(edit(lcstr(lattr(%vD/d.default-*-fields)), d.default-,, -fields,), lcstr(%qW))={ @trigger me/tr.error=%#, '%qW' is not a recognized list you can set columns for. Valid options are [itemize(edit(lcstr(lattr(%vD/d.default-*-fields)), d.default-,, -fields,))].; }; @break t(setr(N, setdiff(%qF, v(d.allowed-who-fields), |)))={ @trigger me/tr.error=%#, strcat(The field, if(gt(%qN, 1), s), %b, ', itemize(%qN, |), ', %b, if(gt(%qN, 1), are, is), %b, not allowed on the %qW column list. Valid options are [itemize(v(d.allowed-who-fields), |)].); }; &d.%qW-fields %#=%qF; @trigger me/tr.success=%#, Your [ulocal(f.get-friendly-who-list-name, %qW)] will now display the [if(t(%qF), column[if(gt(words(%qF, |), 1), s)] [itemize(%qF, |)], default columns)].; @force %#=[switch(%qW, room, look, object, look, n*, +who/notes, +%qW)];
+&c.+who/columns_text [v(d.bc)]=$+who/c* *:@eval strcat(setq(F, switch(%1, *=*, rest(%1, =), %1)), setq(W, edit(%1, +,)), setq(W, switch(%qW, *=*, first(%qW, =), who)), if(eq(strlen(%qW), 0), setq(W, who)), setq(F, edit(title(%qF), %b, |, _, %b))); @assert ulocal(f.is-valid-who-list, %qW)={ @trigger me/tr.error=%#, '%qW' is not a recognized destination list you can set columns for. Valid options are [itemize(ulocal(f.get-valid-who-list))].; }; @break cand(neq(words(%qF, |), 0), neq(words(setr(N, ulocal(f.get-valid-who-column, setr(A, ulocal(f.get-available-who-columns, %#)), %qF)), |), words(%qF, |)))={ @trigger me/tr.error=%#, ulocal(f.get-who-field-error, %qN, %qF, %qW, %qA); }; &d.%qW-fields %#=%qN; @trigger me/tr.success=%#, Your [ulocal(f.get-friendly-who-list-name, %qW)] will now display the [if(t(%qN), column[if(gt(words(%qN, |), 1), s)] [itemize(%qN, |)], default columns)].; @force %#=[switch(%qW, room, look, object, look, n*, +who/notes, +%qW)];
 
 &c.+who/columns [v(d.bc)]=$+who/c*:@break strmatch(%0, * *); @force %#=+who/c%0 =;
 
@@ -44,21 +58,21 @@
 
 &c.+2who [v(d.bc)]=$+2who:@pemit %#=ulocal(layout.2who, %#);
 
-&c.+who/watch [v(d.bc)]=$+who/w* *:@break strmatch(%1, *=*); @assert t(setr(P, switch(%1, me, %#, pmatch(%1))))={ @trigger me/tr.error=%#, Could not find a player named '%1'.; }; &friends %#=setunion(xget(%#, friends), %qP); @trigger me/tr.success=%#, moniker(%qP) has been added to your watch list.;
+&c.+who/watch [v(d.bc)]=$+who/w* *:@break strmatch(%1, *=*); @assert t(setr(P, ulocal(f.find-player, %1, %#)))={ @trigger me/tr.error=%#, Could not find a player named '%1'.; }; &friends %#=setunion(xget(%#, friends), %qP); @trigger me/tr.success=%#, moniker(%qP) has been added to your watch list.;
 
-&c.+who/watch_note [v(d.bc)]=$+who/w* *=*:@assert t(setr(P, switch(%1, me, %#, pmatch(%1))))={ @trigger me/tr.error=%#, Could not find a player named '%1'.; }; &friends %#=setunion(xget(%#, friends), %qP); &d.note-%qP %#=%2; @trigger me/tr.success=%#, moniker(%qP) has been added to your watch list with the note '%2'.;
+&c.+who/watch_note [v(d.bc)]=$+who/w* *=*:@assert t(setr(P, ulocal(f.find-player, %1, %#)))={ @trigger me/tr.error=%#, Could not find a player named '%1'.; }; &friends %#=setunion(xget(%#, friends), %qP); &d.note-%qP %#=%2; @trigger me/tr.success=%#, moniker(%qP) has been added to your watch list with the note '%2'.;
 
-&c.+who/unwatch [v(d.bc)]=$+who/unw* *:@assert t(setr(P, switch(%1, me, %#, pmatch(%1))))={ @trigger me/tr.error=%#, Could not find a player named '%1'.; }; @assert member(xget(%#, friends), %qP)={ @trigger me/tr.error=%#, You aren't currently watching [moniker(%qP)].; }; &friends %#=setdiff(xget(%#, friends), %qP); @trigger me/tr.success=%#, moniker(%qP) has been removed from your watch list.;
+&c.+who/unwatch [v(d.bc)]=$+who/unw* *:@assert t(setr(P, ulocal(f.find-player, %1, %#)))={ @trigger me/tr.error=%#, Could not find a player named '%1'.; }; @assert member(xget(%#, friends), %qP)={ @trigger me/tr.error=%#, You aren't currently watching [moniker(%qP)].; }; &friends %#=setdiff(xget(%#, friends), %qP); @trigger me/tr.success=%#, moniker(%qP) has been removed from your watch list.;
 
 &c.+who/hide [v(d.bc)]=$+who/h*:@break xget(%#, watch.hide)={ @trigger me/tr.error=%#, You are already set to hide from +watch.; }; &watch.hide %#=1; @trigger me/tr.success=%#, You are now hiding from +watch. People will no longer be notified when you log in and out.;
 
 &c.+who/unhide [v(d.bc)]=$+who/unh*:@assert xget(%#, watch.hide)={ @trigger me/tr.error=%#, You are not currently set to hide from +watch.; }; &watch.hide %#=0; @trigger me/tr.success=%#, You are no longer hiding from +watch. People will now be notified when you log in and out.;
 
-&c.+who/per [v(d.bc)]=$+who/pe* *:@assert t(setr(P, switch(%1, me, %#, pmatch(%1))))={ @trigger me/tr.error=%#, Could not find a player named '%1'.; }; &watchpermit %#=setunion(xget(%#, watchpermit), %qP); @trigger me/tr.success=%#, moniker(%qP) will now be allowed to see you log in%, even when you're hiding from +watch.;
+&c.+who/per [v(d.bc)]=$+who/pe* *:@assert t(setr(P, ulocal(f.find-player, %1, %#)))={ @trigger me/tr.error=%#, Could not find a player named '%1'.; }; &watchpermit %#=setunion(xget(%#, watchpermit), %qP); @trigger me/tr.success=%#, moniker(%qP) will now be allowed to see you log in%, even when you're hiding from +watch.;
 
-&c.+who/unper [v(d.bc)]=$+who/unp* *:@assert t(setr(P, switch(%1, me, %#, pmatch(%1))))={ @trigger me/tr.error=%#, Could not find a player named '%1'.; }; @assert member(xget(%#, watchpermit), %qP)={ @trigger me/tr.error=%#, moniker(%qP) is not currently allowed to see when you log in while hidden.; }; &watchpermit %#=setdiff(xget(%#, watchpermit), %qP); @trigger me/tr.success=%#, moniker(%qP) will no longer be allowed to see you log in when you're hiding from +watch.;
+&c.+who/unper [v(d.bc)]=$+who/unp* *:@assert t(setr(P, ulocal(f.find-player, %1, %#)))={ @trigger me/tr.error=%#, Could not find a player named '%1'.; }; @assert member(xget(%#, watchpermit), %qP)={ @trigger me/tr.error=%#, moniker(%qP) is not currently allowed to see when you log in while hidden.; }; &watchpermit %#=setdiff(xget(%#, watchpermit), %qP); @trigger me/tr.success=%#, moniker(%qP) will no longer be allowed to see you log in when you're hiding from +watch.;
 
-&c.+who/note [v(d.bc)]=$+who/n* *=*:@assert t(setr(P, switch(%1, me, %#, pmatch(%1))))={ @trigger me/tr.error=%#, Could not find a player named '%1'.; }; &d.note-%qP %#=%2; @trigger me/tr.success=%#, Your note for [moniker(%qP)] is now '%2'.;
+&c.+who/note [v(d.bc)]=$+who/n* *=*:@assert t(setr(P, ulocal(f.find-player, %1, %#)))={ @trigger me/tr.error=%#, Could not find a player named '%1'.; }; &d.note-%qP %#=%2; @trigger me/tr.success=%#, Your note for [moniker(%qP)] is now '%2'.;
 
 &c.+who/page [v(d.bc)]=$+who/page *:@assert hasattr(%#, friends)={ @trigger me/tr.error=%#, You don't have anyone on your +watch list. +watch/add <name> to add someone!; }; @eval setq(P, filter(filter.not_dark, xget(%#, friends),,, %#)); @assert t(%qP)={ @trigger me/tr.error=%#, None of your +watch friends appear to be online.; }; @dolist %qP=@force %#={ page ##=%0; };
 

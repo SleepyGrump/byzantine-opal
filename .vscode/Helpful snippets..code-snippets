@@ -30,6 +30,11 @@
 		"body": "@assert $1={ @trigger me/tr.error=%#, $2; }; ",
 		"description": "assert with an error message"
 	},
+	"Insert error trigger": {
+		"prefix": "@tr",
+		"body": "@trigger me/tr.error=%#, $1; ",
+		"description": "trigger error message"
+	},
 	"Insert assert without error": {
 		"prefix": "@assert",
 		"body": "@assert $1; ",

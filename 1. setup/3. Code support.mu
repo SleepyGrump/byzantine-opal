@@ -80,23 +80,67 @@
 
 &f.sort.by_status [v(d.bf)]=strcat(setq(S, iter(%0, ulocal(f.get-status, itext(0), %1), |, |)), munge(f.sortby-status, %qS, edit(%0, %b, |), |))
 
-&f.sort.by_name [v(d.bf)]=strcat(setq(S, iter(%0, lcstr(name(itext(0))), |, |)), munge(f.sort-alpha, %qS, edit(%0, %b, |), |))
+&f.sort.generic [v(d.bf)]=strcat(setq(S, iter(%0, lcstr(strip(ulocal(f.get-[edit(%2, %b, _)], itext(0), %1))), |, |)), munge(f.sort-alpha, %qS, edit(%0, %b, |), |))
 
-&f.sort.by_alias [v(d.bf)]=strcat(setq(S, iter(%0, lcstr(xget(itext(0), alias)), |, |)), munge(f.sort-alpha, %qS, edit(%0, %b, |), |))
+&f.sort.by_name [v(d.bf)]=ulocal(f.sort.generic, %0, %1, name)
 
-&f.sort.by_location [v(d.bf)]=strcat(setq(S, iter(%0, ulocal(f.get-location, itext(0), %1), |, |)), munge(f.sort-alpha, %qS, edit(%0, %b, |), |))
+&f.sort.by_alias [v(d.bf)]=ulocal(f.sort.generic, %0, %1, alias)
 
-&f.sort.by_doing [v(d.bf)]=strcat(setq(S, iter(%0, lcstr(ulocal(f.get-doing, itext(0), %1)), |, |)), munge(f.sort-alpha, %qS, edit(%0, %b, |), |))
+&f.sort.by_location [v(d.bf)]=ulocal(f.sort.generic, %0, %1, location)
 
-&f.sort.by_gender [v(d.bf)]=strcat(setq(S, iter(%0, ulocal(f.get-gender, itext(0)), |, |)), munge(f.sort-alpha, %qS, edit(%0, %b, |), |))
+&f.sort.by_doing [v(d.bf)]=ulocal(f.sort.generic, %0, %1, doing)
 
-&f.sort.by_dbref [v(d.bf)]=sort(%0, d)
+&f.sort.by_gender [v(d.bf)]=ulocal(f.sort.generic, %0, %1, gender)
 
-&f.sort.by_note [v(d.bf)]=strcat(setq(S, iter(%0, ulocal(f.get-note, itext(0), %1), |, |)), munge(f.sort-alpha, %qS, edit(%0, %b, |), |))
+&f.sort.by_dbref [v(d.bf)]=sort(%0, d, |, |)
 
-&f.sort.by_position [v(d.bf)]=strcat(setq(S, iter(%0, lcstr(ulocal(f.get-position, itext(0), %1)), |, |)), munge(f.sort-alpha, %qS, edit(%0, %b, |), |))
+&f.sort.by_note [v(d.bf)]=ulocal(f.sort.generic, %0, %1, note)
 
-&f.sort.by_short-desc [v(d.bf)]=strcat(setq(S, iter(%0, lcstr(ulocal(f.get-short-desc, itext(0), %1)), |, |)), munge(f.sort-alpha, %qS, edit(%0, %b, |), |))
+&f.sort.by_position [v(d.bf)]=ulocal(f.sort.generic, %0, %1, position)
+
+&f.sort.by_short-desc [v(d.bf)]=ulocal(f.sort.generic, %0, %1, short-desc)
+
+&f.sort.by_played-by [v(d.bf)]=ulocal(f.sort.generic, %0, %1, played-by)
+
+&f.sort.by_wiki [v(d.bf)]=ulocal(f.sort.generic, %0, %1, wiki)
+
+&f.sort.by_themesong [v(d.bf)]=ulocal(f.sort.generic, %0, %1, themesong)
+
+&f.sort.by_ic_full_name [v(d.bf)]=ulocal(f.sort.generic, %0, %1, ic_full_name)
+
+&f.sort.by_ic_handle [v(d.bf)]=ulocal(f.sort.generic, %0, %1, ic_handle)
+
+&f.sort.by_ic_occupation [v(d.bf)]=ulocal(f.sort.generic, %0, %1, ic_occupation)
+
+&f.sort.by_ic_pronouns [v(d.bf)]=ulocal(f.sort.generic, %0, %1, ic_pronouns)
+
+&f.sort.by_ooc_pronouns [v(d.bf)]=ulocal(f.sort.generic, %0, %1, ooc_pronouns)
+
+&f.sort-connection_time [v(d.bf)]=case(1, gt(%0, %1), -1, lt(%0, %1), 1, 0)
+
+&f.sortby-connection_time [v(d.bf)]=sortby(f.sort-connection_time, %0, |, |)
+
+&f.sort.by_connection_time [v(d.bf)]=strcat(setq(S, iter(%0, xget(itext(0), _last-conn), |, |)), munge(f.sortby-connection_time, %qS, edit(%0, %b, |), |))
+
+&f.sort.by_mail_stats [v(d.bf)]=ulocal(f.sort.generic, %0, %1, mail_stats)
+
+&f.sort.by_rp_prefs [v(d.bf)]=ulocal(f.sort.generic, %0, %1, rp_prefs)
+
+&f.sort.by_timezone [v(d.bf)]=ulocal(f.sort.generic, %0, %1, timezone)
+
+&f.sort.by_public_alts [v(d.bf)]=ulocal(f.sort.generic, %0, %1, public_alts)
+
+&f.sort.by_private_alts [v(d.bf)]=ulocal(f.sort.by_dbref, %0, %1, private_alts)
+
+&f.sort.by_connection_info [v(d.bf)]=ulocal(f.sort.generic, %0, %1, connection_info)
+
+&f.sort.by_last_ip [v(d.bf)]=ulocal(f.sort.generic, %0, %1, last_ip)
+
+&f.sort.by_staff_notes [v(d.bf)]=ulocal(f.sort.generic, %0, %1, staff_notes)
+
+&f.sort.by_quote [v(d.bf)]=ulocal(f.sort.generic, %0, %1, quote)
+
+&f.sort.by_apparent_age [v(d.bf)]=ulocal(f.sort.generic, %0, %1, apparent_age)
 
 @@ =============================================================================
 @@ Functions
@@ -106,7 +150,11 @@
 
 &f.can-build [v(d.bf)]=isstaff(%0)
 
+&f.find-player [v(d.bf)]=pmatch(switch(%0, me, %1, %0))
+
 &fn.get-alts [v(d.bf)]=search(eplayer=cand(not(isstaff(##)), strmatch(get(##/lastip), extract(get(%0/lastip), 1, 2, .).*), hasattr(%0, _player-info), hasattr(##, _player-info), t(setinter(iter(xget(%0, _player-info), extract(itext(0), 1, 3, -), |, |), iter(xget(##, _player-info), extract(itext(0), 1, 3, -), |, |), |))), 2)
+
+&fn.get-true-alts [v(d.bf)]=search(eplayer=cand(strmatch(get(##/lastip), extract(get(%0/lastip), 1, 2, .).*), hasattr(%0, _player-info), hasattr(##, _player-info), t(setinter(iter(xget(%0, _player-info), extract(itext(0), 1, 3, -), |, |), iter(xget(##, _player-info), extract(itext(0), 1, 3, -), |, |), |))), 2)
 
 &f.get-staffer-status [v(d.bf)]=if(cand(isstaff(%1), andflags(%0, Dc)), dark, if(andflags(%0, Dc), offline, if(hasflag(%0, connected), if(hasflag(%0, transparent), ansi(first(themecolors()), ON DUTY), off duty), if(hasflag(%0, vacation), vacation, offline))))
 
@@ -135,6 +183,44 @@
 &f.get-idle-secs [v(d.bf)]=if(cand(not(isstaff(%1)), hasflag(%0, dark)), -, idle(%0))
 
 &f.get-doing [v(d.bf)]=if(ulocal(filter.not_dark, %0, %1), doing(%0))
+
+&f.get-played-by [v(d.bf)]=xget(%0, d.played-by)
+
+&f.get-wiki [v(d.bf)]=xget(%0, d.wiki)
+
+&f.get-themesong [v(d.bf)]=xget(%0, d.themesong)
+
+&f.get-ic_full_name [v(d.bf)]=xget(%0, d.ic_full_name)
+
+&f.get-ic_handle [v(d.bf)]=xget(%0, d.ic_handle)
+
+&f.get-ic_occupation [v(d.bf)]=xget(%0, d.ic_occupation)
+
+&f.get-ic_pronouns [v(d.bf)]=xget(%0, d.ic_pronouns)
+
+&f.get-ooc_pronouns [v(d.bf)]=xget(%0, d.ooc_pronouns)
+
+&f.get-connection_time [v(d.bf)]=if(ulocal(filter.is_connected_player, %0, %1), cat(Connected since, prettytime(xget(%0, _last-conn))), cat(Last on, prettytime(convtime(xget(%0, last)))))
+
+&f.get-mail_stats [v(d.bf)]=strcat(setq(M, mail(%0)), if(t(%qM), strcat(extract(%qM, 2, 1) unread out of, %b, ladd(%qM), %b, messages.)))
+
+&f.get-rp_prefs [v(d.bf)]=xget(%0, d.rp_prefs)
+
+&f.get-timezone [v(d.bf)]=xget(%0, d.timezone)
+
+&f.get-public_alts [v(d.bf)]=xget(%0, d.public_alts)
+
+&f.get-private_alts [v(d.bf)]=if(cor(isstaff(%1), t(member(%0, %1, |))), itemize(iter(ulocal(fn.get-true-alts, %0), ulocal(f.get-name, itext(0), %1),, |), |))
+
+&f.get-connection_info [v(d.bf)]=if(cor(isstaff(%1), t(member(%0, %1, |))), if(t(setr(0, first(xget(%0, _player-info), |))), strcat(first(%q0, -)%,, %b, extract(%q0, 3, 1, -), x, extract(%q0, 2, 1, -) screen%,%b, extract(%q0, 4, 1, -) colors), No terminal info found.))
+
+&f.get-last_ip [v(d.bf)]=if(cor(isstaff(%1), t(member(%0, %1, |))), strcat(setr(0, xget(%0, lastip)), if(and(not(strmatch(%q0, setr(1, extract(first(xget(%0, _player-info), |), 5, 100, -)))), t(%q1)), strcat(%,%b, %q1))))
+
+&f.get-staff_notes [v(d.bf)]=if(isstaff(%1), default(%0/_d.staff-notes, Unset))
+
+&f.get-quote [v(d.bf)]=xget(%0, d.quote)
+
+&f.get-apparent_age [v(d.bf)]=xget(%0, d.apparent_age)
 
 &f.get-travel-key [v(d.bf)]=xget(%0, d.travel-key)
 
@@ -170,3 +256,9 @@
 &tr.pemit [v(d.bf)]=@break t(words(setr(N, trim(squish(iter(%0, if(ulocal(f.can-sender-message-target, %2, itext(0)),, itext(0))))))))={ @trigger me/tr.error=%2, Sorry%, [itemize(iter(%qN, moniker(itext(0)),, |), |)] [case(words(%qN), 1, is, are)] not accepting messages.; }; @pemit %0=%1;
 
 &tr.travel_to_destination [v(d.bf)]=@assert eq(words(%0), 1)={ @trigger me/tr.error=%1, The key you gave resolved to [words(%0)] destinations. Please try again.; }; @assert cor(ulocal(lock.isapproved_or_staff, %1), ulocal(f.is-location-ooc, %0))={ @trigger me/tr.error=%1, You are not approved or staff so can't use +travel to go IC yet.; }; &last-location %1=loc(%1); @trigger me/tr.remit-quiet=loc(%1), ulocal(layout.travel_departure, %1), %1; @tel %1=%0; @trigger me/tr.remit-quiet=%0, ulocal(layout.travel_arrival, %1), %1;
+
+&tr.report_query_error [v(d.bf)]=if(cand(not(t(%1)), t(strlen(%1))), report(num(me), ulocal(layout.report_query_error, %0, %1, %2)))
+
+@@ When debugging: &tr.report_query_error [v(d.bf)]=report(num(me), ulocal(layout.report_query_error, %0, %1, %2))
+
+&layout.report_query_error [v(d.bf)]=strcat(Error in %0:, %b, \[%1\], :%b, %2)

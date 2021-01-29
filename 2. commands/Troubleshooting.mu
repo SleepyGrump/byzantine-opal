@@ -16,17 +16,17 @@
 @@ +block, a simple page-locker
 @@ =============================================================================
 
-&tr.lock-setup [v(d.bc)]=@lock/page %0=page-lock/1; &page-lock %0=cor\(isstaff(\%#), member\(v\(whitelisted-PCs\), \%#\), not\(cor\(t\(v\(block-all\)\), member\(v\(blocked-PCs\), \%#\)\)\)\);
+&tr.lock-setup [v(d.bc)]=&page-lock %0=cor\(isstaff(\%#), member\(v\(whitelisted-PCs\), \%#\), not\(cor\(t\(v\(block-all\)\), member\(v\(blocked-PCs\), \%#\)\)\)\); @lock/page %0=page-lock/1; @lock/mail %0=page-lock/1; 
 
-&tr.lock-clear [v(d.bc)]=@unlock/page %0; &page-lock %0=;
+&tr.lock-clear [v(d.bc)]=@unlock/page %0; @unlock/mail %0; &page-lock %0=;
 
-&cmd-+block_name [v(d.bc)]=$+block *:@assert t(setr(P, switch(%0, all, all, pmatch(%0))))={ @trigger me/tr.error=%#, Could not find a player named '%0'.; }; @break isstaff(%qP)={ @trigger me/tr.error=%#, [moniker(%qP)] is staff and can't be blocked.; }; @trigger me/tr.+block=%#, %qP, default(%0/reject, Sorry%, [moniker(%#)] is not accepting pages.);
+&cmd-+block_name [v(d.bc)]=$+block *:@assert t(setr(P, switch(%0, all, all, ulocal(f.find-player, %0, %#))))={ @trigger me/tr.error=%#, Could not find a player named '%0'.; }; @break isstaff(%qP)={ @trigger me/tr.error=%#, [moniker(%qP)] is staff and can't be blocked.; }; @trigger me/tr.+block=%#, %qP, default(%0/reject, Sorry%, [moniker(%#)] is not accepting pages.);
 
 &tr.+block [v(d.bc)]=@trigger me/tr.lock-setup=%0; &block-all %0=[strmatch(%1, all)]; @trigger me/tr.add-blocked-person=%0, %1; @trigger me/tr.success=%0, You have blocked page messages from [switch(%1, all, everyone, moniker(%1))]. Blocked people who try to page you will see: %R%R%2%R%RTo change that message%, type '@reject me=<message>'. To turn paging back on%, +unblock [switch(%1, all, all, moniker(%1))]. You may also wish to use [switch(%1, all, msg/off, msg/block [moniker(%1)])] to keep them from contacting you IC.;
 
 &tr.add-blocked-person [v(d.bc)]=@break strmatch(%1, all); &blocked-PCs %0=setunion(xget(%0, blocked-PCs), u(fn.get-alts, %1)); &blocks %0=setunion(xget(%0, blocks), %1);
 
-&cmd-+unblock [v(d.bc)]=$+unblock *:@assert t(setr(P, switch(%0, all, all, pmatch(%0))))={ @trigger me/tr.error=%#, Could not find a player named '%0'.; }; @assert switch(%qP, all, xget(%#, block-all), member(xget(%#, blocked-PCs), %qP))={ @trigger me/tr.error=%#, You aren't currently blocking [switch(%qP, all, pages from everyone, moniker(%qP))].; }; @trigger me/tr.+unblock=%#, %qP;
+&cmd-+unblock [v(d.bc)]=$+unblock *:@assert t(setr(P, switch(%0, all, all, ulocal(f.find-player, %0, %#))))={ @trigger me/tr.error=%#, Could not find a player named '%0'.; }; @assert switch(%qP, all, xget(%#, block-all), member(xget(%#, blocked-PCs), %qP))={ @trigger me/tr.error=%#, You aren't currently blocking [switch(%qP, all, pages from everyone, moniker(%qP))].; }; @trigger me/tr.+unblock=%#, %qP;
 
 &tr.+unblock [v(d.bc)]=@trigger me/tr.lock-setup=%0; &block-all %0=[switch(%1, all, 0, xget(%0, block-all))]; @trigger me/tr.unblock-person=%0, %1; @trigger me/tr.success=%0, You have unblocked pages from [switch(%1, all, everyone, moniker(%1))]. You may also wish to use [switch(%1, all, msg/on, msg/unblock [moniker(%1)])] to allow them to contact you IC.; @assert cor(t(xget(%0, block-all)), t(xget(%0, blocked-PCs)))={ @trigger me/tr.lock-clear=%0; };
 
@@ -46,11 +46,11 @@
 
 &tr.+block/who [v(d.bc)]=@assert or(t(xget(%0, blocked-PCs)), t(setr(B, xget(%0, blocks))), t(setr(A, xget(%0, block-all))), t(setr(W, xget(%0, whitelisted-PCs))))={ @trigger me/tr.error=%0, You currently aren't blocking or whitelisting anyone.; }; @trigger me/tr.error=%0, You are currently blocking pages from [switch(t(%qB)%qA, 10, itemize(iter(%qB, moniker(itext(0)),, |), |), 01, everyone, 11, everyone%, as well as [itemize(iter(%qB, moniker(itext(0)),, |), |)] specifically, no one)]. [if(t(%qW), You have whitelisted the following people: [itemize(iter(%qW, moniker(itext(0)),, |), |)])]
 
-&cmd-+whitelist_name [v(d.bc)]=$+whitelist *:@assert t(setr(P, pmatch(%0)))={ @trigger me/tr.error=%#, Could not find a player named '%0'.; }; @break isstaff(%qP)={ @trigger me/tr.error=%#, [moniker(%qP)] is staff and doesn't need to be whitelisted.; }; @trigger me/tr.+whitelist=%#, %qP;
+&cmd-+whitelist_name [v(d.bc)]=$+whitelist *:@assert t(setr(P, ulocal(f.find-player, %0, %#)))={ @trigger me/tr.error=%#, Could not find a player named '%0'.; }; @break isstaff(%qP)={ @trigger me/tr.error=%#, [moniker(%qP)] is staff and doesn't need to be whitelisted.; }; @trigger me/tr.+whitelist=%#, %qP;
 
 &tr.+whitelist [v(d.bc)]=@trigger me/tr.lock-setup=%0; &whitelisted-PCs %0=setunion(xget(%0, whitelisted-PCs), %1); @trigger me/tr.success=%0, You have whitelisted [moniker(%1)]. They will be able to page you even when you have blocked pages from everyone. To remove them, +blacklist [moniker(%1)].;
 
-&cmd-+blacklist [v(d.bc)]=$+blacklist *:@break strmatch(%0, all)={ @trigger me/tr.+whitelist/clear=%#; }; @assert t(setr(P, pmatch(%0)))={ @trigger me/tr.error=%#, Could not find a player named '%0'.; }; @assert member(xget(%#, whitelisted-PCs), %qP)={ @trigger me/tr.error=%#, [moniker(%qP)] is not currently whitelisted, so cannot be blacklisted. Did you mean +block?; }; @trigger me/tr.+blacklist=%#, %qP;
+&cmd-+blacklist [v(d.bc)]=$+blacklist *:@break strmatch(%0, all)={ @trigger me/tr.+whitelist/clear=%#; }; @assert t(setr(P, ulocal(f.find-player, %0, %#)))={ @trigger me/tr.error=%#, Could not find a player named '%0'.; }; @assert member(xget(%#, whitelisted-PCs), %qP)={ @trigger me/tr.error=%#, [moniker(%qP)] is not currently whitelisted, so cannot be blacklisted. Did you mean +block?; }; @trigger me/tr.+blacklist=%#, %qP;
 
 &tr.+blacklist [v(d.bc)]=@trigger me/tr.lock-setup=%0; &whitelisted-PCs %0=setdiff(xget(%0, whitelisted-PCs), %1); @trigger me/tr.success=%0, You have removed [moniker(%1)] from your whitelist. They will no longer be able to page you when you have blocked pages from everyone.;
 

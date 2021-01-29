@@ -38,4 +38,18 @@
 @@ +finger code
 @@ =============================================================================
 
-&tr.aconnect-store_player_info [v(d.bc)]=@set %0=_player-info:[setr(0, ulocal(layout.player-info, %0))]|[remove(xget(%0, _player-info), %q0, |, |)];
+&layout.finger-section [v(d.bf)]=strcat(setq(F,), setq(M, 0), null(iter(v(d.section.[edit(%2, %b, _)]), if(t(setr(V, ulocal(f.get-[edit(itext(0), %b, _)], %0, %1))), setq(F, strcat(%qF, |, itext(0):, |, %qV, if(gt(strlen(itext(0):), %qM), setq(M, strlen(itext(0):)))))), |)), setq(F, trim(squish(%qF, |), b, |)), if(t(%qF), strcat(divider(%2, %1), %r, multicol(%qF, %qM *, 0, |, %1), %r)))
+
+&layout.finger-sections [v(d.bf)]=iter(v(d.finger-sections), ulocal(layout.finger-section, %0, %1, itext(0)), |, @@)
+
+&layout.finger-header [v(d.bf)]=strcat(ulocal(f.get-name, %0, %1), %b, %(, ulocal(f.get-alias, %0, %1), %), %b, if(isstaff(%1), cat(%0, flags(%0))))
+
+&layout.finger-footer [v(d.bf)]=cat(ulocal(f.get-status, %0, %1), case(1, isstaff(%0), staff, isapproved(%0), approved, unapproved))
+
+&layout.finger [v(d.bf)]=strcat(header(ulocal(layout.finger-header, %0, %1), %1), %r, ulocal(layout.finger-sections, %0, %1), footer(ulocal(layout.finger-footer, %0, %1), %1))
+
+&c.+finger [v(d.bc)]=$+finger *:@assert t(setr(P, ulocal(f.find-player, %0, %#)))={ @trigger me/tr.error=%#, Could not find player '%0'.; }; @pemit %#=ulocal(layout.finger, %qP, %#);
+
+&f.get-finger-field-destination [v(d.bf)]=switch(%0, Gender, sex, Position, position, Short-desc, short-desc, d.[edit(%0, %b, _)])
+
+&c.+finger/set [v(d.bc)]=$+finger/set *=*:@assert t(setr(N, grab(setr(A, v(d.finger-settable-fields)), %0*, |)))={ @trigger me/tr.error=%#, strcat(The field '%0' is not settable on +finger. Valid options are [itemize(%qA, |)].); }; @assert t(setr(D, ulocal(f.get-finger-field-destination, %qN)))={ @trigger me/tr.error=%#, Could not figure out where to set the field '%qN'.; }; &%qD %#=%1; @trigger me/tr.success=%#, You have [if(t(%1), set, cleared)] your %qN field. [if(t(%1), Its value is now: [xget(%#, %qD)])];
