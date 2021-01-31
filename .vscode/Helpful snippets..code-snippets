@@ -16,8 +16,8 @@
 	// 	"description": "Log output to console"
 	// }
 	"Create new code objects": {
-		"prefix": "@cr",
-		"body": "@create $1 Functions <$2F>=10\r\n@set $2=SAFE INHERIT\r\n@force me=&d.$2f me=[num($2F)]\r\n\r\n@create $1 Commands <$2C>=10\r\n@set $2C=SAFE INHERIT OPAQUE\r\n@parent $2C=$2F\r\n@force me=&d.$2c me=[num($2C)]\r\n\r\n@tel [v(d.$2f)]=[v(d.$2c)]\r\n",
+		"prefix": "@create ",
+		"body": "@create $1 Functions <$2F>=10\r\n@set $2F=SAFE INHERIT\r\n@force me=&d.$2f me=[num($2F)]\r\n\r\n@create $1 Commands <$2C>=10\r\n@set $2C=SAFE INHERIT OPAQUE\r\n@parent $2C=$2F\r\n@force me=&d.$2c me=[num($2C)]\r\n\r\n@tel [v(d.$2f)]=[v(d.$2c)]\r\n",
 		"description": "creating new code objects"
 	},
 	"Insert standard command": {
@@ -31,9 +31,19 @@
 		"description": "assert with an error message"
 	},
 	"Insert error trigger": {
-		"prefix": "@tr",
+		"prefix": "@trigger",
 		"body": "@trigger me/tr.error=%#, $1; ",
 		"description": "trigger error message"
+	},
+	"Insert success trigger": {
+		"prefix": "@trigger",
+		"body": "@trigger me/tr.success=%#, $1; ",
+		"description": "trigger success message"
+	},
+	"Insert alert trigger": {
+		"prefix": "@trigger",
+		"body": "@trigger me/tr.message=%#, $1; ",
+		"description": "trigger alert message"
 	},
 	"Insert assert without error": {
 		"prefix": "@assert",
