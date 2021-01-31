@@ -67,6 +67,17 @@
 
 &f.globalpp.indent [v(d.bf)]=space(v(d.indent-width))
 
+@@ %0 - player or width to calculate the remaining width of
+@@ Output: The width after all the UI elements are removed. Useful for calculating space available to visually display things.
+&f.globalpp.getremainingwidth [v(d.bf)]=strcat(setq(0, ulocal(f.get-width, %0)), setq(1, strlen(v(d.text-left))), setq(2, strlen(v(d.text-right))), sub(%q0, add(%q1, %q2, 6)))
+
+@@ %0: List
+@@ %1: Columns
+@@ %2: Divider
+@@ Output: Turns list "a b c d e f g" into "a e b f c g d" so that you can output it with multicol as a vertical 2-column list instead of a horizontal 2-column list.
+&f.global.fliplist [v(d.bf)]=trim(strcat(setq(R, add(div(words(%0, %2), %1), t(mod(words(%0, %2), %1)))), iter(lnum(%qR), iter(lnum(%1), extract(%0, add(inum(1), mul(%qR, itext(0))), 1, %2),, %2),, %2)), r, %2)
+
+
 @@ %0: text to format
 @@ %1: indent (default no)
 @@ %2: player to format for or numeric width (optional)
@@ -178,6 +189,7 @@
 
 &f.globalpp.multicol [v(d.bf)]=strcat(setq(0, ulocal(f.get-width, %4)), setq(1, v(d.body-left)), setq(2, v(d.body-right)), setq(3, sub(%q0, add(strlen(%q1), strlen(%q2), 4))), setq(W,), null(iter(%1, setq(W, cat(%qW, ulocal(f.get-column-width, %q3, inum(0), %1))))), setq(W, trim(%qW)), setq(5, words(%1)), setq(T, trim(ulocal(f.wrap-text, %0, %qW, %3), b, %3@@BLANK@@)), setq(6, ceil(fdiv(words(%qT, %3), %q5))), setq(7, ulocal(f.apply-effect, iter(lnum(%q6), %q1,, @@), strlen(%q1))), setq(8, ulocal(f.apply-effect, iter(lnum(%q6), %q2,, @@), strlen(%q2))), iter(lnum(%q6), strcat(%b, mid(%q7, mul(itext(0), strlen(%q1)), strlen(%q1)), %b, setq(9, mid(iter(lnum(%q5), ansi(if(cand(t(%2), eq(itext(1), 0)), strcat(first(v(d.colors)), %b, u)), ljust(mid(edit(extract(%qT, add(mul(itext(1), %q5), inum(0)), 1, %3), @@BLANK@@,), 0, extract(%qW, inum(0), 1)), extract(%qW, inum(0), 1))),, %b), 0, %q3)), %q9, space(sub(%q3, strlen(%q9))), %b, mid(%q8, mul(itext(0), strlen(%q2)), strlen(%q2))),, %r))
 
+
 @@ %0: Text to arrange.
 @@ %1: Columns to arrange it in.
 @@ %2: Delimiter.
@@ -199,7 +211,7 @@
 
 &f.calc-column-width [v(d.bf)]=if(t(%0), floor(mul(%1, fdiv(%2, 100))), %2)
 
-&f.calc-star-column-width [v(d.bf)]=strcat(setq(S, dec(words(%2, *))), setq(R, sub(%0, add(%1, sub(words(%2), %qS)))), sub(floor(fdiv(%qR, %qS)), if(gt(%qS, 1), 1, 0)))
+&f.calc-star-column-width [v(d.bf)]=max(0, strcat(setq(S, dec(words(%2, *))), setq(R, sub(%0, add(%1, sub(words(%2), %qS)))), sub(floor(fdiv(%qR, %qS)), if(gt(%qS, 1), 1, 0))))
 
 @@ Aliases for the other commands.
 
