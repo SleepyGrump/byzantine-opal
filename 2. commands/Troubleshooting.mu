@@ -62,3 +62,35 @@
 @@ +name <name> - allow players to administer names
 @@ =============================================================================
 
+
+@@ =============================================================================
+@@ +beginner
+@@ =============================================================================
+
+/*
+CMD-BEGINNER: $+beginner:@pemit %#=[center(Commands for Beginning MUSHers,78,
+ )]%R%RMUSH is new to some of you and probably a little daunting. To ease your
+ feelings of panic, we offer a very basic list of commands that will get you
+ looking around and using the various features of the game.%R%R"<message>[
+ space(16)]You say <message>%RSay <message> [space(12)]See above.%Rooc
+ <message>[space(13)]Makes an OOC statement or pose.%Rpage <person>=<message>[
+ space(3)]Pages <person> with <message>%Rlook[space(22)]Shows you the room you
+ are standing in.%Rlook <object or person>[space(3)]Shows the desc for that
+ object or person%Rpose <message>[space(12)]You pose <message> EX: pose
+ grins.->John Doe grins.%R:<message>[space(16)]See 'pose" above%RWHO[space(23)]
+ Shows a list of who is connected to the MUSH%R+who[space(22)]Shows a modified
+ WHO.%R+help[space(21)]The global +help system.%R+staff[space(20)]Shows
+ connected Staff%R+staff/all[space(16)]Shows the staff roster.%R%RNOTE: MUSH
+ commands may be case sensitive. You can always page a staffer for help.%R%r"+
+ beginner" recalls this file%R
+*/
+
+&d.beginner-commands [v(d.bd)]=page
+
+&d.example-page [v(d.bd)]=p [moniker(first(v(d.staff-list)))]=Hi, I'm new and I have some questions!
+
+Welcome to [mudname()]!
+
+If you've never MU*d before, you might like this handy list of commands:
+
+[indent][ansi(first(themecolors()), +)]

@@ -105,6 +105,8 @@ TODO: all items below.
 		+db/set <column>=<value> - repeat as necessary to set each field.
 		+db/clear <column> - clear the value you were going to set in that column
 		+db/commit - commit your data to the database.
+
+	Make it clear at a glance which tables are unlocked if the player is a staffer.
 */
 
 

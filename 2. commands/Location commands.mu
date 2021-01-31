@@ -78,13 +78,13 @@ Residential: %vF
 @@ %2: type of summons
 &f.has-invited-player [v(d.bf)]=cor(isstaff(%0), lt(sub(secs(), default(%0/_invite-%2-%1, v(d.meeting-timeout))), v(d.meeting-timeout)))
 
-@@ th ulocal(v(d.bf)/f.has-invited-player, #24, #48)
+th ulocal(v(d.bf)/f.has-invited-player, #24, #48, join)
 @@ th ulocal(v(d.bf)/f.has-invited-player, #48, #24)
 @@ TODO: This is still messed up.
 
-&c.+join [v(d.bc)]=$+join *:@assert t(setr(P, ulocal(f.find-player, %0, %#)))={ @trigger me/tr.error=%#, Can't find a player named '%0'.; }; @assert ulocal(f.has-invited-player, %#, %qP, summon)={ @trigger me/tr.message=%qP, moniker(%#) would like to join you. To bring them%, type %ch+summon %N%cn. This invitation will expire in [first(secs2hrs(v(d.meeting-timeout)))].; &_invite-summon-%# %qP=secs(); @trigger me/tr.message=%#, moniker(%qP) has been issued an invitation to summon you. This invitation will expire in [first(secs2hrs(v(d.meeting-timeout)))].; }; @trigger me/tr.travel_to_destination=loc(%qP), %#;
+&c.+join [v(d.bc)]=$+join *:@assert t(setr(P, ulocal(f.find-player, %0, %#)))={ @trigger me/tr.error=%#, Can't find a player named '%0'.; }; @assert ulocal(f.has-invited-player, %qP, %#, join)={ @trigger me/tr.message=%qP, moniker(%#) would like to join you. To bring them%, type %ch+summon %N%cn. This invitation will expire in [first(secs2hrs(v(d.meeting-timeout)))].; &_invite-summon-%# %qP=secs(); @trigger me/tr.message=%#, moniker(%qP) has been issued an invitation to summon you. This invitation will expire in [first(secs2hrs(v(d.meeting-timeout)))].; }; @trigger me/tr.travel_to_destination=loc(%qP), %#;
 
-&c.+summon [v(d.bc)]=$+summon *:@assert t(setr(P, ulocal(f.find-player, %0, %#)))={ @trigger me/tr.error=%#, Can't find a player named '%0'.; }; @assert ulocal(f.has-invited-player, %#, %qP, join)={ @trigger me/tr.message=%qP, moniker(%#) would like to summon you. To join them%, type %ch+join %N%cn. This invitation will expire in [first(secs2hrs(v(d.meeting-timeout)))].; &_invite-join-%# %qP=secs(); @trigger me/tr.message=%#, moniker(%qP) has been issued an invitation to join you. This invitation will expire in [first(secs2hrs(v(d.meeting-timeout)))].; }; @trigger me/tr.travel_to_destination=loc(%#), %qP;
+&c.+summon [v(d.bc)]=$+summon *:@assert t(setr(P, ulocal(f.find-player, %0, %#)))={ @trigger me/tr.error=%#, Can't find a player named '%0'.; }; @assert ulocal(f.has-invited-player, %qP, %#, summon)={ @trigger me/tr.message=%qP, moniker(%#) would like to summon you. To join them%, type %ch+join %N%cn. This invitation will expire in [first(secs2hrs(v(d.meeting-timeout)))].; &_invite-join-%# %qP=secs(); @trigger me/tr.message=%#, moniker(%qP) has been issued an invitation to join you. This invitation will expire in [first(secs2hrs(v(d.meeting-timeout)))].; }; @trigger me/tr.travel_to_destination=loc(%#), %qP;
 
 &c.+ooc [v(d.bc)]=$+ooc:@trigger me/tr.travel_to_destination=default(%#/_last-ooc-location, v(d.default-ooc-room)), %#;
 
