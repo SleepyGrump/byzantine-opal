@@ -58,15 +58,29 @@
 
 @set [v(d.bc)]/c.+view/set=no_parse
 
+&c.+view/add [v(d.bc)]=$+view/add */*=*:@force %#=+view/set %0/%1=%2;
+
+@set [v(d.bc)]/c.+view/add=no_parse
+
+&c.+view/delete [v(d.bc)]=$+view/del* */*:@assert t(setr(O, ulocal(f.grab-matching-settable-object, %1, %#, view)))={ @trigger me/tr.error=%#, Could not find an object you own called '%1'.; }; @assert t(setr(V, getpairkey(%qO, view-, %2)))={ @trigger me/tr.error=%#, Could not find a view on [moniker(%qO)] called '%2'.; }; @assert eq(words(%qV, v(d.default-row-delimeter)), 1)={ @trigger me/tr.error=%#, Your delete matched multiple +views: [itemize(iter(%qV, rest(itext(0), v(d.default-column-delimeter)), v(d.default-row-delimeter), v(d.default-row-delimeter)), v(d.default-row-delimeter))]; }; @force %#=+view/set %qO/%qV=; @pemit %#=%qV;
+
++view/del me/Testing!
+
+&c.+view/remove [v(d.bc)]=$+view/rem* */*:@assert t(setr(O, ulocal(f.grab-matching-settable-object, %1, %#, view)))={ @trigger me/tr.error=%#, Could not find an object you own called '%1'.; }; @assert t(setr(V, getpairkey(%qO, view-, %2)))={ @trigger me/tr.error=%#, Could not find a view on [moniker(%qO)] called '%2'.; }; @assert eq(words(%qV, v(d.default-row-delimeter)), 1)={ @trigger me/tr.error=%#, Your delete matched multiple +views: [itemize(iter(%qV, rest(itext(0), v(d.default-column-delimeter)), v(d.default-row-delimeter), v(d.default-row-delimeter)), v(d.default-row-delimeter))]; }; @force %#=+view/set %qO/%qV=;
+
+&c.+view/delete_me [v(d.bc)]=$+view/del* *:@break strmatch(%1, */*); @eval setr(O, %#); @assert t(setr(V, getpairkey(%qO, view-, %1)))={ @trigger me/tr.error=%#, Could not find a view on [moniker(%qO)] called '%1'.; }; @assert eq(words(%qV, v(d.default-row-delimeter)), 1)={ @trigger me/tr.error=%#, Your delete matched multiple +views: [itemize(iter(%qV, rest(itext(0), v(d.default-column-delimeter)), v(d.default-row-delimeter), v(d.default-row-delimeter)), v(d.default-row-delimeter))]; }; @force %#=+view/set %qO/%qV=;
+
+&c.+view/remove_me [v(d.bc)]=$+view/rem* *:@break strmatch(%1, */*); @eval setr(O, %#); @assert t(setr(V, getpairkey(%qO, view-, %1)))={ @trigger me/tr.error=%#, Could not find a view on [moniker(%qO)] called '%1'.; }; @assert eq(words(%qV, v(d.default-row-delimeter)), 1)={ @trigger me/tr.error=%#, Your delete matched multiple +views: [itemize(iter(%qV, rest(itext(0), v(d.default-column-delimeter)), v(d.default-row-delimeter), v(d.default-row-delimeter)), v(d.default-row-delimeter))]; }; @force %#=+view/set %qO/%qV=;
+
 @@ =============================================================================
 @@ +note
 @@ =============================================================================
 
-&layout.note_title [v(d.bf)]=cat(moniker(%0)'s, if(strmatch(setr(0, getpairkey(%0, _note-, %1)), *[v(d.default-column-delimeter)]*),, %q0), note)
+&layout.note_title [v(d.bf)]=strcat(if(t(%2), %2%b), moniker(%0)'s, %b, if(strmatch(setr(0, getpairkey(%0, _note-, %1)), *[v(d.default-column-delimeter)]*),, %q0), %b, note)
 
 &layout.note_footer [v(d.bf)]=cat(This note is, case(ulocal(f.get-note-visibility-setting, %0, getpairattr(%0, _note-, %1)), -1, hidden, 0, private, 1, public).)
 
-&layout.note [v(d.bf)]=strcat(header(ulocal(layout.note_title, %0, %1), %3), %r, formattext(ulocal(%0/[first(%2, v(d.default-column-delimeter))]), 0, %3), %r, formattext(strcat(%r, if(t(setr(A, rest(default(%0/_notesettings-[getpairattr(%0, _note-, %1)], 0|), |))), %cgApproved%cn: %qA, %crUnapproved%cn: Staff has not approved this +note.)), 0, %3),, %r, footer(ulocal(layout.note_footer, %0, %1), %3))
+&layout.note [v(d.bf)]=strcat(header(ulocal(layout.note_title, %0, %1, %4), %3), %r, formattext(ulocal(%0/[first(%2, v(d.default-column-delimeter))]), 0, %3), %r, formattext(strcat(%r, if(t(setr(A, rest(default(%0/_notesettings-[getpairattr(%0, _note-, %1)], 0|), |))), %cgApproved%cn: %qA, %crUnapproved%cn: Staff has not approved this +note.)), 0, %3),, %r, footer(ulocal(layout.note_footer, %0, %1), %3))
 
 &f.objects-with-notes [v(d.bf)]=iter(%0, moniker(itext(0)),, |)
 
@@ -116,7 +130,9 @@
 
 &c.+note/private [v(d.bc)]=$+note/pri* */*:@assert t(setr(O, ulocal(f.grab-matching-settable-object, %1, %#, note)))={ @trigger me/tr.error=%#, Could not find an object you own called '%1'.; }; @assert t(setr(K, getpairattr(%qO, _note-, %2)))={ @trigger me/tr.error=%#, Could not find a note on [moniker(%qO)] called '%2'.; }; &_notesettings-%qK %qO=strcat(0|, ulocal(f.get-note-approval-status, %qO, %qK)); @trigger me/tr.success=%#, moniker(%qO)'s [getpairkey(%qO, _note-, %2)] +note was set private. Only the owner of the note and staff can see it now.;
 
-&c.+note/prove [v(d.bc)]=$+note/pro* */*=*:@assert t(setr(O, ulocal(f.grab-matching-settable-object, %1, %#, note)))={ @trigger me/tr.error=%#, Could not find an object you own called '%1'.; }; @assert cand(t(setr(K, getpairattr(%qO, _note-, %2))), t(setr(V,  ulocal(f.get-visible-notes, %qO, %2, %#))))={ @trigger me/tr.error=%#, Could not find a note on [moniker(%qO)] called '%2'.; }; @assert t(setr(P, ulocal(f.find-player, %3)))={ @trigger me/tr.error=%#, Could not find a player named '%3'.; }; @assert cor(isstaff(%#), gte(ulocal(f.get-note-visibility-setting, %qO, %qK), 0))={ @trigger me/tr.error=%#, Could not find a note on [moniker(%qO)] called '%2'.; }; @pemit %#=ulocal(layout.note, %qO, %2, %qV, %#); @trigger me/tr.pemit=%qP, ulocal(layout.note, %qO, %2, %qV, %#), %#;
+&c.+note/prove [v(d.bc)]=$+note/pro* */*=*:@assert t(setr(O, ulocal(f.grab-matching-settable-object, %1, %#, note)))={ @trigger me/tr.error=%#, Could not find an object you own called '%1'.; }; @assert cand(t(setr(K, getpairattr(%qO, _note-, %2))), t(setr(V,  ulocal(f.get-visible-notes, %qO, %2, %#))))={ @trigger me/tr.error=%#, Could not find a note on [moniker(%qO)] called '%2'.; }; @assert t(setr(P, ulocal(f.find-player, %3, %#)))={ @assert strmatch(%3, here)={ @trigger me/tr.error=%#, Could not find a player named '%3'.; }; @dolist lcon(loc(%#))={ @trigger me/tr.pemit=##, ulocal(layout.note, %qO, %2, %qV, %#, moniker(%#) proves:), %#; }; }; @pemit %#=ulocal(layout.note, %qO, %2, %qV, %#, moniker(%#) proves:); @trigger me/tr.pemit=%qP, ulocal(layout.note, %qO, %2, %qV, %#, moniker(%#) proves:), %#;
+
+&c.+note/prove_me [v(d.bc)]=$+note/pro* *=*:@break strmatch(%1, */*); @force %#=+note/prove me/%1=%2;
 
 @@ =============================================================================
 @@ +finger code
