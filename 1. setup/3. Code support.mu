@@ -56,9 +56,23 @@
 
 &filter.is-exit-neither-commercial-nor-residential [v(d.bf)]=cand(not(ulocal(filter.is-exit-commercial, %0)), not(ulocal(filter.is-exit-residential, %0)))
 
+&filter.has-views [v(d.bf)]=t(lattr(%0/view-*))
+
+&filter.has-notes [v(d.bf)]=t(ulocal(f.get-visible-notes, %0,, %1))
+
+&filter.is-note-public [v(d.bf)]=gt(first(default(%1/_notesettings-[rest(%0, -)], 0|), |), 0)
+
+&filter.is_owner [v(d.bf)]=cor(isstaff(%1), t(member(%0, %1, |)), cand(isapproved(%1), if(hastype(%0, EXIT), cor(hasattr(loc(%0), _owner-%1), hasattr(loc(xget(%0, _exit-pair)), _owner-%1)), hasattr(%0, _owner-%1))))
+
 @@ =============================================================================
 @@ Sorts
 @@ =============================================================================
+
+&f.get-note-visibility-setting [v(d.bf)]=first(default(%0/_notesettings-%1, 0|), |)
+
+&f.get-note-approval-status [v(d.bf)]=rest(default(%0/_notesettings-%1, 0|), |)
+
+&f.get-visible-notes [v(d.bf)]=strcat(setq(C, v(d.default-column-delimeter)), setq(R, v(d.default-row-delimeter)), setq(L, trim(squish(iter(lattr(%0/_note-*), strcat(setq(G, rest(itext(0), _NOTE-)), setq(T, xget(%0, ulocal(f.get-key-prefix, _note-)%qG)), if(cand(gte(ulocal(f.get-note-visibility-setting, %0, %qG), case(1, isstaff(%2), -1, isowner(%0, %2), 0, 1)), cor(not(t(%1)), strmatch(%qT, %1*))), strcat(itext(0), %qC, %qT))),, %qR), %qR), b, %qR)), if(t(%1), setq(X, trim(squish(iter(%qL, if(strmatch(rest(itext(0), %qC), %1), itext(0)), %qR, %qR), %qR), b, %qR))), if(t(%qX), %qX, %qL))
 
 &f.is-location-ooc [v(d.bf)]=hasattrp(%0, OOC)
 

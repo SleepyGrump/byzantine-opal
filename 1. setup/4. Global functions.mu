@@ -90,7 +90,8 @@
 @@ %q5: lines
 @@ %q6: Left text layout
 @@ %q7: Right text layout
-&f.globalpp.formattext [v(d.bf)]=strcat(setq(T, edit(%0, |, %r, %t, indent())), if(t(%1), setq(T, strcat(%r, indent(), trim(trim(%qT, b, %r)), %r%b))), setq(0, ulocal(f.get-width, %2)), setq(1, v(d.body-left)), setq(2, v(d.body-right)), setq(3, sub(%q0, add(strlen(%q1), strlen(%q2), 4))), setq(4, words(wrap(%qT, %q3, l, edit(%b%q1%b, |, %b), edit(%b%q2, |, %b),, |), |)), setq(5, wrap(%qT, %q3, l,,,, |)), setq(6, ulocal(f.apply-effect, iter(lnum(%q4), %q1,, @@), strlen(%q1))), setq(7, ulocal(f.apply-effect, iter(lnum(%q4), %q2,, @@), strlen(%q2))), iter(lnum(%q4), strcat(%b, mid(%q6, mul(itext(0), strlen(%q1)), strlen(%q1)), %b, extract(%q5, inum(0), 1, |), %b, mid(%q7, mul(itext(0), strlen(%q2)), strlen(%q2))),, %r))
+@@ %q8: Does the text end with an extra %r?
+&f.globalpp.formattext [v(d.bf)]=strcat(setq(T, edit(%0, |, %r, %t, indent())), setq(8, strmatch(%qT, *%r)), if(t(%1), setq(T, strcat(%r, indent(), trim(trim(%qT, b, %r)), %r%b))), if(%q8, setq(T, strcat(%qT, %r))), setq(0, ulocal(f.get-width, %2)), setq(1, v(d.body-left)), setq(2, v(d.body-right)), setq(3, sub(%q0, add(strlen(%q1), strlen(%q2), 4))), setq(4, words(wrap(%qT, %q3, l, edit(%b%q1%b, |, %b), edit(%b%q2, |, %b),, |), |)), setq(5, wrap(%qT, %q3, l,,,, |)), setq(6, ulocal(f.apply-effect, iter(lnum(%q4), %q1,, @@), strlen(%q1))), setq(7, ulocal(f.apply-effect, iter(lnum(%q4), %q2,, @@), strlen(%q2))), iter(lnum(%q4), strcat(%b, mid(%q6, mul(itext(0), strlen(%q1)), strlen(%q1)), %b, extract(%q5, inum(0), 1, |), %b, mid(%q7, mul(itext(0), strlen(%q2)), strlen(%q2))),, %r))
 
 @@ %0: the list
 @@ %1: delimiter (optional, space is default)
@@ -309,4 +310,61 @@
 &f.escape-characters [v(d.bf)]=if(t(setr(0, member(setr(1, v(d.allowed_with_escapes_in_sql)), %0))), strcat(@@ESCAPE@@, extract(%q1, %q0, 1)), %0)
 
 @@ %0: term to sanitize
+@@ This is used by the wiki +help and news systems. It places the phrase '@@ESCAPE@@' in every place it belongs. Before executing the SQL, that phrase must be replaced with ' using the f.sanitize-where function in Code support.mu. Sanitization is thus a two-step process. The reason it isn't globalized is because some setups alter the f.sanitize-where function to do additional things, like convert * to % for LIKE queries. I need to give that some thought.
 &f.globalpp.sanitize [v(d.bf)]=strcat(setq(0, strip(%0, v(d.dangerous_in_sql))), setq(1,), null(iter(lnum(strlen(%q0)), setq(1, strcat(%q1, ulocal(f.escape-characters, mid(%q0, itext(0), 1)))))), %q1)
+
+
+
+@@ The goal of these two functions is to standardize the storage of key/value pairs. A lot of code I write needs to store and retrieve things by title, and it needs to also be able to search by partial and by exact title. (You need to be able to store "Chain" and "Chainmail" on the same object, and come up with "Chain" before "Chainmail". Made that mistake last repo with the equipment DB.) As such, this should only be usable by staff or staff-owned objects. The naming convention comes from the "pair" portion of Key Value Pairs, which is what this code stores.
+@@ -
+@@ %0: the object to get the var from
+@@ %1: the attribute prefix of the var - _note-, view-, etc. Note that the separator dash is part of the prefix; if you skip it you'll get &view123 obj=<blah>.
+@@ %2: (optional) The partial or exact title you're looking up. If you skip, this will return a list of vars and their titles separated by the default row and column delimiters.
+@@ Output: #-1 ERROR MESSAGE, the value that matches the key, or a list of keys and attributes.
+&f.globalpp.getpair [v(d.bf)]=case(0, cor(isstaff(%#), cand(not(member(num(me), %@)), hastype(%@, THING), andflags(%@, I!h!n), isstaff(owner(%@)))), #-1 PERMISSION DENIED, isdbref(%0), #-2 OBJECT NOT FOUND, t(%1), #-3 PREFIX IS REQUIRED, strcat(setq(K, ulocal(f.get-key-prefix, %1)), t(%2)), ulocal(f.list-matching-pairs, %0, %1, lattr(%0/%qK*), %qK), t(setr(V, ulocal(f.find-pairs-by-title, %0, %1, %2))), #-4 TITLE NOT FOUND, eq(words(%qV, v(d.default-row-delimeter)), 1), ulocal(f.list-matching-pairs, %0, %1, %qV, %qK), ulocal(%0/[strcat(%1, rest(%qV, ucstr(%qK)))]))
+
+&f.get-key-prefix [v(d.bf)]=switch(%0, _*, strcat(_, key-, rest(%0, _)), key-%0)
+
+&f.list-matching-pairs [v(d.bf)]=iter(%2, strcat(%1, rest(itext(0), ucstr(%3)), v(d.default-column-delimeter), xget(%0, itext(0))),, v(d.default-row-delimeter))
+
+&f.find-pairs-by-title [v(d.bf)]=if(t(setr(P, ulocal(f.find-pairs-by-exact-title, %0, %1, %2))), %qP, trim(squish(iter(grepi(%0, ulocal(f.get-key-prefix, %1)*, %2), if(strmatch(xget(%0, itext(0)), %2*), itext(0))))))
+
+&f.find-pairs-by-exact-title [v(d.bf)]=trim(squish(iter(grepi(%0, ulocal(f.get-key-prefix, %1)*, %2), if(strmatch(xget(%0, itext(0)), %2), itext(0)))))
+
+@@ %0: object
+@@ %1: prefix
+@@ %2: which key to get the proper, stored title of
+&f.globalpp.getpairkey [v(d.bf)]=case(0, cor(isstaff(%#), cand(not(member(num(me), %@)), hastype(%@, THING), andflags(%@, I!h!n), isstaff(owner(%@)))), #-1 PERMISSION DENIED, isdbref(%0), #-2 OBJECT NOT FOUND, t(%1), #-3 PREFIX IS REQUIRED, strcat(setq(K, ulocal(f.get-key-prefix, %1)), t(%2)), ulocal(f.list-matching-pairs, %0, %1, lattr(%0/%qK*), %qK), t(setr(V, ulocal(f.find-pairs-by-title, %0, %1, %2))), #-4 TITLE NOT FOUND, eq(words(%qV, v(d.default-row-delimeter)), 1), ulocal(f.list-matching-pairs, %0, %1, %qV, %qK), xget(%0, %qV))
+
+@@ %0: object
+@@ %1: prefix
+@@ %2: which key to get the attribute index of
+@@ Output: the destination attribute, without the prefix.
+&f.globalpp.getpairattr [v(d.bf)]=case(0, cor(isstaff(%#), cand(not(member(num(me), %@)), hastype(%@, THING), andflags(%@, I!h!n), isstaff(owner(%@)))), #-1 PERMISSION DENIED, isdbref(%0), #-2 OBJECT NOT FOUND, t(%1), #-3 PREFIX IS REQUIRED, strcat(setq(K, ulocal(f.get-key-prefix, %1)), t(%2)), ulocal(f.list-matching-pairs, %0, %1, lattr(%0/%qK*), %qK), t(setr(V, ulocal(f.find-pairs-by-title, %0, %1, %2))), #-4 TITLE NOT FOUND, eq(words(%qV, v(d.default-row-delimeter)), 1), ulocal(f.list-matching-pairs, %0, %1, %qV, %qK), rest(%qV, ucstr(%qK)))
+
+@@ %0: the object to set the var to
+@@ %1: the attribute prefix of the var - _note-, view-, _c., etc.
+@@ %2: the key to store it under - "A proper title" or "123" are both valid, but you will have to use the same key or a partial key to look it up, so choose your storage text carefully.
+@@ %3: the value to store. Can store somewhere around 7,900 characters on MUX. You can parse the output any way you like, and so can use this to store lists, etc, but remember the upper limit of the data and use the storage medium appropriately.
+@@ Output: #-1 ERROR MESSAGE or "Set.", "Cleared.", or "Updated." If a key with that exact title already exists, the value on it will be replaced with the new one. If it does not, a new title will be created with the given value.
+@@ Note: The destination attribute is specified by a number. Why? Cuz it's easier.
+@@ What if you want to specify your own? Maybe you have the key stored in another attribute somewhere and it has to match perfectly? Just use the same conventions: _key<prefix><dest> or key<prefix><dest> for the title, <prefix><dest> for the value. Setting this up is left as an exercise for later, if I determine it's necessary.
+&f.globalpp.setpair [v(d.bf)]=case(0, cor(isstaff(%#), cand(not(member(num(me), %@)), hastype(%@, THING), andflags(%@, I!h!n), isstaff(owner(%@)))), #-1 PERMISSION DENIED, isdbref(%0), #-2 OBJECT NOT FOUND, t(%1), #-3 PREFIX IS REQUIRED, t(%2), #-4 EXACT TITLE IS REQUIRED, strcat(setq(K, ulocal(f.get-key-prefix, %1)), lte(words(setr(S, ulocal(f.find-pairs-by-exact-title, %0, %1, %2))), 1)), #-5 MULTIPLE KEYS FOUND - MANUAL EDIT BY STAFF REQUIRED, neq(words(%qS), 0), strcat(set(%0, strcat(%1, setr(T, ulocal(f.get-settable-target, %0, %1)), :, %3)), set(%0, strcat(ulocal(f.get-key-prefix, %1), %qT, :, %2)), Set.), neq(words(%qS), 1), strcat(set(%0, %qS:[if(t(%3), %2)]), set(%0, strcat(%1, rest(%qS, ucstr(%qK)), :, %3)), if(t(%3), Updated., Cleared.)))
+
+&f.get-settable-target [v(d.bf)]=inc(lmax(edit(lattr(%0/%1*), ucstr(%1),)))
+
+
+@@ %0: object to check
+@@ %1: person who might own it
+@@ Output: 0 or 1 depending on whether the person owns it.
+&f.globalpp.isowner [v(d.bf)]=ulocal(filter.is_owner, %0, %1)
+
+
+@@ %0: Room number
+@@ Output: the views on a room.
+&f.globalpp.lviews [v(d.bf)]=case(0, isdbref(%0), #-1 NOT A VALID DBREF, hastype(%0, ROOM), #-1 NOT A ROOM, cor(isstaff(%#), member(loc(%#), %0)), #-1 CAN'T SEE VIEWS ELSEWHERE, strcat(setq(K, ulocal(f.get-key-prefix, view-)), ulocal(f.list-matching-pairs, %0, view-, lattr(%0/%qK*), %qK)))
+
+
+@@ %0: Room number
+@@ Output: the public notes on a room.
+&f.globalpp.lnotes [v(d.bf)]=case(0, isdbref(%0), #-1 NOT A VALID DBREF, hastype(%0, ROOM), #-1 NOT A ROOM, cor(isstaff(%#), member(loc(%#), %0)), #-1 CAN'T SEE NOTES ELSEWHERE, strcat(setq(K, ulocal(f.get-key-prefix, _note-)), setq(L, ulocal(f.list-matching-pairs, %0, _note-, lattr(%0/%qK*), %qK)), trim(squish(iter(%qL, if(gte(ulocal(f.get-note-visibility-setting, %0, rest(first(itext(0), v(d.default-column-delimeter)), -)), case(1, isstaff(%2), -1, isowner(%0, %2), 0, 1)), itext(0)), v(d.default-row-delimeter), v(d.default-row-delimeter)), v(d.default-row-delimeter)), b, v(d.default-row-delimeter))))

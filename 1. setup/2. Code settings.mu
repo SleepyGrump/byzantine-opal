@@ -1,8 +1,8 @@
-@@ You probably shouldn't change these unless you know what you're doing.
+@@ You probably shouldn't change these settings unless you know what you're doing. These are separated out for ease of experimentation by the author.
 
 &d.max-shortdesc-length [v(d.bd)]=200
 
-@@ Make sure these match the defaults in your SQL Commands install if you change those:
+@@ Make sure these match the defaults in your SQL Commands install if you change those. Note that these are used for other things beyond SQL so consider carefully before changing them.
 &d.default-row-delimeter [v(d.bd)]=|
 
 &d.default-column-delimeter [v(d.bd)]=~
@@ -60,7 +60,11 @@
 
 @desc [v(d.rp)]=%R%TThis is the default room description.%R
 
-@descformat [v(d.rp)]=formattext(%0, 1, %#)
+&layout.views [v(d.rp)]=strcat(%r, divider(+views, %2), %r, formatcolumns(iter(%1, rest(itext(0), v(d.default-column-delimeter)), v(d.default-row-delimeter), v(d.default-row-delimeter)), v(d.default-row-delimeter), %2))
+
+&layout.notes [v(d.rp)]=strcat(%r, divider(+notes, %2), %r, formatcolumns(iter(%1, rest(itext(0), v(d.default-column-delimeter)), v(d.default-row-delimeter), v(d.default-row-delimeter)), v(d.default-row-delimeter), %2))
+
+@descformat [v(d.rp)]=strcat(formattext(%0, 1, %#), if(t(setr(V, lviews(num(me)))), ulocal(layout.views, num(me), %qV, %#)), if(t(setr(N, lnotes(num(me)))), ulocal(layout.notes, num(me), %qN, %#)))
 
 @nameformat [v(d.rp)]=header(name(me), %#)
 
