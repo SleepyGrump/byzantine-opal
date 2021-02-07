@@ -10,6 +10,12 @@
 
 &c.+duty [v(d.bc)]=$+duty:@assert isstaff(%#)={ @trigger me/tr.error=%#, This command only matters for staffers.; }; @set %#=[if(hasflag(%#, transparent), !)]transparent; @trigger me/tr.success=%#, You have set yourself [if(hasflag(%#, transparent), on, off)] duty.;
 
+&c.+offduty [v(d.bc)]=$+offduty:@assert isstaff(%#)={ @trigger me/tr.error=%#, This command only matters for staffers.; }; @assert hasflag(%#, transparent)={ @trigger me/tr.error=%#, You are already off-duty.; };  @set %#=!transparent; @trigger me/tr.success=%#, You have set yourself off duty.;
+
+&c.+onduty [v(d.bc)]=$+onduty:@assert isstaff(%#)={ @trigger me/tr.error=%#, This command only matters for staffers.; }; @break hasflag(%#, transparent)={ @trigger me/tr.error=%#, You are already on-duty.; };  @set %#=transparent; @trigger me/tr.success=%#, You have set yourself on duty.;
+
 &c.+dark [v(d.bc)]=$+dark:@assert isstaff(%#)={ @trigger me/tr.error=%#, You must be staff to use this command.; }; @set %#=[if(hasflag(%#, dark), !)]dark; @trigger me/tr.success=%#, You have set yourself [if(hasflag(%#, dark), dark, visible)].;
+
+&c.+undark [v(d.bc)]=$+undark:@assert isstaff(%#)={ @trigger me/tr.error=%#, You must be staff to use this command.; }; @assert hasflag(%#, dark)={ @trigger me/tr.error=%#, You are already visible.; };  @set %#=!dark; @trigger me/tr.success=%#, You have set yourself visible.;
 
 &c.+staffnote [v(d.bc)]=$+staffnote *=*:@break strmatch(%0, */*); @assert isstaff(%#)={ @trigger me/tr.error=%#, You must be staff to use this command.; }; @assert t(setr(P, ulocal(f.find-player, %0, %#)))={ @trigger me/tr.error=%#, Could not find a player named '%0'.; }; &_d.staff-notes %qP=%1; @trigger me/tr.success=%#, moniker(%qP)'s staff note now reads: %1;

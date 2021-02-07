@@ -100,7 +100,7 @@
 @@ +finger layout
 &d.finger-sections [v(d.bd)]=OOC Info|IC Info|Staff Info
 
-&d.section.ooc_info [v(d.bd)]=Name|Alias|Location|Doing|Idle|Position|Note|OOC Pronouns|Connection Time|Mail Stats|RP Prefs|Timezone|Public Alts|Note
+&d.section.ooc_info [v(d.bd)]=Location|Doing|Position|Note|OOC Pronouns|Connection Time|Mail Stats|RP Prefs|Timezone|Public Alts|Note
 
 &d.section.ic_info [v(d.bd)]=Apparent Age|Gender|IC Full Name|IC Handle|IC Occupation|IC Pronouns|Played-by|Short-desc|Wiki|Themesong|Quote
 

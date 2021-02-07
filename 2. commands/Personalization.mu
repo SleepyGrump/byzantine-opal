@@ -114,7 +114,13 @@
 
 &c.+note/remove_me [v(d.bc)]=$+note/rem* *:@break strmatch(%1, */*); @eval setr(O, %#); @assert t(setr(V, ulocal(f.get-visible-notes, %qO, %1, %#)))={ @trigger me/tr.error=%#, Could not find a note on [moniker(%qO)] called '%1'.; }; @assert eq(words(%qV, v(d.default-row-delimeter)), 1)={ @trigger me/tr.error=%#, Your delete matched multiple +notes: [itemize(iter(%qV, rest(itext(0), v(d.default-column-delimeter)), v(d.default-row-delimeter), v(d.default-row-delimeter)), v(d.default-row-delimeter))]; }; @force %#=+note/set %qO/[rest(%qV, v(d.default-column-delimeter))]=;
 
-&c.+note/staffnote [v(d.bc)]=$+staffnote* */*=*:@assert isstaff(%#)={ @trigger me/tr.error=%#, You must be staff to create staff notes.; }; @assert t(setr(O, ulocal(f.grab-matching-settable-object, %1, %#, note)))={ @trigger me/tr.error=%#, Could not find an object you own called '%1'.; }; @break strmatch(rest(setr(V, ulocal(f.get-visible-notes, %qO, %2, %#)), v(d.default-column-delimeter)), %2)={ @trigger me/tr.error=%#, There's already a note on [moniker(%qO)] called '%2'. Choose another name or delete the old one.; }; @assert t(setr(S, setpair(%qO, _note-, %2, %3)))={ @trigger me/tr.error=%#, Could not set +note on [moniker(%qO)] because: %qS; }; @assert t(setr(K, getpairattr(%qO, _note-, %2)))={ @trigger me/tr.error=%#, Could not find a note on [moniker(%qO)] called '%2'. Check their +notes.; }; &_notesettings-%qK %qO=strcat(-1, |, ulocal(layout.note-approval, %#)); @trigger me/tr.success=%#, moniker(%qO)'s %2 +note was created%, hidden%, and approved.;
+&c.+note/staffnote [v(d.bc)]=$+staffnote* */*=*:@assert isstaff(%#)={ @trigger me/tr.error=%#, You must be staff to create staff notes.; }; @assert t(setr(O, ulocal(f.grab-matching-settable-object, %1, %#, note)))={ @trigger me/tr.error=%#, Could not find an object you own called '%1'.; }; @break strmatch(rest(setr(V, ulocal(f.get-visible-notes, %qO, %2, %#)), v(d.default-column-delimeter)), %2)={ @trigger me/tr.error=%#, There's already a note on [moniker(%qO)] called '%2'. Choose another name or delete the old one.; }; @assert t(setr(S, setpair(%qO, _note-, %2, %3)))={ @trigger me/tr.error=%#, Could not set +note on [moniker(%qO)] because: %qS; }; @assert t(setr(K, getpairattr(%qO, _note-, %2)))={ @trigger me/tr.error=%#, Could not find a note on [moniker(%qO)] called '%2'. Check their +notes.; }; &_notesettings-%qK %qO=strcat(-1, |, ulocal(layout.note-approval, %#)); @trigger me/tr.success=%#, moniker(%qO)'s %2 +note was created%, hidden%, and approved.; @assert hasattr(%qO, _d.staff-notes)={ &_d.staff-notes %qO=%2: %3; }
+
+@set [v(d.bc)]/c.+note/staffnote=no_parse
+
+&c.+staffnote [v(d.bc)]=$+staffnote *=*:@force %#=+staffnote %0/Warning=%1;
+
+@set [v(d.bc)]/c.+staffnote=no_parse
 
 &layout.note-approval [v(d.bf)]=cat(moniker(%0), approved this note on, prettytime())
 
@@ -142,9 +148,9 @@
 
 &layout.finger-sections [v(d.bf)]=iter(v(d.finger-sections), ulocal(layout.finger-section, %0, %1, itext(0)), |, @@)
 
-&layout.finger-header [v(d.bf)]=strcat(ulocal(f.get-name, %0, %1), %b, %(, ulocal(f.get-alias, %0, %1), %), %b, if(isstaff(%1), cat(%0, flags(%0))))
+&layout.finger-header [v(d.bf)]=strcat(ulocal(f.get-name, %0, %1), %b, %(, ulocal(f.get-alias, %0, %1), %), if(isstaff(%1), strcat(%b, %0, %b, flags(%0))))
 
-&layout.finger-footer [v(d.bf)]=cat(ulocal(f.get-status, %0, %1), case(1, isstaff(%0), staff, isapproved(%0), approved, unapproved))
+&layout.finger-footer [v(d.bf)]=cat(ulocal(f.get-status, %0, %1), case(1, isstaff(%0), staff, isapproved(%0), approved, unapproved), ulocal(f.get-idle, %0, %1) idle)
 
 &layout.finger [v(d.bf)]=strcat(header(ulocal(layout.finger-header, %0, %1), %1), %r, ulocal(layout.finger-sections, %0, %1), footer(ulocal(layout.finger-footer, %0, %1), %1))
 
