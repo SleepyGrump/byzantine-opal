@@ -36,10 +36,6 @@
 
 &f.get-valid-who-column [v(d.bf)]=trim(squish(iter(%1, grab(%0, itext(0)*, |), |, |), |), b, |)
 
-th ulocal(v(d.bf)/f.get-valid-who-column, ulocal(v(d.bf)/f.get-available-who-columns, %#), position|asdf)
-+who/sort who=adsf
-
-
 &f.is-valid-who-list [v(d.bf)]=t(member(edit(lcstr(lattr(%vD/d.default-*-fields)), d.default-,, -fields,), lcstr(%0)))
 
 &f.get-valid-who-list [v(d.bf)]=edit(lcstr(lattr(%vD/d.default-*-fields)), d.default-,, -fields,)

@@ -8,7 +8,9 @@ You may also want Myrddin's latest BBS, which is well worth installing:
 
 https://bitbucket.org/myrddin0/myrddins-mush-code/src/master/Myrddin's%20BBS/v5/myrddin_bb.v5.code
 
-If you do install it, the installer for this code will create a new theme which matches the game theme and set the BBS up to use it.
+If you do install it, the installer for this code will create a new theme which matches the game theme and set the BBS up to use it. (TODO: Make sure it's doing this.)
+
+Run this code from a character with a wizard bit or from #1. (#1 is easier but less secure.)
 
 */
 
@@ -37,9 +39,7 @@ think if(t(v(d.cron)), Good%, you have Myrddin's mushcron%, we can continue., AL
 @desc IC=Into the game!
 &isapproved IC=isapproved(%#)
 @lock IC=isapproved/1
-ic
-@set ooc=dark
-o
+@set [search(EEXIT=t(member(name(##), Out of Character <OOC>, |)))]=dark
 
 @create Basic Data <BD>=10
 @create Basic Functions <BF>=10
@@ -62,11 +62,9 @@ o
 @force me=&d.ho me=[search(ETHING=t(member(name(##), Hook Object <HO>, |)))]
 @force me=&d.ep me=[search(ETHING=t(member(name(##), Exit Parent <EP>, |)))]
 
+@@ These only exist to make sure that if you have a public channel, our two created bits aren't on it.
 @force me=@force [v(d.go)]=pub off
 @force me=@force [v(d.pp)]=pub off
-
-@@ Lets it create stuff and makes sure it has the access it needs to dig all the rooms. You may need to run this from #1 (make sure to change the [v(d.go)] to the dbref if you do).
-@set [v(d.go)]=WIZARD
 
 @set [v(d.pp)]=ANSI COLOR256 KEEPALIVE
 @set [v(d.gp)]=ANSI COLOR256 KEEPALIVE
@@ -84,15 +82,15 @@ o
 
 @@ Set up parents for the existing rooms as OOC.
 
-@force me=@dolist search(TYPE=ROOM)=@parent ##=[v(d.orp)]
+@force me=@dolist setdiff(search(TYPE=ROOM), v(d.orp))=@parent ##=[v(d.orp)]
 
 @@ Set up the exit parent.
 
-@force me=@dolist search(TYPE=EXIT)=@parent ##=[v(d.ep)]
+@force me=@dolist setdiff(search(TYPE=EXIT), v(d.ep))=@parent ##=[v(d.ep)]
 
 @@ Set the existing players' parents to the PlayerParent so they get the code on it.
 
-@force me=@dolist search(TYPE=PLAYER)=@parent ##=[v(d.pp)]
+@force me=@dolist setdiff(search(TYPE=PLAYER), v(d.pp) #1)=@parent ##=[v(d.pp)]
 
 @force me=@parent [v(d.qr)]=[v(d.orp)]
 @force me=@parent [v(d.orp)]=[v(d.rp)]

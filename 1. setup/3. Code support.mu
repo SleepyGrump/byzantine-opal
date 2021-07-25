@@ -162,7 +162,7 @@
 
 &f.isstaff-or-staff-object [v(d.bf)]=cor(isstaff(%0), cand(not(member(num(me), %1)), hastype(%1, THING), andflags(%1, I!h!n), isstaff(owner(%1))))
 
-&f.can-build [v(d.bf)]=isstaff(%0)
+&f.can-build [v(d.bf)]=cor(isstaff(%0), match(%0, %vB))
 
 &f.find-player [v(d.bf)]=pmatch(switch(%0, me, %1, %0))
 

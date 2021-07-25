@@ -29,11 +29,12 @@ guests_channel Public
 idle_timeout 86400
 
 # These numbers should match the dbrefs of the various objects you built in Step 0!
-room_parent 123
-exit_parent 234
-player_parent 345
-guest_parent 456
-hook_obj 567
+
+room_parent 19
+exit_parent 33
+player_parent 17
+guest_parent 18
+hook_obj 32
 
 # For the channel forwarding and pose notices:
 
@@ -47,6 +48,8 @@ hook_cmd " before permit
 hook_cmd @emit before permit
 hook_cmd \ before permit
 hook_cmd @remit before permit
+# This is only necessary if you plan to restrict moniker to staffers-only.
+hook_cmd @moniker permit
 
 # If you plan on installing the SQL commands, you will need:
 
