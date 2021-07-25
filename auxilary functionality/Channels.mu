@@ -309,4 +309,4 @@ Changes:
 
 @tel CDB=CHF
 @tel CHF=CHC
-
+@tel CHC=#2

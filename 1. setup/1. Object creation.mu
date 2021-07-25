@@ -37,7 +37,7 @@ think if(t(v(d.cron)), Good%, you have Myrddin's mushcron%, we can continue., AL
 
 @dig In Character=In Character <IC>;ic, Out of Character <OOC>;ooc; out;o;exit
 @desc IC=Into the game!
-&isapproved IC=isapproved(%#)
+&isapproved IC=cor(isapproved(%#), isstaff(%#))
 @lock IC=isapproved/1
 @set [search(EEXIT=t(member(name(##), Out of Character <OOC>, |)))]=dark
 
