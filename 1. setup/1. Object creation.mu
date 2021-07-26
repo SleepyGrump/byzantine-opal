@@ -117,3 +117,6 @@ think if(t(v(d.cron)), Good%, you have Myrddin's mushcron%, we can continue., AL
 @force me=&vk [v(d.ep)]=[v(d.bf)]
 @force me=&vo [v(d.bf)]=[v(d.orp)]
 @force me=&vr [v(d.bf)]=[v(d.rp)]
+@force me=&vx [v(d.bf)]=[v(d.ooc)]
+
+@tel [v(d.bc)]=#2
