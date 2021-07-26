@@ -53,9 +53,9 @@ Residential: %vF
 
 &f.list-travel-categories [v(d.bf)]=setunion(v(d.travel.categories), Uncategorized, |)
 
-&layout.travel_arrival [v(d.bf)]=cat(alert(+travel), moniker(%0) has arrived.)
+&layout.travel_arrival [v(d.bf)]=strcat(alert(+travel), %b, moniker(%0) has arrived, if(t(%1), cat(%,, %2, ulocal(f.get-name, %1))), .)
 
-&layout.travel_departure [v(d.bf)]=cat(alert(+travel), moniker(%0) has departed.)
+&layout.travel_departure [v(d.bf)]=strcat(alert(+travel), %b, moniker(%0) has departed, if(t(%1), cat(%,, %2, ulocal(f.get-name, %1))), .)
 
 &layout.travel_list [v(d.bf)]=strcat(header(Travel categories, %0), %r, multicol(ulocal(f.list-travel-categories), * * *, 0, |, %0), %r, footer(+travel <category> to see more., %0))
 
@@ -78,13 +78,11 @@ Residential: %vF
 @@ %2: type of summons
 &f.has-invited-player [v(d.bf)]=cor(isstaff(%0), lt(sub(secs(), default(%0/_invite-%2-%1, v(d.meeting-timeout))), v(d.meeting-timeout)))
 
-th ulocal(v(d.bf)/f.has-invited-player, #24, #48, join)
-@@ th ulocal(v(d.bf)/f.has-invited-player, #48, #24)
-@@ TODO: This is still messed up.
+&c.+join [v(d.bc)]=$+join *:@assert t(setr(P, ulocal(f.find-player, %0, %#)))={ @trigger me/tr.error=%#, Can't find a player named '%0'.; }; @assert not(ulocal(f.has-invited-player, %qP, %#, join))={ @trigger me/tr.message=%qP, moniker(%#) would like to join you. To bring them%, type %ch+summon %N%cn. This invitation will expire in [first(secs2hrs(v(d.meeting-timeout)))].; &_invite-summon-%# %qP=secs(); @trigger me/tr.message=%#, moniker(%qP) has been issued an invitation to summon you. This invitation will expire in [first(secs2hrs(v(d.meeting-timeout)))].; }; @trigger me/tr.travel_to_destination=loc(%qP), %#, %#, joining;
 
-&c.+join [v(d.bc)]=$+join *:@assert t(setr(P, ulocal(f.find-player, %0, %#)))={ @trigger me/tr.error=%#, Can't find a player named '%0'.; }; @assert ulocal(f.has-invited-player, %qP, %#, join)={ @trigger me/tr.message=%qP, moniker(%#) would like to join you. To bring them%, type %ch+summon %N%cn. This invitation will expire in [first(secs2hrs(v(d.meeting-timeout)))].; &_invite-summon-%# %qP=secs(); @trigger me/tr.message=%#, moniker(%qP) has been issued an invitation to summon you. This invitation will expire in [first(secs2hrs(v(d.meeting-timeout)))].; }; @trigger me/tr.travel_to_destination=loc(%qP), %#;
+&c.+return [v(d.bc)]=$+return *:@assert t(setr(P, ulocal(f.find-player, %0, %#)))={ @trigger me/tr.error=%#, Can't find a player named '%0'.; }; @assert not(ulocal(f.has-invited-player, %qP, %#, return))={ @trigger me/tr.message=%qP, moniker(%#) would like to return you to your last location%, [name(default(%qP/ _last-location, %vX))]. To go back%, type %ch+return me%cn.; @trigger me/tr.message=%#, moniker(%qP) has been issued an invitation to return to their last location.; }; @trigger me/tr.travel_to_destination=loc(%qP), %#, %#, returned by;
 
-&c.+summon [v(d.bc)]=$+summon *:@assert t(setr(P, ulocal(f.find-player, %0, %#)))={ @trigger me/tr.error=%#, Can't find a player named '%0'.; }; @assert ulocal(f.has-invited-player, %qP, %#, summon)={ @trigger me/tr.message=%qP, moniker(%#) would like to summon you. To join them%, type %ch+join %N%cn. This invitation will expire in [first(secs2hrs(v(d.meeting-timeout)))].; &_invite-join-%# %qP=secs(); @trigger me/tr.message=%#, moniker(%qP) has been issued an invitation to join you. This invitation will expire in [first(secs2hrs(v(d.meeting-timeout)))].; }; @trigger me/tr.travel_to_destination=loc(%#), %qP;
+&c.+summon [v(d.bc)]=$+summon *:@assert t(setr(P, ulocal(f.find-player, %0, %#)))={ @trigger me/tr.error=%#, Can't find a player named '%0'.; }; @assert not(ulocal(f.has-invited-player, %qP, %#, summon))={ @trigger me/tr.message=%qP, moniker(%#) would like to summon you. To join them%, type %ch+join %N%cn. This invitation will expire in [first(secs2hrs(v(d.meeting-timeout)))].; &_invite-join-%# %qP=secs(); @trigger me/tr.message=%#, moniker(%qP) has been issued an invitation to join you. This invitation will expire in [first(secs2hrs(v(d.meeting-timeout)))].; }; @trigger me/tr.travel_to_destination=loc(%#), %qP, %#, summoned by;
 
 &c.+ooc [v(d.bc)]=$+ooc:@trigger me/tr.travel_to_destination=default(%#/_last-ooc-location, v(d.default-ooc-room)), %#;
 
