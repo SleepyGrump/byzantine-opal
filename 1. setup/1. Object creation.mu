@@ -37,8 +37,8 @@ think if(t(v(d.cron)), Good%, you have Myrddin's mushcron%, we can continue., AL
 
 @dig In Character=In Character <IC>;ic, Out of Character <OOC>;ooc; out;o;exit
 @desc IC=Into the game!
-&isapproved IC=cor(isapproved(%#), isstaff(%#))
-@lock IC=isapproved/1
+&allowed_ic IC=ulocal(lock.allowed_ic, %#)
+@lock IC=allowed_ic/1
 @set [search(EEXIT=t(member(name(##), Out of Character <OOC>, |)))]=dark
 
 @create Basic Data <BD>=10
@@ -117,6 +117,5 @@ think if(t(v(d.cron)), Good%, you have Myrddin's mushcron%, we can continue., AL
 @force me=&vk [v(d.ep)]=[v(d.bf)]
 @force me=&vo [v(d.bf)]=[v(d.orp)]
 @force me=&vr [v(d.bf)]=[v(d.rp)]
-@force me=&vx [v(d.bf)]=[v(d.ooc)]
 
 @tel [v(d.bc)]=#2

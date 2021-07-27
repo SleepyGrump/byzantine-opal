@@ -53,9 +53,7 @@ Residential: %vF
 
 &f.list-travel-categories [v(d.bf)]=setunion(v(d.travel.categories), Uncategorized, |)
 
-&layout.travel_arrival [v(d.bf)]=strcat(alert(+travel), %b, moniker(%0) has arrived, if(t(%1), cat(%,, %2, ulocal(f.get-name, %1))), .)
-
-&layout.travel_departure [v(d.bf)]=strcat(alert(+travel), %b, moniker(%0) has departed, if(t(%1), cat(%,, %2, ulocal(f.get-name, %1))), .)
+&layout.travel_alert [v(d.bf)]=strcat(alert(+travel), %b, moniker(%0) has %3, if(t(%1), cat(%,, %2, ulocal(f.get-name, %1))), .)
 
 &layout.travel_list [v(d.bf)]=strcat(header(Travel categories, %0), %r, multicol(ulocal(f.list-travel-categories), * * *, 0, |, %0), %r, footer(+travel <category> to see more., %0))
 
@@ -63,7 +61,7 @@ Residential: %vF
 
 &c.+travel [v(d.bc)]=$+travel:@pemit %#=ulocal(layout.travel_list, %#);
 
-&c.+travel_key_or_category [v(d.bc)]=$+travel *:@pemit #13=test-%0-[search()]-test; @break t(setr(L, ulocal(f.get-travel-rooms-matching-key, %0)))={ @trigger me/tr.travel_to_destination=%qL, %#; }; @assert t(setr(L, grab(ulocal(f.list-travel-categories), %0*, |)))={ @trigger me/tr.error=%#, Could not find a travel category like '%0'.; }; @pemit %#=ulocal(layout.travel_category_list, %#, %qL);
+&c.+travel_key_or_category [v(d.bc)]=$+travel *:@break t(setr(L, ulocal(f.get-travel-rooms-matching-key, %0)))={ @trigger me/tr.travel_to_destination=%qL, %#; }; @assert t(setr(L, grab(ulocal(f.list-travel-categories), %0*, |)))={ @trigger me/tr.error=%#, Could not find a travel category like '%0'.; }; @pemit %#=ulocal(layout.travel_category_list, %#, %qL);
 
 @@ +travel OOCROOM
 
@@ -78,11 +76,21 @@ Residential: %vF
 @@ %2: type of summons
 &f.has-invited-player [v(d.bf)]=cor(isstaff(%0), lt(sub(secs(), default(%0/_invite-%2-%1, v(d.meeting-timeout))), v(d.meeting-timeout)))
 
-&c.+join [v(d.bc)]=$+join *:@assert t(setr(P, ulocal(f.find-player, %0, %#)))={ @trigger me/tr.error=%#, Can't find a player named '%0'.; }; @assert not(ulocal(f.has-invited-player, %qP, %#, join))={ @trigger me/tr.message=%qP, moniker(%#) would like to join you. To bring them%, type %ch+summon %N%cn. This invitation will expire in [first(secs2hrs(v(d.meeting-timeout)))].; &_invite-summon-%# %qP=secs(); @trigger me/tr.message=%#, moniker(%qP) has been issued an invitation to summon you. This invitation will expire in [first(secs2hrs(v(d.meeting-timeout)))].; }; @trigger me/tr.travel_to_destination=loc(%qP), %#, %#, joining;
+@@ %0: person summoning/joining.
+@@ %1: person being summoned/joined.
+@@ %2: the action itself, summon or join.
+@@ %3: the destination.
 
-&c.+return [v(d.bc)]=$+return *:@assert t(setr(P, ulocal(f.find-player, %0, %#)))={ @trigger me/tr.error=%#, Can't find a player named '%0'.; }; @assert not(ulocal(f.has-invited-player, %qP, %#, return))={ @trigger me/tr.message=%qP, moniker(%#) would like to return you to your last location%, [name(default(%qP/ _last-location, %vX))]. To go back%, type %ch+return me%cn.; @trigger me/tr.message=%#, moniker(%qP) has been issued an invitation to return to their last location.; }; @trigger me/tr.travel_to_destination=loc(%qP), %#, %#, returned by;
+@@ TODO: Make sure this doesn't expose unfindable people.
+&layout.join_summon_invite [v(d.bf)]=strcat(moniker(%0) would like to %2 you to, %b, ansi(h, name(%3)). To, %b, switch(%2, join, bring, join), %b, them%, type %ch+, ansi(h, switch(%2, join, summon, join)), %b, ansi(h, name(%0)), . It is [prettytime()] and this invitation will expire in [first(secs2hrs(v(d.meeting-timeout)))]. [if(cand(not(ulocal(lock.allowed_ic, %0)), not(ulocal(f.is-location-ooc, %3))), cat(Warning: this player is not yet approved and you are bringing, obj(%0), to an IC location.))])
 
-&c.+summon [v(d.bc)]=$+summon *:@assert t(setr(P, ulocal(f.find-player, %0, %#)))={ @trigger me/tr.error=%#, Can't find a player named '%0'.; }; @assert not(ulocal(f.has-invited-player, %qP, %#, summon))={ @trigger me/tr.message=%qP, moniker(%#) would like to summon you. To join them%, type %ch+join %N%cn. This invitation will expire in [first(secs2hrs(v(d.meeting-timeout)))].; &_invite-join-%# %qP=secs(); @trigger me/tr.message=%#, moniker(%qP) has been issued an invitation to join you. This invitation will expire in [first(secs2hrs(v(d.meeting-timeout)))].; }; @trigger me/tr.travel_to_destination=loc(%#), %qP, %#, summoned by;
+&layout.join_summon_invite_sent [v(d.bf)]=strcat(moniker(%0) has been issued an invitation to %2 you, %b, switch(%2, summon, to, in), %b, ansi(h, name(%3)), . It is [prettytime()] and this invitation will expire in [first(secs2hrs(v(d.meeting-timeout)))]. [if(cand(not(ulocal(lock.allowed_ic, %0)), not(ulocal(f.is-location-ooc, %3))), You are not yet approved and may be heading into an IC location.)])
+
+&c.+join [v(d.bc)]=$+join *:@assert t(setr(P, ulocal(f.find-player, %0, %#)))={ @trigger me/tr.error=%#, Can't find a player named '%0'.; }; @break match(%qP, %#)={ @trigger me/tr.error=%#, You can't join yourself.; }; @break match(loc(%qP), %l)={ @trigger me/tr.error=%#, cat(You are already at, ulocal(f.get-name, %qP)'s location.); }; @assert cor(ulocal(lock.allowed_ic, %#), ulocal(f.is-location-ooc, loc(%qP)), ulocal(lock.isstaff, %qP))={ @trigger me/tr.error=%#, You are not approved so can't use +join to go IC. Try asking a staffer to bring you - they can override this rule - or meet your friend somewhere OOC.; }; @assert ulocal(f.has-invited-player, %#, %qP, join)={ @trigger me/tr.message=%qP, ulocal(layout.join_summon_invite, %#, %qP, join, loc(%qP)); &_invite-summon-%# %qP=secs(); @trigger me/tr.message=%#, ulocal(layout.join_summon_invite_sent, %qP, %#, summon, loc(%qP)); }; @trigger me/tr.travel_to_destination=loc(%qP), %#, %qP, joining;
+
+&c.+return [v(d.bc)]=$+return *:@assert t(setr(P, ulocal(f.find-player, %0, %#)))={ @trigger me/tr.error=%#, Can't find a player named '%0'.; }; @break match(%qP, %#)={ @break match(default(%qP/_last-location, v(d.default-ooc-room)), %l)={ @trigger me/tr.error=%#, You are already at the destination.; }; @trigger me/tr.travel_to_destination=default(%qP/_last-location, v(d.default-ooc-room)), %qP; }; @break match(default(%qP/_last-location, v(d.default-ooc-room)), %l)={ @trigger me/tr.error=%#, ulocal(f.get-name, %qP) is already at the destination.; };  @assert isstaff(%#)={ @trigger me/tr.message=%#, Only staff can send other players back.; }; @trigger me/tr.travel_to_destination=default(%qP/_last-location, v(d.default-ooc-room)), %qP, %#, returned by;
+
+&c.+summon [v(d.bc)]=$+summon *:@assert t(setr(P, ulocal(f.find-player, %0, %#)))={ @trigger me/tr.error=%#, Can't find a player named '%0'.; }; @break match(%qP, %#)={ @trigger me/tr.error=%#, You can't summon yourself.; }; @break match(loc(%qP), %l)={ @trigger me/tr.error=%#, ulocal(f.get-name, %qP) is already at the destination.; }; @assert cor(ulocal(lock.allowed_ic, %qP), ulocal(f.is-location-ooc, %l), ulocal(lock.isstaff, %#))={ @trigger me/tr.error=%#, You are not approved so can't use +summon to bring unapproved players IC. Try asking a staffer to bring them - they can override this rule - or meet your friend somewhere OOC.; }; @assert ulocal(f.has-invited-player, %#, %qP, summon)={ @trigger me/tr.message=%qP, ulocal(layout.join_summon_invite, %#, %qP, summon, %l); &_invite-join-%# %qP=secs(); @trigger me/tr.message=%#, ulocal(layout.join_summon_invite_sent, %qP, %#, join, %l); }; @trigger me/tr.travel_to_destination=%l, %qP, %#, summoned by;
 
 &c.+ooc [v(d.bc)]=$+ooc:@trigger me/tr.travel_to_destination=default(%#/_last-ooc-location, v(d.default-ooc-room)), %#;
 

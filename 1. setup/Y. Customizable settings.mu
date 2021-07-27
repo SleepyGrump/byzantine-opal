@@ -156,3 +156,6 @@
 
 &d.default-out-exit [v(d.bd)]=Out <O>;o;out;exit;
 
+@@ If yours is the kind of place where you're fine with players who haven't been approved going through character generation, flip this flag to a 1 and they'll be able to wander around on the IC grid. Most places want at least a little staff involvement with that before letting them wander where they might interfere with roleplay, but some places don't have a definition of IC, or might be fine with allowing players on the grid but not allowing them to pose, etc. Note that this setting affects +travel, +summon, +join, +meet, etc - if disabled, unapproved characters will not be able to use code to get IC. (Staff can still summon them IC, of course.)
+&d.allow-unapproved-players-IC [v(d.bd)]=0
+
