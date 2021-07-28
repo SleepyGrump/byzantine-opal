@@ -248,6 +248,14 @@
 
 &f.is-player-on-redirected-channel [v(d.bf)]=member(cwho(v(d.redirect-poses.%1)), %0)
 
+&f.get-channel-alias [v(d.bf)]=if(t(v(d.channel-functions)), ulocal(v(d.channel-functions)/f.get-channel-alias-by-name, %0), switch(%0, Chargen, cg, Staff, st, strtrunc(lcstr(%0), 3)))
+
+&f.gag-poses-in-quiet-rooms [v(d.bf)]=not(ulocal(f.is-target-room-gagged, loc(%#)))
+
+&f.forward-poses [v(d.bf)]=if(ulocal(f.is-redirected-to-channel, loc(%#)), trigger(me/tr.redirect-emit-to-channel, loc(%#), %m, %#))
+
+&f.parse_emit [v(d.bf)]=strcat(switch(%1, *[moniker(%0)]*, %1, strcat(moniker(%0), switch(%1, :*, %b[rest(%1, :)], ;*, rest(%1, ;), pose/*, rest(%1), pose *, %b[rest(%1)], npose *, %b[rest(%1)], "*, %bsays "[rest(%1, ")]", say*, %bsays "[rest(%1)]", nsay*, %bsays "[rest(%1)]", @emit* *, : [rest(%1)], @remit* *=*, : [rest(%1, =)], @remit *, : [rest(%1)], \\*, : [trim(%1, l, \\\\\\\\)], %1))), if(not(%2), %b--- [capstr(subj(%0))] [switch(subj(%0), they, are, is)] not on this channel and cannot see replies%, but [switch(subj(%0), they, have, has)] been invited to join.))
+
 @@ %0: Sender
 @@ %1: Target
 &f.can-sender-message-target [v(d.bf)]=cor(isstaff(%0), member(xget(%1, whitelisted-PCs), %0), not(cor(t(xget(%1, block-all)), member(xget(%1, blocked-PCs), %0))))
@@ -263,7 +271,7 @@
 
 &tr.success [v(d.bf)]=@pemit %0=cat(alert(Success), %1);
 
-&tr.redirect-emit-to-channel [v(d.bf)]=@cemit v(d.redirect-poses.%0)=ulocal(f.parse_emit, %2, %1); @assert ulocal(f.is-player-on-redirected-channel, %2, %0)={ @trigger me/tr.message=%2, You aren't seeing the whole conversation. All emits in this location are piped to the [v(d.redirect-poses.%0)] channel. %chaddcom <alias>=[v(d.redirect-poses.%0)]%cn to join in!; };
+&tr.redirect-emit-to-channel [v(d.bf)]=@cemit v(d.redirect-poses.%0)=ulocal(f.parse_emit, %2, %1, ulocal(f.is-player-on-redirected-channel, %2, %0)); @assert ulocal(f.is-player-on-redirected-channel, %2, %0)={ @trigger me/tr.message=%2, You aren't seeing the whole conversation. All emits in this location are piped to the [setr(C, v(d.redirect-poses.%0))] channel. %chaddcom [ulocal(f.get-channel-alias, %qC)]=%qC%cn to join in!; };
 
 &tr.remit [v(d.bf)]=@break ulocal(f.is-redirected-to-channel, %0)={ @trigger me/tr.redirect-emit-to-channel=%0, %1, %2; }; @break ulocal(f.is-target-room-gagged, %0)={ @trigger me/tr.error=%2, You can't use this command in here. This room is set quiet.; }; @remit %0=%1;
 
