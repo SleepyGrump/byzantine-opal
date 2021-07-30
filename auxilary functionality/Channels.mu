@@ -14,6 +14,8 @@
 
 Commands:
 
+	All commands can be called with +com as well as +channel.
+
 	+channel - list all channels
 	+channel/join <title> - join a channel with the default alias
 	+channel/join <title>=<password> - join a password-protected channel
@@ -63,8 +65,12 @@ Only the owner (or staff) can perform the following commands:
 
 TODO: Find channel by alias as well as by name. Add +ch or +com as shortcuts for channel. Investigate the rest of the ridiculously unmemorable commands and write aliases for those.
 
+Think about incorporating clearcom as a fix for "hey my aliases are borked". Shouldn't come up often though - only applies to deleted channels.
+
 Changes:
 2021-07-29:
+ - Cleaned up logging
+ - Fixed a bug where the channel name didn't come across correctly if it was all-lowercased.
  - Cleaned up +channel details so that lists of players don't give away who's who if the channel is spoofed.
  - Change +channel details to check whether the player has access to the channel; if not, don't show it.
  - Added +channel/title <channel>=<blah> - cuz @force me=comtitle alias=giant string of ansi is a little ridiculous.
@@ -138,7 +144,7 @@ Changes:
 
 @@ %0 - dbref of channel object
 @@ %1 - user
-&layout.channel-details [v(d.chf)]=strcat(setq(N, ulocal(f.get-channel-name, %0)), setq(O, ulocal(f.get-channel-owner, %0)), header(strcat(%qN channel details, if(isstaff(%1), %b%(%0%))), %1), %r, multicol(strcat(Owner:, |, ulocal(f.get-name, %qO, %1) %(%qO%), |, Description:, |, ulocal(f.get-channel-desc, %0), |, Status:, |, ulocal(f.get-channel-lock, %0), %,%b, ulocal(f.get-channel-spoof, %0), |, Connected members:, |, ulocal(layout.player-list, cwho(%qN, on), %1, %qN)), 20 *, 0, |, %1), if(ulocal(f.can-modify-channel, %1, %0), ulocal(layout.channel-admin-details, %0, %1, %qN)), %r, footer(, %1))
+&layout.channel-details [v(d.chf)]=strcat(setq(N, ulocal(f.get-channel-name, %0)), setq(O, ulocal(f.get-channel-owner, %0)), header(strcat(%qN channel details, if(isstaff(%1), %b%(%0%))), %1), %r, multicol(strcat(Owner:, |, ulocal(f.get-name, %qO, %1) %(%qO%), |, Default alias:, |, ulocal(f.get-channel-alias-by-name, %qN), |, Description:, |, ulocal(f.get-channel-desc, %0), |, Status:, |, ulocal(f.get-channel-lock, %0), %,%b, ulocal(f.get-channel-spoof, %0), |, Connected members:, |, ulocal(layout.player-list, cwho(%qN, on), %1, %qN)), 20 *, 0, |, %1), if(ulocal(f.can-modify-channel, %1, %0), ulocal(layout.channel-admin-details, %0, %1, %qN)), %r, footer(, %1))
 
 @@ %0 - dbref of channel object
 @@ %1 - user
@@ -242,7 +248,7 @@ Changes:
 @@ %qN (dbref of channel)
 @@ %qT (true name of channel)
 @@ Error string
-&f.get-channel-by-name-error [v(d.chf)]=strcat(setq(N, ulocal(f.get-channel-dbref, setr(T, ulocal(f.clean-channel-name, %1)))), if(not(t(%qN)), Could not find channel '%1'. Please use the exact name of the channel you wish to view., if(t(%2), ulocal(f.has-access-to-channel-error, %0, %1, %qN, %1))))
+&f.get-channel-by-name-error [v(d.chf)]=strcat(setq(N, ulocal(f.get-channel-dbref, setr(T, ulocal(f.clean-channel-name, %1)))), if(not(t(%qN)), Could not find channel '%1'. Please use the exact name of the channel you wish to view., if(strcat(t(%2), setq(T, ulocal(f.get-channel-name, %qN))), ulocal(f.has-access-to-channel-error, %0, %1, %qN, %1))))
 
 &f.has-access-to-channel-error [v(d.chf)]=if(not(t(member(ulocal(f.get-channels, %0), %2))), Could not find channel '%3'. Please use the exact name of the channel you wish to view.)
 
@@ -253,6 +259,10 @@ Changes:
 &cmd-+channel [v(d.chc)]=$+channel*:@switch setr(E, strcat(setq(C, ulocal(f.find-command-switch, %0)), if(not(t(%qC)), Could not find command: +channel%0)))=, { @trigger me/%qC=%#, %0; }, { @pemit %#=ulocal(layout.error, %qE); }
 
 @set [v(d.chc)]/cmd-+channel=no_parse
+
+&cmd-+com [v(d.chc)]=$+com*:@switch setr(E, strcat(setq(C, ulocal(f.find-command-switch, %0)), if(not(t(%qC)), Could not find command: +com%0)))=, { @trigger me/%qC=%#, %0; }, { @pemit %#=ulocal(layout.error, %qE); }
+
+@set [v(d.chc)]/cmd-+com=no_parse
 
 @@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
 @@ Command switches
@@ -317,13 +327,19 @@ Changes:
 @@ Input:
 @@ %0 - %#
 @@ %1 - channel title
-&tr.channel-join [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), setq(A, comalias(%0, %qT)), if(not(t(%qA)), setq(D, ulocal(f.get-channel-alias-by-name, %qT)))))))=, { @switch t(%qA)=1, { @force %0={ %qA on; }; }, { @force %0={ addcom %qD=%qT }; }; @assert t(setr(D, comalias(%0, %qT))); @pemit %0=strcat(ulocal(layout.msg, Joined %qT with alias %qD. A quick refresher on the commands:%R%T%qD <stuff> - talk on channel%R%T%qD off - leave channel%R%T%qD on - join channel%R%T%qD who - see who's on%R%T%qD last 10 - see last 10 messages)); }, { @pemit %0=ulocal(layout.error, %qE); }
+&tr.channel-join [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), setq(A, comalias(%0, %qT)), if(not(t(%qA)), setq(A, ulocal(f.get-channel-alias-by-name, %qT))), %b, if(match(cwho(%qT), %0), You are already on %qT.)))))=,{ @switch t(comalias(%0, %qT))=1, { @force %0={ %qA on; }; }, { @force %0={ addcom %qA=%qT; }; }; @assert t(setr(A, comalias(%0, %qT))); @pemit %0=strcat(ulocal(layout.msg, Joined %qT with alias %qA. A quick refresher on the commands:%R%T%qA <stuff> - talk on channel%R%T%qA off - leave channel temporarily%R%T%qA on - return to the channel%R%T%qA who - see who's on%R%T%qA last 10 - see last 10 messages)); }, { @pemit %0=ulocal(layout.error, %qE); }
 
 @@ Input:
 @@ %0 - %#
 @@ %1 - channel title
 @@ %2 - password
 &tr.channel-join-with-password [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1), setq(A, comalias(%0, %qT)), if(not(t(%qA)), setq(D, ulocal(f.get-channel-alias-by-name, %qT)))))))=, { @set %0=_channel-password-%qN:%2; @switch t(%qA)=1, { @force %0={ %qA on; }; }, { @force %0={ addcom %qD=%qT }; }; @assert t(setr(D, comalias(%0, %qT))); @pemit %0=strcat(ulocal(layout.msg, Joined %qT with alias %qD. A quick refresher on the commands:%R%T%qD <stuff> - talk on channel%R%T%qD off - leave channel%R%T%qD on - join channel%R%T%qD who - see who's on%R%T%qD last 10 - see last 10 messages)); }, { @pemit %0=ulocal(layout.error, %qE); }
+
+@@ Input:
+@@ %0 - %#
+@@ %1 - channel dbref
+@@ %2 - action
+&tr.log-channel-history [v(d.chc)]=@set %vD=channel.%1:[trim(strcat(xget(%vD, channel.%1), %r, prettytime() >, %b, moniker(%0) %(%0%):, %b, %2), b, %r)];
 
 @@ Input:
 @@ %0 - %#
@@ -334,85 +350,94 @@ Changes:
 @@ Input:
 @@ %0 - %#
 @@ %1 - channel title
-&tr.channel-create [v(d.chc)]=@switch setr(E, trim(squish(strcat(if(not(ulocal(f.can-create-channels, %0)), You are not allowed to create channels. This could be because players are not permitted to create channels or because you have already created your max quota of channels.), %b, if(not(t(setr(T, ulocal(f.clean-channel-name, first(%1, =))))), You need to include a title for the new channel.), %b, if(t(ulocal(f.is-banned-name, %qT)), You can't use the name '%qT' because it is in use or not allowed.), setq(D, rest(%1, =))))))=, { @switch setr(E, if(t(setr(N, create(%qT Channel Object, 10))),, Could not create '%qT Channel Object'. %qN))=, { @set %vD=channel.%qN:[strcat(%qT was created by, %b, moniker(%0) %(%0%) on, %b, time()., if(t(%qD), %bIts description was set to: '%qD'.))]; @set %qN=channel-name:%qT; @set %qN=channel-alias:[if(ulocal(f.is-banned-alias, setr(A, ulocal(f.get-channel-alias-by-name, %qT))), setr(A, lcstr(%qT)), %qA)]; @set %qN=creator-dbref:%0; @ccreate %qT; @cset/object %qT=%qN; @desc %qN=[if(t(%qD), %qD, The '%qT' channel.)]; @cset/log %qT=200; @cset/timestamp_logs %qT=1; @cset/private %qT; @set %0=_channels-created:[setunion(%qN, xget(%0, _channels-created))]; @set %qN=channel.lock-status:Private; @pemit %0=strcat(ulocal(layout.msg, Channel '%qT' created.), %r, ulocal(layout.msg, The channel has been automatically set 'Private'. +channel/public %qT if you want to change it.), %r, ulocal(layout.msg, This channel was automatically set 'Nospoof'. You can allow spoofing with +channel/spoof %qT.), %r, ulocal(layout.msg, To set your channel header%, type +channel/header %qT=<your decorative header containing %qT for the channel name>. Color codes are allowed. Headers may be a max of 100 characters long.), %r, ulocal(layout.msg, The default alias of your new channel is %qA. To change this%, type +channel/alias %qT=<your alias>. Aliases should be 2-3 characters long.)); addcom %qA=%qT; }, { @pemit %0=ulocal(layout.error, %qE); }; }, { @pemit %0=ulocal(layout.error, %qE); }
+&tr.channel-create [v(d.chc)]=@switch setr(E, trim(squish(strcat(if(not(ulocal(f.can-create-channels, %0)), You are not allowed to create channels. This could be because players are not permitted to create channels or because you have already created your max quota of channels.), %b, if(not(t(setr(T, ulocal(f.clean-channel-name, first(%1, =))))), You need to include a title for the new channel.), %b, if(t(ulocal(f.is-banned-name, %qT)), You can't use the name '%qT' because it is in use or not allowed.), setq(D, rest(%1, =))))))=, { @switch setr(E, if(t(setr(N, create(%qT Channel Object, 10))),, Could not create '%qT Channel Object'. %qN))=, { @trigger me/tr.channel-created-or-claimed=%0, %qT, %qN, %qD; @trigger me/tr.log-channel-history=%0, %qN, Created.;  @pemit %0=strcat(ulocal(layout.msg, strcat(Channel '%qT' created., %r%t The channel has been automatically set 'Private'. +channel/public %qT if you want to change it., %r%t, This channel was automatically set 'Nospoof'. You can allow spoofing with +channel/spoof %qT., %r%t, To set your channel header%, type +channel/header %qT=<your decorative header containing %qT for the channel name>. Color codes are allowed. Headers may be a max of 100 characters long., %r%t, The default alias of your new channel is %qA. To change this%, type +channel/alias %qT=<your alias>. Aliases should be 2-3 characters long.))); }, { @pemit %0=ulocal(layout.error, %qE); }; }, { @pemit %0=ulocal(layout.error, %qE); }
+
+
+@@ Input:
+@@ %0 - %#
+@@ %1 - channel title
+@@ %2 - channel dbref
+@@ %3 - channel description
+&tr.channel-created-or-claimed [v(d.chc)]=@set %2=channel-name:%1; @set %2=channel-alias:[if(ulocal(f.is-banned-alias, setr(A, ulocal(f.get-channel-alias-by-name, %1))), setr(A, lcstr(%1)), %qA)]; @set %2=creator-dbref:%0; @ccreate %1; @cset/object %1=%2; @desc %2=[if(t(%3), %3, The '%1' channel.)]; @cset/log %1=200; @cset/timestamp_logs %1=1; @cset/private %1; @set %0=_channels-created:[setunion(%2, xget(%0, _channels-created))]; @set %2=channel.lock-status:Private; addcom %qA=%1;
+
 
 @@ Input:
 @@ %0 - %#
 @@ %1 - channel title
 @@ %2 - header
-&tr.channel-header [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), %b, if(not(ulocal(f.can-modify-channel, %0, %qN)), You are not staff or the owner of the channel '%qT' and cannot change it.), %b, if(not(t(%2)), You need to include a header value for the channel.), %b, if(gt(strlen(%2), 100), Channel headers are limited to a max of 100 characters by hardcode.)))))=, { @set %vD=channel.%qN:[strcat(xget(%vD, channel.%qN), %b, Header changed to '%2' on, %b, time(), %b, by, %b, moniker(%0) %(%0%).)]; @force me=@cset/header %qT=%2; @pemit %0=ulocal(layout.msg, Changed the header of '%qT' to '%2'.); }, { @pemit %0=ulocal(layout.error, %qE); }
+&tr.channel-header [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), %b, if(not(ulocal(f.can-modify-channel, %0, %qN)), You are not staff or the owner of the channel '%qT' and cannot change it.), %b, if(not(t(%2)), You need to include a header value for the channel.), %b, if(gt(strlen(%2), 100), Channel headers are limited to a max of 100 characters by hardcode.)))))=, { @force me=@cset/header %qT=%2; @pemit %0=ulocal(layout.msg, Changed the header of '%qT' to '%2'.); }, { @pemit %0=ulocal(layout.error, %qE); }
 
 @@ Input:
 @@ %0 - %#
 @@ %1 - channel title
 @@ %2 - description
-&tr.channel-desc [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), %b, if(not(ulocal(f.can-modify-channel, %0, %qN)), You are not staff or the owner of the channel '%qT' and cannot change it.), setq(D, if(not(t(%2)), The '%qT' channel., %2))))))=, { @set %vD=channel.%qN:[strcat(xget(%vD, channel.%qN), %b, Desc changed to '%qD' on, %b, time(), %b, by, %b, moniker(%0) %(%0%).)]; @desc %qN=%qD; @pemit %0=ulocal(layout.msg, Changed the desc of '%qT' to '%qD'.); }, { @pemit %0=ulocal(layout.error, %qE); }
+&tr.channel-desc [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), %b, if(not(ulocal(f.can-modify-channel, %0, %qN)), You are not staff or the owner of the channel '%qT' and cannot change it.), setq(D, if(not(t(%2)), The '%qT' channel., %2))))))=, { @desc %qN=%qD; @pemit %0=ulocal(layout.msg, Changed the desc of '%qT' to '%qD'.); }, { @pemit %0=ulocal(layout.error, %qE); }
 
 @@ Input:
 @@ %0 - %#
 @@ %1 - channel title
 @@ %2 - alias
-&tr.channel-alias [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), %b, if(t(ulocal(f.is-banned-alias, %2)), You can't use the alias '%2' because it is already in use.), %b, if(not(ulocal(f.can-modify-channel, %0, %qN)), You are not staff or the owner of the channel '%qT' and cannot change it.), setq(D, if(not(t(%2)), The '%qT' channel., %2))))))=, { @set %vD=channel.%qN:[strcat(xget(%vD, channel.%qN), %b, Alias changed to '%qD' on, %b, time(), %b, by, %b, moniker(%0) %(%0%).)]; &channel-alias %qN=%qD; @pemit %0=ulocal(layout.msg, Changed the alias of '%qT' to '%qD'.); }, { @pemit %0=ulocal(layout.error, %qE); }
+&tr.channel-alias [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), %b, if(t(ulocal(f.is-banned-alias, %2)), You can't use the alias '%2' because it is already in use.), %b, if(not(ulocal(f.can-modify-channel, %0, %qN)), You are not staff or the owner of the channel '%qT' and cannot change it.), setq(D, if(not(t(%2)), The '%qT' channel., %2))))))=, { &channel-alias %qN=%qD; @pemit %0=ulocal(layout.msg, Changed the alias of '%qT' to '%qD'.); }, { @pemit %0=ulocal(layout.error, %qE); }
 
 @@ Input:
 @@ %0 - %#
 @@ %1 - channel title
-&tr.channel-public [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), %b, if(not(ulocal(f.can-modify-channel, %0, %qN)), You are not staff or the owner of the channel '%qT' and cannot change it.)))))=, { @set %vD=channel.%qN:[strcat(xget(%vD, channel.%qN), %b, Set public on, %b, time(), %b, by, %b, moniker(%0) %(%0%).)]; @cset/public %qT; @cpflags %qT=join; @set %qN=channel.lock:; @set %qN=channel.lock-status:Public; @set %qN=!INHERIT; @unlock %qN; @set %qN=channel-password:;  @pemit %0=ulocal(layout.msg, Changed '%qT' to 'Public'.); }, { @pemit %0=ulocal(layout.error, %qE); }
+&tr.channel-public [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), %b, if(not(ulocal(f.can-modify-channel, %0, %qN)), You are not staff or the owner of the channel '%qT' and cannot change it.)))))=, { @trigger me/tr.log-channel-history=%0, %qN, Set public.; @cset/public %qT; @cpflags %qT=join; @set %qN=channel.lock:; @set %qN=channel.lock-status:Public; @set %qN=!INHERIT; @unlock %qN; @set %qN=channel-password:;  @pemit %0=ulocal(layout.msg, Changed '%qT' to 'Public'.); }, { @pemit %0=ulocal(layout.error, %qE); }
 
 @@ Input:
 @@ %0 - %#
 @@ %1 - channel title
-&tr.channel-private [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), %b, if(not(ulocal(f.can-modify-channel, %0, %qN)), You are not staff or the owner of the channel '%qT' and cannot change it.)))))=, { @set %vD=channel.%qN:[strcat(xget(%vD, channel.%qN), %b, Set private on, %b, time(), %b, by, %b, moniker(%0) %(%0%).)]; @set %qN=channel.lock-status:Private; @cset/private %qT; @cpflags %qT=join; @set %qN=channel.lock:; @set %qN=!INHERIT; @unlock %qN; @set %qN=channel-password:; @pemit %0=ulocal(layout.msg, Changed '%qT' to 'Private'.); }, { @pemit %0=ulocal(layout.error, %qE); }
+&tr.channel-private [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), %b, if(not(ulocal(f.can-modify-channel, %0, %qN)), You are not staff or the owner of the channel '%qT' and cannot change it.)))))=, { @trigger me/tr.log-channel-history=%0, %qN, Set private.; @set %qN=channel.lock-status:Private; @cset/private %qT; @cpflags %qT=join; @set %qN=channel.lock:; @set %qN=!INHERIT; @unlock %qN; @set %qN=channel-password:; @pemit %0=ulocal(layout.msg, Changed '%qT' to 'Private'.); }, { @pemit %0=ulocal(layout.error, %qE); }
 
 @@ Input:
 @@ %0 - %#
 @@ %1 - channel title
-&tr.channel-staff [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), %b, if(not(ulocal(f.can-modify-channel, %0, %qN)), You are not staff or the owner of the channel '%qT' and cannot change it.)))))=, { @set %vD=channel.%qN:[strcat(xget(%vD, channel.%qN), %b, Set private and staff-only on, %b, time(), %b, by, %b, moniker(%0) %(%0%).)]; @set %qN=channel.lock-status:Staff-only; @cset/private %qT; @lock %qN=CHAN-LOCK/1; @set %qN=CHAN-LOCK:isstaff\(\%#); @cpflags %qT=!join; @set %qN=!INHERIT; @set %qN=channel.lock:isstaff\(\%0\); @set %qN=channel-password:; @pemit %0=ulocal(layout.msg, Changed '%qT' to 'Staff-only'.); }, { @pemit %0=ulocal(layout.error, %qE); }
+&tr.channel-staff [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), %b, if(not(ulocal(f.can-modify-channel, %0, %qN)), You are not staff or the owner of the channel '%qT' and cannot change it.)))))=, { @trigger me/tr.log-channel-history=%0, %qN, Set staff-only.; @set %qN=channel.lock-status:Staff-only; @cset/private %qT; @lock %qN=CHAN-LOCK/1; @set %qN=CHAN-LOCK:isstaff\(\%#); @cpflags %qT=!join; @set %qN=!INHERIT; @set %qN=channel.lock:isstaff\(\%0\); @set %qN=channel-password:; @pemit %0=ulocal(layout.msg, Changed '%qT' to 'Staff-only'.); }, { @pemit %0=ulocal(layout.error, %qE); }
 
 @@ Input:
 @@ %0 - %#
 @@ %1 - channel title
-&tr.channel-approved [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), %b, if(not(ulocal(f.can-modify-channel, %0, %qN)), You are not staff or the owner of the channel '%qT' and cannot change it.)))))=, { @set %vD=channel.%qN:[strcat(xget(%vD, channel.%qN), %b, Set private and approved-only on, %b, time(), %b, by, %b, moniker(%0) %(%0%).)]; @set %qN=channel.lock-status:Approved-only; @cset/private %qT; @lock %qN=CHAN-LOCK/1; @set %qN=CHAN-LOCK:isapproved\(\%#); @cpflags %qT=!join; @set %qN=!INHERIT; @set %qN=channel.lock:isapproved\(\%0\); @set %qN=channel-password:; @pemit %0=ulocal(layout.msg, Changed '%qT' to 'Approved-only'.); }, { @pemit %0=ulocal(layout.error, %qE); }
+&tr.channel-approved [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), %b, if(not(ulocal(f.can-modify-channel, %0, %qN)), You are not staff or the owner of the channel '%qT' and cannot change it.)))))=, { @trigger me/tr.log-channel-history=%0, %qN, Set approved-only.; @set %qN=channel.lock-status:Approved-only; @cset/private %qT; @lock %qN=CHAN-LOCK/1; @set %qN=CHAN-LOCK:isapproved\(\%#); @cpflags %qT=!join; @set %qN=!INHERIT; @set %qN=channel.lock:isapproved\(\%0\); @set %qN=channel-password:; @pemit %0=ulocal(layout.msg, Changed '%qT' to 'Approved-only'.); }, { @pemit %0=ulocal(layout.error, %qE); }
 
 @@ Input:
 @@ %0 - %#
 @@ %1 - channel title
 @@ %2 - channel password
-&tr.channel-password [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), %b, if(not(ulocal(f.can-modify-channel, %0, %qN)), You are not staff or the owner of the channel '%qT' and cannot change it.), %b, if(not(t(%2)), You must specify a password if you want to password-protect the channel.)))))=, { @set %vD=channel.%qN:[strcat(xget(%vD, channel.%qN), %b, Set private and password-protected on, %b, time(), %b, by, %b, moniker(%0) %(%0%).)]; @set %qN=channel.lock-status:Password-protected; @cset/private %qT; @lock %qN=CHAN-LOCK/1; @set %qN=CHAN-LOCK:match\(xget\(\%#, _channel-password-%qN), %2\); @set %qN=channel-password:%2; @cpflags %qT=!join; @set %qN=channel.lock:match\(xget\(\%0, _channel-password-%qN), %2\); @set %qN=INHERIT; @pemit %0=ulocal(layout.msg, Changed '%qT' to password-protected with the password '%2'.); }, { @pemit %0=ulocal(layout.error, %qE); }
+&tr.channel-password [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), %b, if(not(ulocal(f.can-modify-channel, %0, %qN)), You are not staff or the owner of the channel '%qT' and cannot change it.), %b, if(not(t(%2)), You must specify a password if you want to password-protect the channel.)))))=, { @trigger me/tr.log-channel-history=%0, %qN, Set password-protected.; @set %qN=channel.lock-status:Password-protected; @cset/private %qT; @lock %qN=CHAN-LOCK/1; @set %qN=CHAN-LOCK:match\(xget\(\%#, _channel-password-%qN), %2\); @set %qN=channel-password:%2; @cpflags %qT=!join; @set %qN=channel.lock:match\(xget\(\%0, _channel-password-%qN), %2\); @set %qN=INHERIT; @pemit %0=ulocal(layout.msg, Changed '%qT' to password-protected with the password '%2'.); }, { @pemit %0=ulocal(layout.error, %qE); }
 
 @@ Input:
 @@ %0 - %#
 @@ %1 - channel title
-&tr.channel-loud [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), %b, if(not(ulocal(f.can-modify-channel, %0, %qN)), You are not staff or the owner of the channel '%qT' and cannot change it.)))))=, { @set %vD=channel.%qN:[strcat(xget(%vD, channel.%qN), %b, Set loud on, %b, time(), %b, by, %b, moniker(%0) %(%0%).)]; @cset/loud %qT; @pemit %0=ulocal(layout.msg, Changed '%qT' to 'Loud'.); }, { @pemit %0=ulocal(layout.error, %qE); }
+&tr.channel-loud [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), %b, if(not(ulocal(f.can-modify-channel, %0, %qN)), You are not staff or the owner of the channel '%qT' and cannot change it.)))))=, { @cset/loud %qT; @pemit %0=ulocal(layout.msg, Changed '%qT' to 'Loud'.); }, { @pemit %0=ulocal(layout.error, %qE); }
 
 @@ Input:
 @@ %0 - %#
 @@ %1 - channel title
-&tr.channel-quiet [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), %b, if(not(ulocal(f.can-modify-channel, %0, %qN)), You are not staff or the owner of the channel '%qT' and cannot change it.)))))=, { @set %vD=channel.%qN:[strcat(xget(%vD, channel.%qN), %b, Set quiet on, %b, time(), %b, by, %b, moniker(%0) %(%0%).)]; @cset/quiet %qT; @pemit %0=ulocal(layout.msg, Changed '%qT' to 'Quiet'.); }, { @pemit %0=ulocal(layout.error, %qE); }
+&tr.channel-quiet [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), %b, if(not(ulocal(f.can-modify-channel, %0, %qN)), You are not staff or the owner of the channel '%qT' and cannot change it.)))))=, { @cset/quiet %qT; @pemit %0=ulocal(layout.msg, Changed '%qT' to 'Quiet'.); }, { @pemit %0=ulocal(layout.error, %qE); }
 
 @@ Input:
 @@ %0 - %#
 @@ %1 - channel title
-&tr.channel-spoof [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), %b, if(not(ulocal(f.can-modify-channel, %0, %qN)), You are not staff or the owner of the channel '%qT' and cannot change it.)))))=, { @set %vD=channel.%qN:[strcat(xget(%vD, channel.%qN), %b, Set spoofable on, %b, time(), %b, by, %b, moniker(%0) %(%0%).)]; @cset/spoof %qT; @set %qN=channel-spoof:Spoofed; @pemit %0=ulocal(layout.msg, Changed '%qT' to 'Spoofable'.); }, { @pemit %0=ulocal(layout.error, %qE); }
+&tr.channel-spoof [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), %b, if(not(ulocal(f.can-modify-channel, %0, %qN)), You are not staff or the owner of the channel '%qT' and cannot change it.)))))=, { @trigger me/tr.log-channel-history=%0, %qN, Set spoof.; @cset/spoof %qT; @set %qN=channel-spoof:Spoofed; @pemit %0=ulocal(layout.msg, Changed '%qT' to 'Spoofable'.); }, { @pemit %0=ulocal(layout.error, %qE); }
 
 @@ Input:
 @@ %0 - %#
 @@ %1 - channel title
-&tr.channel-nospoof [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), %b, if(not(ulocal(f.can-modify-channel, %0, %qN)), You are not staff or the owner of the channel '%qT' and cannot change it.)))))=, { @set %vD=channel.%qN:[strcat(xget(%vD, channel.%qN), %b, Set non-spoofable on, %b, time(), %b, by, %b, moniker(%0) %(%0%).)]; @cset/nospoof %qT; @set %qN=channel-spoof:; @pemit %0=ulocal(layout.msg, Changed '%qT' to 'Non-spoofable'.); }, { @pemit %0=ulocal(layout.error, %qE); }
+&tr.channel-nospoof [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), %b, if(not(ulocal(f.can-modify-channel, %0, %qN)), You are not staff or the owner of the channel '%qT' and cannot change it.)))))=, { @trigger me/tr.log-channel-history=%0, %qN, Set no-spoof.; @cset/nospoof %qT; @set %qN=channel-spoof:; @pemit %0=ulocal(layout.msg, Changed '%qT' to 'Non-spoofable'.); }, { @pemit %0=ulocal(layout.error, %qE); }
 
 
 @@ Input:
 @@ %0 - %#
 @@ %1 - channel title
 @@ %2 - existing log object (if exists)
-&tr.channel-claim [v(d.chc)]=@assert isstaff(%0)={ @pemit %0=ulocal(layout.error, Staff only.); }; @assert t(comalias(%0, %1))={ @pemit %0=ulocal(layout.error, Can't find a channel you joined named '%1'. Please enter the exact name of the channel - it is case sensitive - and make sure you have joined the channel.); }; @assert cor(cand(isdbref(%2), match(type(%2), THING), t(setr(N, %2))), t(setr(N, create(%1 Channel Object, 10))))={ @pemit %0=ulocal(layout.error, if(t(%2), '%2' is not a valid channel log object., Could not create '%1 Channel Object'.)); }; @set %vD=channel.%qN:[strcat(%1 was claimed by, %b, moniker(%0) %(%0%) on, %b, time().)]; @set %qN=channel-name:%1; @set %qN=creator-dbref:%0; @cset/object %1=%qN; @desc %qN=[default(%qN/desc, The '%1' channel.)]; @cset/log %1=200; @cset/timestamp_logs %1=1; @set %0=_channels-created:[setunion(%qN, xget(%0, _channels-created))]; @set %vD=d.existing-channels:[setdiff(xget(%vD, d.existing-channels), %1, |)]; @pemit %0=ulocal(layout.msg, Channel '%1' claimed. It's yours now. Take good care of it!);
+&tr.channel-claim [v(d.chc)]=@assert isstaff(%0)={ @pemit %0=ulocal(layout.error, Staff only.); }; @assert t(comalias(%0, %1))={ @pemit %0=ulocal(layout.error, Can't find a channel you joined named '%1'. Please enter the exact name of the channel - it is case sensitive - and make sure you have joined the channel.); }; @assert cor(cand(isdbref(%2), match(type(%2), THING), t(setr(N, %2))), t(setr(N, create(%1 Channel Object, 10))))={ @pemit %0=ulocal(layout.error, if(t(%2), '%2' is not a valid channel log object., Could not create '%1 Channel Object'.)); }; @trigger me/tr.channel-created-or-claimed=%0, %1, %qN, if(t(%2), xget(%2, desc)); @set %vD=d.existing-channels:[setdiff(xget(%vD, d.existing-channels), %1, |)]; @trigger me/tr.log-channel-history=%0, %qN, Claimed.; @pemit %0=ulocal(layout.msg, Channel '%1' claimed. It's yours now. Take good care of it!);
 
 
 @@ Input:
 @@ %0 - %#
 @@ %1 - channel title
 @@ %2 - player the channel is to be given to
-&tr.channel-give [v(d.chc)]=@assert t(comalias(%0, %1))={ @pemit %0=ulocal(layout.error, Can't find a channel you joined named '%1'. Please enter the exact name of the channel - it is case sensitive - and make sure you have joined the channel.); }; @assert t(setr(P, switch(%2, me, %0, pmatch(%2))))={ @pemit %0=ulocal(layout.error, Cannot find a player named '%2'.); }; @assert ulocal(f.can-create-channels, %qP)={ @pemit %0=ulocal(layout.error, name(%qP) cannot create channels%, either because they are at the max number of channels already%, or because they are not approved%, or because player-owned channels are disabled.); }; @assert match(ulocal(f.get-channel-owner, %1), %0)={ @pemit %0=ulocal(layout.error, You must own the channel you're giving away.); }; @set %vD=channel.%qN:[strcat(%1 was given to, %b, moniker(%qP) %(%qP%) by, %b, moniker(%0) %(%0%) on, %b, time().)]; @set %qN=creator-dbref:%0; @set %0=_channels-created:[setdiff(%qN, xget(%0, _channels-created))]; @set %qP=_channels-created:[setunion(%qN, xget(%qP, _channels-created))]; @pemit %0=ulocal(layout.msg, Channel '%1' given to [moniker(%qP)]!); @pemit %qP=ulocal(layout.msg, moniker(%0) just gave you channel %qN to administer. Type +help Channels to find out more!);
+&tr.channel-give [v(d.chc)]=@assert t(comalias(%0, %1))={ @pemit %0=ulocal(layout.error, Can't find a channel you joined named '%1'. Please enter the exact name of the channel - it is case sensitive - and make sure you have joined the channel.); }; @assert t(setr(P, switch(%2, me, %0, pmatch(%2))))={ @pemit %0=ulocal(layout.error, Cannot find a player named '%2'.); }; @assert ulocal(f.can-create-channels, %qP)={ @pemit %0=ulocal(layout.error, name(%qP) cannot create channels%, either because they are at the max number of channels already%, or because they are not approved%, or because player-owned channels are disabled.); }; @assert match(ulocal(f.get-channel-owner, %1), %0)={ @pemit %0=ulocal(layout.error, You must own the channel you're giving away.); }; @trigger me/tr.log-channel-history=%0, %qN, Given to [ulocal(f.get-name, %qP)] (%qP).; @set %qN=creator-dbref:%0; @set %0=_channels-created:[setdiff(%qN, xget(%0, _channels-created))]; @set %qP=_channels-created:[setunion(%qN, xget(%qP, _channels-created))]; @pemit %0=ulocal(layout.msg, Channel '%1' given to [ulocal(f.get-name, %qP, %0)]!); @pemit %qP=ulocal(layout.msg, ulocal(f.get-name, %0, %qP) just gave you channel %qN to administer. Type +help Channels to find out more!);
 
 
 @@ Input:
@@ -428,8 +453,7 @@ Changes:
 @@ Input:
 @@ %0 - %#
 @@ %1 - title
-&tr.confirm-destroy [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), %b, if(not(ulocal(f.can-modify-channel, %0, %qN)), You are not staff or the owner of the channel '%qT' and cannot change it.)))))=, { @set %0=_channel-nuke:%qN|[secs()]; @pemit %0=ulocal(layout.msg, Before you continue%, make absolutely certain that %qT is the channel you want to destroy. There are [words(cwho(%1, on))] people on this channel. If you're absolutely certain you want to destroy this channel%, type +channel/destroy %qT=YES within the next 5 minutes. It is now [prettytime()].); }, { @pemit %0=ulocal(layout.error, %qE); }
-
+&tr.confirm-destroy [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), %b, if(not(ulocal(f.can-modify-channel, %0, %qN)), You are not staff or the owner of the channel '%qT' and cannot change it.)))))=, { @set %0=_channel-nuke:%qN|[secs()]; @pemit %0=ulocal(layout.msg, Before you continue%, make absolutely certain that %qT is the channel you want to destroy. There are [words(filter(filter.isplayer, cwho(%qT, on)))] people on this channel. If you're absolutely certain you want to destroy this channel%, type +channel/destroy %qT=YES within the next 5 minutes. It is now [prettytime()].); }, { @pemit %0=ulocal(layout.error, %qE); }
 
 @@ Input:
 @@ %0 - %#
