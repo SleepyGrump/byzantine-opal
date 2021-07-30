@@ -63,12 +63,23 @@ Only the owner (or staff) can perform the following commands:
 	&CHAN-LOCK <channel object>=match(xget(%#, group), My Secret Group)
 	@cpflags <ChannelName>=!join
 
-TODO: Find channel by alias as well as by name. Add +ch or +com as shortcuts for channel. Investigate the rest of the ridiculously unmemorable commands and write aliases for those.
+TODO: Investigate the rest of the ridiculously unmemorable commands and write aliases for those.
+	clearcom - reset all channel data (knocks you off them all, nukes all aliases, etc.)
+	@cboot
+	allcom - do a thing to all the channels, HMM.
+	@cemit
+	@comjoin - message shown on join
+	@comleave
+	@comon
+	@comoff
+	@speechmod
 
-Think about incorporating clearcom as a fix for "hey my aliases are borked". Shouldn't come up often though - only applies to deleted channels.
+TODO: Implement alias commands - pub/mute, etc.
 
 Changes:
 2021-07-29:
+ - ADDED MUTING OMG I HAVE WANTED THIS FOR SO LONG
+ - Find channels by alias!
  - Cleaned up logging
  - Fixed a bug where the channel name didn't come across correctly if it was all-lowercased.
  - Cleaned up +channel details so that lists of players don't give away who's who if the channel is spoofed.
@@ -128,6 +139,12 @@ Changes:
 
 &d.max-player-channels [v(d.cdb)]=1
 
+
+@@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
+@@ Fancy stuff
+@@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
+
+@aconnect [v(d.chc)]=@wipe %#/_mute-channel-*;
 
 @@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
 @@ Layouts
@@ -192,7 +209,7 @@ Changes:
 &f.can-modify-channel [v(d.chf)]=cor(isstaff(%0), cand(hasflag(%0, APPROVED), match(ulocal(f.get-channel-owner, %1), %0, |)))
 
 @@ %0 - title of channel
-&f.get-channel-dbref [v(d.chf)]=squish(trim(iter(lattr(%vD/channel.*), if(match(ulocal(f.get-channel-name, rest(itext(0), .)), %0, |), rest(itext(0), .)))))
+&f.get-channel-dbref [v(d.chf)]=squish(trim(iter(lattr(%vD/channel.*), if(cor(match(ulocal(f.get-channel-name, rest(itext(0), .)), %0, |), match(ulocal(f.get-channel-alias, rest(itext(0), .)), %0, |)), rest(itext(0), .)))))
 
 @@ %0 - dbref of channel
 &f.get-channel-owner [v(d.chf)]=xget(%0, creator-dbref)
@@ -276,6 +293,10 @@ Changes:
 
 &switch.1.title [v(d.chc)]=@trigger me/tr.channel-title=%0, first(rest(%1), =), rest(%1, =);
 
+&switch.1.mute [v(d.chc)]=@trigger me/tr.channel-mute=%0, rest(%1);
+
+&switch.1.unmute [v(d.chc)]=@trigger me/tr.channel-unmute=%0, rest(%1);
+
 &switch.1.create [v(d.chc)]=@trigger me/tr.channel-create=%0, rest(%1);
 
 &switch.2.header [v(d.chc)]=@trigger me/tr.channel-header=%0, before(rest(%1), =), rest(%1, =);
@@ -327,13 +348,13 @@ Changes:
 @@ Input:
 @@ %0 - %#
 @@ %1 - channel title
-&tr.channel-join [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), setq(A, comalias(%0, %qT)), if(not(t(%qA)), setq(A, ulocal(f.get-channel-alias-by-name, %qT))), %b, if(match(cwho(%qT), %0), You are already on %qT.)))))=,{ @switch t(comalias(%0, %qT))=1, { @force %0={ %qA on; }; }, { @force %0={ addcom %qA=%qT; }; }; @assert t(setr(A, comalias(%0, %qT))); @pemit %0=strcat(ulocal(layout.msg, Joined %qT with alias %qA. A quick refresher on the commands:%R%T%qA <stuff> - talk on channel%R%T%qA off - leave channel temporarily%R%T%qA on - return to the channel%R%T%qA who - see who's on%R%T%qA last 10 - see last 10 messages)); }, { @pemit %0=ulocal(layout.error, %qE); }
+&tr.channel-join [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), setq(A, comalias(%0, %qT)), if(not(t(%qA)), setq(A, ulocal(f.get-channel-alias-by-name, %qT))), %b, if(match(cwho(%qT), %0), You are already on %qT.)))))=,{ @switch t(comalias(%0, %qT))=1, { @force %0={ %qA on; }; }, { @force %0={ addcom %qA=%qT; }; }; @wipe %0/_mute-channel-%qN; @assert t(setr(A, comalias(%0, %qT))); @pemit %0=ulocal(layout.msg, Joined %qT with alias %qA. A quick refresher on the commands:%R%T%qA <stuff> - talk on channel%R%T%qA off - leave channel temporarily%R%T%qA on - return to the channel%R%T%qA who - see who's on%R%T%qA last 10 - see last 10 messages); }, { @pemit %0=ulocal(layout.error, %qE); }
 
 @@ Input:
 @@ %0 - %#
 @@ %1 - channel title
 @@ %2 - password
-&tr.channel-join-with-password [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1), setq(A, comalias(%0, %qT)), if(not(t(%qA)), setq(D, ulocal(f.get-channel-alias-by-name, %qT)))))))=, { @set %0=_channel-password-%qN:%2; @switch t(%qA)=1, { @force %0={ %qA on; }; }, { @force %0={ addcom %qD=%qT }; }; @assert t(setr(D, comalias(%0, %qT))); @pemit %0=strcat(ulocal(layout.msg, Joined %qT with alias %qD. A quick refresher on the commands:%R%T%qD <stuff> - talk on channel%R%T%qD off - leave channel%R%T%qD on - join channel%R%T%qD who - see who's on%R%T%qD last 10 - see last 10 messages)); }, { @pemit %0=ulocal(layout.error, %qE); }
+&tr.channel-join-with-password [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1), setq(A, comalias(%0, %qT)), if(not(t(%qA)), setq(D, ulocal(f.get-channel-alias-by-name, %qT)))))))=, { @set %0=_channel-password-%qN:%2; @switch t(%qA)=1, { @force %0={ %qA on; }; }, { @force %0={ addcom %qD=%qT }; }; @wipe %0/_mute-channel-%qN; @assert t(setr(D, comalias(%0, %qT))); @pemit %0=ulocal(layout.msg, Joined %qT with alias %qD. A quick refresher on the commands:%R%T%qD <stuff> - talk on channel%R%T%qD off - leave channel%R%T%qD on - join channel%R%T%qD who - see who's on%R%T%qD last 10 - see last 10 messages); }, { @pemit %0=ulocal(layout.error, %qE); }
 
 @@ Input:
 @@ %0 - %#
@@ -346,6 +367,22 @@ Changes:
 @@ %1 - channel
 @@ %2 - comtitle
 &tr.channel-title [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1), %b, setq(A, comalias(%0, %qT)), if(not(t(%qA)), You are not on %qT - you need to be on the channel to change your comtitle.)))))=, { @force %0={ comtitle %qA=%2; }; }, { @pemit %0=ulocal(layout.error, %qE); }
+
+@@ Input:
+@@ %0 - %#
+@@ %1 - channel
+&tr.channel-mute [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1), %b, setq(A, comalias(%0, %qT)), if(not(t(%qA)), You are not on %qT - you need to be on the channel to mute it.)))))=, { @trigger me/tr.set-mute-lock=%qN, %qT, %0; @pemit %0=ulocal(layout.msg, You have muted %qT.); }, { @pemit %0=ulocal(layout.error, %qE); }
+
+@@ Input:
+@@ %0 - %#
+@@ %1 - channel
+&tr.channel-unmute [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1), %b, setq(A, comalias(%0, %qT)), if(not(t(%qA)), You are not on %qT - you need to be on the channel to mute it.)))))=, { @wipe %0/_mute-channel-%qN; @pemit %0=ulocal(layout.msg, You have un-muted %qT.); }, { @pemit %0=ulocal(layout.error, %qE); }
+
+@@ Input:
+@@ %0 - channel dbref
+@@ %1 - channel name
+@@ %2 - player muting the channel
+&tr.set-mute-lock [v(d.chc)]=@set %0=INHERIT; @cpflags %1=!receive; @cpflags %1=!transmit; &mute-lock %0=not\(hasattr\(\%#, _mute-channel-%0\)\); &mute-transmit-lock %0=if\(hasattr\(\%#, _mute-channel-%0\), strcat\(0, pemit\(\%#, alert\(Channel\) You have this channel muted and cannot talk on it. Type \%ch+com/unmute %1\%cn to unmute. Here's the old system error:\)\), 1\); @lock/enter %0=mute-lock/1; @lock/use %0=mute-transmit-lock/1; &_mute-channel-%0 %2=1;
 
 @@ Input:
 @@ %0 - %#
@@ -382,22 +419,22 @@ Changes:
 @@ Input:
 @@ %0 - %#
 @@ %1 - channel title
-&tr.channel-public [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), %b, if(not(ulocal(f.can-modify-channel, %0, %qN)), You are not staff or the owner of the channel '%qT' and cannot change it.)))))=, { @trigger me/tr.log-channel-history=%0, %qN, Set public.; @cset/public %qT; @cpflags %qT=join; @set %qN=channel.lock:; @set %qN=channel.lock-status:Public; @set %qN=!INHERIT; @unlock %qN; @set %qN=channel-password:;  @pemit %0=ulocal(layout.msg, Changed '%qT' to 'Public'.); }, { @pemit %0=ulocal(layout.error, %qE); }
+&tr.channel-public [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), %b, if(not(ulocal(f.can-modify-channel, %0, %qN)), You are not staff or the owner of the channel '%qT' and cannot change it.)))))=, { @trigger me/tr.log-channel-history=%0, %qN, Set public.; @cset/public %qT; @cpflags %qT=join; @set %qN=channel.lock:; @set %qN=channel.lock-status:Public; @unlock %qN; @set %qN=channel-password:;  @pemit %0=ulocal(layout.msg, Changed '%qT' to 'Public'.); }, { @pemit %0=ulocal(layout.error, %qE); }
 
 @@ Input:
 @@ %0 - %#
 @@ %1 - channel title
-&tr.channel-private [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), %b, if(not(ulocal(f.can-modify-channel, %0, %qN)), You are not staff or the owner of the channel '%qT' and cannot change it.)))))=, { @trigger me/tr.log-channel-history=%0, %qN, Set private.; @set %qN=channel.lock-status:Private; @cset/private %qT; @cpflags %qT=join; @set %qN=channel.lock:; @set %qN=!INHERIT; @unlock %qN; @set %qN=channel-password:; @pemit %0=ulocal(layout.msg, Changed '%qT' to 'Private'.); }, { @pemit %0=ulocal(layout.error, %qE); }
+&tr.channel-private [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), %b, if(not(ulocal(f.can-modify-channel, %0, %qN)), You are not staff or the owner of the channel '%qT' and cannot change it.)))))=, { @trigger me/tr.log-channel-history=%0, %qN, Set private.; @set %qN=channel.lock-status:Private; @cset/private %qT; @cpflags %qT=join; @set %qN=channel.lock:; @unlock %qN; @set %qN=channel-password:; @pemit %0=ulocal(layout.msg, Changed '%qT' to 'Private'.); }, { @pemit %0=ulocal(layout.error, %qE); }
 
 @@ Input:
 @@ %0 - %#
 @@ %1 - channel title
-&tr.channel-staff [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), %b, if(not(ulocal(f.can-modify-channel, %0, %qN)), You are not staff or the owner of the channel '%qT' and cannot change it.)))))=, { @trigger me/tr.log-channel-history=%0, %qN, Set staff-only.; @set %qN=channel.lock-status:Staff-only; @cset/private %qT; @lock %qN=CHAN-LOCK/1; @set %qN=CHAN-LOCK:isstaff\(\%#); @cpflags %qT=!join; @set %qN=!INHERIT; @set %qN=channel.lock:isstaff\(\%0\); @set %qN=channel-password:; @pemit %0=ulocal(layout.msg, Changed '%qT' to 'Staff-only'.); }, { @pemit %0=ulocal(layout.error, %qE); }
+&tr.channel-staff [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), %b, if(not(ulocal(f.can-modify-channel, %0, %qN)), You are not staff or the owner of the channel '%qT' and cannot change it.)))))=, { @trigger me/tr.log-channel-history=%0, %qN, Set staff-only.; @set %qN=channel.lock-status:Staff-only; @cset/private %qT; @lock %qN=CHAN-LOCK/1; @set %qN=CHAN-LOCK:isstaff\(\%#); @cpflags %qT=!join; @set %qN=channel.lock:isstaff\(\%0\); @set %qN=channel-password:; @pemit %0=ulocal(layout.msg, Changed '%qT' to 'Staff-only'.); }, { @pemit %0=ulocal(layout.error, %qE); }
 
 @@ Input:
 @@ %0 - %#
 @@ %1 - channel title
-&tr.channel-approved [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), %b, if(not(ulocal(f.can-modify-channel, %0, %qN)), You are not staff or the owner of the channel '%qT' and cannot change it.)))))=, { @trigger me/tr.log-channel-history=%0, %qN, Set approved-only.; @set %qN=channel.lock-status:Approved-only; @cset/private %qT; @lock %qN=CHAN-LOCK/1; @set %qN=CHAN-LOCK:isapproved\(\%#); @cpflags %qT=!join; @set %qN=!INHERIT; @set %qN=channel.lock:isapproved\(\%0\); @set %qN=channel-password:; @pemit %0=ulocal(layout.msg, Changed '%qT' to 'Approved-only'.); }, { @pemit %0=ulocal(layout.error, %qE); }
+&tr.channel-approved [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), %b, if(not(ulocal(f.can-modify-channel, %0, %qN)), You are not staff or the owner of the channel '%qT' and cannot change it.)))))=, { @trigger me/tr.log-channel-history=%0, %qN, Set approved-only.; @set %qN=channel.lock-status:Approved-only; @cset/private %qT; @lock %qN=CHAN-LOCK/1; @set %qN=CHAN-LOCK:isapproved\(\%#); @cpflags %qT=!join; @set %qN=channel.lock:isapproved\(\%0\); @set %qN=channel-password:; @pemit %0=ulocal(layout.msg, Changed '%qT' to 'Approved-only'.); }, { @pemit %0=ulocal(layout.error, %qE); }
 
 @@ Input:
 @@ %0 - %#

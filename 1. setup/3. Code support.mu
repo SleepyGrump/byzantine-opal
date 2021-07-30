@@ -246,7 +246,7 @@
 
 &f.is-target-room-gagged [v(d.bf)]=member(v(d.gag-emits), %0)
 
-&f.is-player-on-redirected-channel [v(d.bf)]=member(cwho(v(d.redirect-poses.%1)), %0)
+&f.is-player-on-redirected-channel [v(d.bf)]=cand(member(cwho(v(d.redirect-poses.%1)), %0), not(hasattr(%0, _mute-channel-[chanobj(v(d.redirect-poses.%1))])))
 
 &f.get-channel-alias [v(d.bf)]=if(t(v(d.channel-functions)), ulocal(v(d.channel-functions)/f.get-channel-alias-by-name, %0), switch(%0, Chargen, cg, Staff, st, strtrunc(lcstr(%0), 3)))
 
