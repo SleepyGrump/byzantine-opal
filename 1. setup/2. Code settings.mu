@@ -18,6 +18,8 @@
 
 &d.punctuation [v(d.bd)]=. , ? ! ; : ( ) < > { } * / - + " '
 
+&d.banned-characters [v(d.bd)]=. , ? ! ; : ( ) < > { } * / - + " ' % # @ + = $ ^ & _ | \ [ ]
+
 &ooc [v(d.orp)]=1
 
 @adesc [v(d.pp)]=think [moniker(%#)] looked at you.[if(not(hasattr(me, desc)), %b@desc me=[lit(%%R%%T<Description>%%R)] to set your description.)]
