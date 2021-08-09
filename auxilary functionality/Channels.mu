@@ -205,6 +205,10 @@ Changes:
 @@ Words that would be bad to have as channels. Add any commands that do not have a special character in front of them, as well as their short-form versions. This keeps players from making channels with these names or aliases, since those can interfere with regular command use.
 &d.banned-words [v(d.cdb)]=msg i in inf info l lo log logo logou logout o ou out outp outpu output outputp outputpr outputpre outputpref outputprefi outputprefix outputs outputsu outputsuf outputsuff outputsuffi outputsuffix q qu qui quit s se ses sess sessi sessio session w wh who d do doi doin doing dr dro drop e en ent ente enter ex exa exam exami examin examine g ge get gi giv give go got goto h he hel help i in inv inve inven invent invento inventor inventory k ki kil kill l le lea leav leave lo loo look m mo mov move n ne new news p pa pag page po pos pose r re rea read rep repo repor report s sa say sc sco scor score sl sla slay t ta tak take th thi thin think thr thro throw tr tra trai train u us use v ve ver vers versi versio version w wh whi whis whisp whispe whisper wi wiz wizh wizhe wizhel wizhelp addcom delcom clearcom comlist comtitle on off who last allcom
 
+&d.commands-with-no-value [v(d.cdb)]=history|info|join|last|leave|mute|off|on|unmute|who|approved|loud|nospoof|private|public|quiet|spoof|staff
+
+&d.commands-with-value [v(d.cdb)]=emit|history|join|last|on|password|title|alias|ban|boot|description|header|unban
+
 @desc [v(d.chc)]=%RCommands:%R%R[space(3)]+channel - list all channels%R[space(3)]+channel/join <title> - join a channel with the default alias%R[space(3)]+channel/join <title>=<password> - join a password-protected channel%R[space(3)]+channel/title <channel>=<your title> - set a comtitle%R[space(3)]+channel/create <title>%R[space(3)]+channel/create <title>=<details>%R%R[space(3)]+channel/claim <existing channel> - (staff only) claim an existing channel and make it possible to administer the channel via this system. Will automatically create a channel log for this channel. If one already exists, use the second form of this command.%R%R[space(3)]+channel/claim <existing channel>=<dbref> - as above, but with an existing log object.%R%R[space(3)]+channel/give <channel>=<player> - give a channel you administer to someone else.%R%R[space(3)]+channel/history <channel> - staff only, see the last 10 history entries%R[space(3)]+channel/history <channel>=<#> - same, last # history of the channel%R%ROnly the owner (or staff) can perform the following commands:%R%R[space(3)]+channel/header <title>=<value> - set a channel's header (the "<format>" part)%R[space(3)]+channel/desc <title>=<value> - set a channel's description%R[space(3)]+channel/alias <title>=<value> - set a channel's alias. Players can still change this.%R%R[space(3)]+channel/public <title> - set a channel public%R[space(3)]+channel/private <title> - set a channel private%R[space(3)]+channel/staff <title> - set a channel staff-only (only usable by staffers) - set it public or private to unset%R[space(3)]+channel/approved <title> - set a channel approved-only - set it public or private to unset%R[space(3)]+channel/password <title>=<value> - set a channel's password - set it public or private to unset%R%R[space(3)]+channel/spoof <title> - set a channel spoofable (anonymous)%R[space(3)]+channel/nospoof <title> - set a channel non-spoofable (not anonymous)%R%R[space(3)]+channel/loud <title> - set a channel noisy (emits connects/disconnects)%R[space(3)]+channel/quiet <title> - set a channel quiet (no connects/disconnects)%R%R[space(3)]+channel/destroy <title> - nukes a channel (must be the owner or staff)%R%R[space(3)]+channel/cleanup - deletes any channel which meets all of these criteria:%R[space(3)][space(3)]- No one has spoken on the channel in the last 180 days.%R[space(3)][space(3)]- The owner has not logged in in over 180 days.%R[space(3)][space(3)]- The owner is not staff.%R
 
 @@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
@@ -404,13 +408,24 @@ th ulocal(v(d.chf)/f.is-banned-alias, quit)
 
 @set [v(d.chc)]/cmd-+com=no_parse
 
-&cmd-alias/command [v(d.chc)]=$*/*:@break match(%1, * *); @assert t(match(history info join last leave mute off on unmute who approved loud nospoof private public quiet spoof staff, %1*)); @break t(squish(trim(u(f.get-channel-by-name-error, %#, %0, 1)))); @force %#={ +com/%1 %qT; };
+&command-alias/cmd [v(d.cdb)]=$^(aliases_go_here)/(d.commands-with-no-value): @trigger me/tr.alias-command=%#, %1, %2;
+
+&command-alias/cmd_txt [v(d.cdb)]=$^(aliases_go_here)/(d.commands-with-value) (.*): @trigger me/tr.alias-command_with_text=%#, %1, %2, %3;
+
+@@ These two @forces will only work if you already have channels created using this system. This does not need to succeed for the system to work.
+
+@force me=&cmd-alias/command [v(d.chc)]=edit(xget(v(d.cdb), command-alias/cmd), aliases_go_here, iter(lattr([v(d.cdb)]/channel.*), ulocal([v(d.chf)]/f.get-channel-alias, edit(itext(0), CHANNEL.,)),, |), d.commands-with-no-value, xget(v(d.cdb), d.commands-with-no-value))
 
 @set [v(d.chc)]/cmd-alias/command=no_parse
 
-&cmd-alias_with_text [v(d.chc)]=$*/* *:@assert t(match(emit history join last on password title alias ban boot description header unban, %1*)); @break t(squish(trim(u(f.get-channel-by-name-error, %#, %0, 1)))); @force %#={ +com/%1 %qT=%2; };
+@set [v(d.chc)]/cmd-alias/command=regexp
+
+@force me=&cmd-alias_with_text [v(d.chc)]=edit(xget(v(d.cdb), command-alias/cmd_txt), aliases_go_here, iter(lattr([v(d.cdb)]/channel.*), ulocal([v(d.chf)]/f.get-channel-alias, edit(itext(0), CHANNEL.,)),, |), d.commands-with-value, xget(v(d.cdb), d.commands-with-value))
+
 
 @set [v(d.chc)]/cmd-alias_with_text=no_parse
+
+@set [v(d.chc)]/cmd-alias_with_text=regexp
 
 @@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
 @@ Command switches
@@ -494,6 +509,10 @@ th ulocal(v(d.chf)/f.is-banned-alias, quit)
 @@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
 @@ Triggers
 @@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
+
+&tr.alias-command [v(d.chc)]=@break t(setr(E, squish(trim(u(f.get-channel-by-name-error, %0, %1, 1)))))={ @pemit %0=%qE; }; @force %0={ +com/%2 %qT; };
+
+&tr.alias-command_with_text [v(d.chc)]=@break t(setr(E, squish(trim(u(f.get-channel-by-name-error, %0, %1, 1)))))={ @pemit %0=%qE; }; @force %0={ +com/%2 %qT=%3; };
 
 @@ Input:
 @@ %0 - %#
@@ -605,7 +624,9 @@ th ulocal(v(d.chf)/f.is-banned-alias, quit)
 @@ %0 - %#
 @@ %1 - channel title
 @@ %2 - alias
-&tr.channel-alias [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), %b, if(t(ulocal(f.is-banned-alias, %2)), You can't use the alias '%2' because it is already in use.), %b, if(not(ulocal(f.can-modify-channel, %0, %qN)), You are not staff or the owner of the channel '%qT' and cannot change it.), setq(A, ulocal(f.get-channel-alias, %qN))))))=, { @trigger me/tr.channel-alias-cleanup=%0, %qT, you have changed the channel's alias.; &channel-alias %qN=%2; @force %0={ addcom %2=%qT; }; @pemit %0=ulocal(layout.msg, Changed the alias of '%qT' to '%2'. This reset the alias for you but does not change it for anyone else.); }, { @pemit %0=ulocal(layout.error, %qE); }
+&tr.channel-alias [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), %b, if(t(ulocal(f.is-banned-alias, %2)), You can't use the alias '%2' because it is already in use.), %b, if(not(ulocal(f.can-modify-channel, %0, %qN)), You are not staff or the owner of the channel '%qT' and cannot change it.), setq(A, ulocal(f.get-channel-alias, %qN))))))=, { @trigger me/tr.channel-alias-cleanup=%0, %qT, you have changed the channel's alias.; &channel-alias %qN=%2; @force %0={ addcom %2=%qT; }; @trigger me/tr.set-alias-commands; @pemit %0=ulocal(layout.msg, Changed the alias of '%qT' to '%2'. This reset the alias for you but does not change it for anyone else.); }, { @pemit %0=ulocal(layout.error, %qE); }
+
+&tr.set-alias-commands [v(d.chc)]=&cmd-alias/command me=edit(xget(%vD, command-alias/cmd), aliases_go_here, iter(lattr(%vD/channel.*), ulocal(f.get-channel-alias, edit(itext(0), CHANNEL.,)),, |), d.commands-with-no-value, xget(%vD, d.commands-with-no-value)); @set me/cmd-alias/command=no_parse; @set me/cmd-alias/command=regexp; @force me=&cmd-alias_with_text me=edit(xget(%vD, command-alias/cmd_txt), aliases_go_here, iter(lattr(%vD/channel.*), ulocal(f.get-channel-alias, edit(itext(0), CHANNEL.,)),, |), d.commands-with-value, xget(%vD, d.commands-with-value)); @set me/cmd-alias_with_text=no_parse; @set me/cmd-alias_with_text=regexp;
 
 @@ Input:
 @@ %0 - %#
