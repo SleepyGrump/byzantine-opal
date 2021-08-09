@@ -62,7 +62,7 @@
 	},
 	"Insert standard error/alert/success triggers": {
 		"prefix": "&tr.err",
-		"body": "&tr.error [v(d.$1c)]=@pemit %0=strcat(alert(Error), %b, %1);\r\n\r\n&tr.message [v(d.$1c)]=@pemit %0=strcat(alert(Alert), %b, %1);\r\n\r\n&tr.success [v(d.$1c)]=@pemit %0=strcat(alert(Success), %b, %1);\r\n\r\n",
+		"body": "&tr.error [v(d.$1c)]=@pemit %0=cat(alert(Error), %1);\r\n\r\n&tr.message [v(d.$1c)]=@pemit %0=cat(alert(Alert), %1);\r\n\r\n&tr.success [v(d.$1c)]=@pemit %0=cat(alert(Success), %1);\r\n\r\n",
 		"description": "assert with an error message"
 	},
 	"Insert standard function": {
