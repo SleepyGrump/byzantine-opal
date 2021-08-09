@@ -254,7 +254,16 @@
 
 &f.forward-poses [v(d.bf)]=if(ulocal(f.is-redirected-to-channel, loc(%#)), trigger(me/tr.redirect-emit-to-channel, loc(%#), %m, %#))
 
-&f.parse_emit [v(d.bf)]=strcat(switch(%1, *[moniker(%0)]*, %1, strcat(moniker(%0), switch(%1, :*, %b[rest(%1, :)], ;*, rest(%1, ;), pose/*, rest(%1), pose *, %b[rest(%1)], npose *, %b[rest(%1)], "*, %bsays "[rest(%1, ")]", say*, %bsays "[rest(%1)]", nsay*, %bsays "[rest(%1)]", @emit* *, : [rest(%1)], @remit* *=*, : [rest(%1, =)], @remit *, : [rest(%1)], \\*, : [trim(%1, l, \\\\\\\\)], %1))), if(not(%2), %b--- [capstr(subj(%0))] [switch(subj(%0), they, are, is)] not on this channel and cannot see replies%, but [switch(subj(%0), they, have, has)] been invited to join.))
+@@ %0: Player
+@@ %1: Pose
+@@ %2: Is the player on the channel?
+@@ %3: Channel name
+&f.parse_emit [v(d.bf)]=strcat(setq(P, if(setr(O, not(ulocal(filter.isplayer, %0))),, if(t(v(d.channel-functions)), ulocal(v(d.channel-functions)/layout.player-name-or-comtitle, %0,, %3), ulocal(f.get-name, %0)))), switch(%1, *[moniker(%0)]*, %1, strcat(%qP, switch(%1, :*, %b[rest(%1, :)], ;*, rest(%1, ;), pose/*, rest(%1), pose *, %b[rest(%1)], npose *, %b[rest(%1)], "*, %bsays "[rest(%1, ")]", say*, %bsays "[rest(%1)]", nsay*, %bsays "[rest(%1)]", @emit* *, : [rest(%1)], @remit* *=*, : [rest(%1, =)], @remit *, : [rest(%1)], \\*, : [trim(%1, l, \\\\\\\\)], %1))), if(cand(not(%2), not(%qO)), %b--- [capstr(subj(%0))] [switch(subj(%0), they, are, is)] not on this channel and cannot see replies%, but [switch(subj(%0), they, have, has)] been invited to join.))
+
+@@ TODO:
+@@ Make sure that objects can pass along their emits, properly formatted.
+@@ Make sure that emits by players show up as intended and get logged?
+@@ Make sure the player's comtitle appears instead of their name, if they have one.
 
 @@ %0: Sender
 @@ %1: Target
@@ -271,11 +280,13 @@
 
 &tr.success [v(d.bf)]=@pemit %0=cat(alert(Success), %1);
 
-&tr.redirect-emit-to-channel [v(d.bf)]=@cemit v(d.redirect-poses.%0)=ulocal(f.parse_emit, %2, %1, ulocal(f.is-player-on-redirected-channel, %2, %0)); @assert ulocal(f.is-player-on-redirected-channel, %2, %0)={ @trigger me/tr.message=%2, You aren't seeing the whole conversation. All emits in this location are piped to the [setr(C, v(d.redirect-poses.%0))] channel. %ch[if(t(v(d.channel-functions)), +com/join%b, addcom [ulocal(f.get-channel-alias, %qC)]=)]%qC%cn to join in!; };
+&tr.redirect-emit-to-channel [v(d.bf)]=@cemit v(d.redirect-poses.%0)=ulocal(f.parse_emit, %2, %1, ulocal(f.is-player-on-redirected-channel, %2, %0), %0); @assert ulocal(filter.isplayer, %0); @assert ulocal(f.is-player-on-redirected-channel, %2, %0)={ @trigger me/tr.message=%2, You aren't seeing the whole conversation. All emits in this location are piped to the [setr(C, v(d.redirect-poses.%0))] channel. %ch[if(t(v(d.channel-functions)), +com/join%b, addcom [ulocal(f.get-channel-alias, %qC)]=)]%qC%cn to join in!; };
 
 &tr.remit [v(d.bf)]=@break ulocal(f.is-redirected-to-channel, %0)={ @trigger me/tr.redirect-emit-to-channel=%0, %1, %2; }; @break ulocal(f.is-target-room-gagged, %0)={ @trigger me/tr.error=%2, You can't use this command in here. This room is set quiet.; }; @remit %0=%1;
 
 &tr.remit-quiet [v(d.bf)]=@break ulocal(f.is-redirected-to-channel, %0); @break ulocal(f.is-target-room-gagged, %0); @remit %0=%1;
+
+&tr.remit-or-pemit [v(d.bf)]=@break ulocal(f.is-redirected-to-channel, %0)={ @trigger me/tr.redirect-emit-to-channel=%0, %1, %2; }; @break ulocal(f.is-target-room-gagged, %0)={ @trigger me/tr.pemit=%2, %1; }; @remit %0=%1;
 
 &tr.pemit [v(d.bf)]=@break t(words(setr(N, trim(squish(iter(%0, if(ulocal(f.can-sender-message-target, %2, itext(0)),, itext(0))))))))={ @trigger me/tr.error=%2, Sorry%, [itemize(iter(%qN, moniker(itext(0)),, |), |)] [case(words(%qN), 1, is, are)] not accepting messages.; }; @pemit %0=%1;
 
