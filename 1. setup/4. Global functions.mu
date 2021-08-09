@@ -244,7 +244,7 @@
 @@  %0 - number of seconds
 &f.globalpp.secs2hrs [v(d.bf)]=if(lt(%0, 0), -, ulocal(f.calculate-duration, %0))
 
-&f.global.prettytime [v(d.bf)]=if(t(%0), timefmt($m-$d-$Y $r, %0), timefmt($m-$d-$Y $r))
+&f.global.prettytime [v(d.bf)]=if(t(%0), timefmt($m/$d/$Y $r, %0), timefmt($m/$d/$Y $r))
 
 
 @@ %0 - the word
