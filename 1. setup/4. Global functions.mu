@@ -368,3 +368,9 @@
 @@ %0: Room number
 @@ Output: the public notes on a room.
 &f.globalpp.lnotes [v(d.bf)]=case(0, isdbref(%0), #-1 NOT A VALID DBREF, hastype(%0, ROOM), #-1 NOT A ROOM, cor(isstaff(%#), member(loc(%#), %0)), #-1 CAN'T SEE NOTES ELSEWHERE, strcat(setq(K, ulocal(f.get-key-prefix, _note-)), setq(L, ulocal(f.list-matching-pairs, %0, _note-, lattr(%0/%qK*), %qK)), trim(squish(iter(%qL, if(gte(ulocal(f.get-note-visibility-setting, %0, rest(first(itext(0), v(d.default-column-delimeter)), -)), case(1, isstaff(%2), -1, isowner(%0, %2), 0, 1)), itext(0)), v(d.default-row-delimeter), v(d.default-row-delimeter)), v(d.default-row-delimeter)), b, v(d.default-row-delimeter))))
+
+@@ %0: A delimiter-separated list of items
+@@ %1: The item to match
+@@ %2: Default space.
+@@ finditem(list, item, delimiter) - finds the first item that matches the input. If the input contains a *, then the * is automatically returned.
+&f.globalpp.finditem [v(d.bf)]=strcat(if(t(%2), setq(D, %2), setq(D, %b)), if(member(%0, *, %qD), *, if(t(setr(S, extract(%0, member(%0, %1, %qD), 1, %qD))), %qS, extract(%0, match(%0, %1*, %qD), 1, %qD))))
