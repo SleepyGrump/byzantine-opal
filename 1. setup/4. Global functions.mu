@@ -372,5 +372,6 @@
 @@ %0: A delimiter-separated list of items
 @@ %1: The item to match
 @@ %2: Default space.
-@@ finditem(list, item, delimiter) - finds the first item that matches the input. If the input contains a *, then the * is automatically returned.
-&f.globalpp.finditem [v(d.bf)]=strcat(if(t(%2), setq(D, %2), setq(D, %b)), if(member(%0, *, %qD), *, if(t(setr(S, extract(%0, member(%0, %1, %qD), 1, %qD))), %qS, extract(%0, match(%0, %1*, %qD), 1, %qD))))
+@@ finditem(list, item, delimiter) - finds the first item that matches the input. If the input contains a *, then the input itself is returned as a last resort.
+@@ NOTE: This code is written so that your input can contain "0" as part of the list, and will match it. To test the output of this code, use t(strlen(finditem(list, item, delimiter))) rather than just t() when a 0 may be involved in the output.
+&f.globalpp.finditem [v(d.bf)]=strcat(if(t(%2), setq(D, %2), setq(D, %b)), if(t(strlen(setr(S, extract(%0, member(%0, %1, %qD), 1, %qD)))), %qS, if(t(strlen(setr(S, extract(%0, match(%0, %1*, %qD), 1, %qD)))), %qS, if(member(%0, *, %qD), %1))))
