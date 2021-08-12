@@ -75,7 +75,7 @@
 @@ %1: Columns
 @@ %2: Divider
 @@ Output: Turns list "a b c d e f g" into "a e b f c g d" so that you can output it with multicol as a vertical 2-column list instead of a horizontal 2-column list.
-&f.global.fliplist [v(d.bf)]=trim(strcat(setq(R, add(div(words(%0, %2), %1), t(mod(words(%0, %2), %1)))), iter(lnum(%qR), iter(lnum(%1), extract(%0, add(inum(1), mul(%qR, itext(0))), 1, %2),, %2),, %2)), r, %2)
+&f.globalp.fliplist [v(d.bf)]=trim(strcat(setq(R, add(div(words(%0, %2), %1), t(mod(words(%0, %2), %1)))), iter(lnum(%qR), iter(lnum(%1), extract(%0, add(inum(1), mul(%qR, itext(0))), 1, %2),, %2),, %2)), r, %2)
 
 
 @@ %0: text to format
@@ -374,4 +374,4 @@
 @@ %2: Default space.
 @@ finditem(list, item, delimiter) - finds the first item that matches the input. If the input contains a *, then the input itself is returned as a last resort.
 @@ NOTE: This code is written so that your input can contain "0" as part of the list, and will match it. To test the output of this code, use t(strlen(finditem(list, item, delimiter))) rather than just t() when a 0 may be involved in the output.
-&f.globalpp.finditem [v(d.bf)]=strcat(if(t(%2), setq(D, %2), setq(D, %b)), if(t(strlen(setr(S, extract(%0, member(%0, %1, %qD), 1, %qD)))), %qS, if(t(strlen(setr(S, extract(%0, match(%0, %1*, %qD), 1, %qD)))), %qS, if(member(%0, *, %qD), %1))))
+&f.globalpp.finditem [v(d.bf)]=if(strlen(%1), strcat(if(t(%2), setq(D, %2), setq(D, %b)), if(t(strlen(setr(S, extract(%0, member(%0, %1, %qD), 1, %qD)))), %qS, if(t(strlen(setr(S, extract(%0, match(%0, %1*, %qD), 1, %qD)))), %qS, if(member(%0, *, %qD), %1)))))
