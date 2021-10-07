@@ -107,6 +107,8 @@ TODO: Aliases get a little fucky if you let them build up, delete an old channel
 
 TODO: Clean up the desc.
 
+TODO: Check what happens when you mute a channel and speak in a channel-redirected room. You shouldn't still see the messages.
+
 MAYBE: Doubt there's much call for it, but maybe let people modify the following attributes of their channels:
 	@comjoin - message shown on join
 	@comleave
