@@ -4,9 +4,11 @@
 
 @@ TODO: Maybe add dynamic startups to this as well? +doing/poll/random?
 
-@startup [v(d.bf)]=@trigger me/tr.make-functions; @doing/header [v(d.default-poll)]; @disable building;
+@startup [v(d.bf)]=@trigger me/tr.make-functions; @doing/header [v(d.default-poll)]; @disable building; @trigger me/tr.ban-banned-players;
 
 &tr.make-functions [v(d.bf)]=@dolist lattr(me/f.global.*)=@function rest(rest(##, .), .)=me/##; @dolist lattr(me/f.globalp.*)=@function/preserve rest(rest(##, .), .)=me/##; @dolist lattr(me/f.globalpp.*)=@function/preserve/privilege rest(rest(##, .), .)=me/##;
+
+&tr.ban-banned-players [v(d.bf)]=@dolist lattr(%vD/d.ban.*)=@admin forbid_site=rest(##, D.BAN.) 255.255.255.255;
 
 @@ =============================================================================
 @@ Locks
@@ -279,6 +281,8 @@
 &tr.message [v(d.bf)]=@pemit %0=cat(alert(Alert), %1);
 
 &tr.success [v(d.bf)]=@pemit %0=cat(alert(Success), %1);
+
+&tr.report [v(d.bf)]=@cemit [v(d.report-target)]=%0;
 
 &tr.redirect-emit-to-channel [v(d.bf)]=@cemit v(d.redirect-poses.%0)=ulocal(f.parse_emit, %2, %1, ulocal(f.is-player-on-redirected-channel, %2, %0), %0); @assert ulocal(filter.isplayer, %0); @assert ulocal(f.is-player-on-redirected-channel, %2, %0)={ @trigger me/tr.message=%2, You aren't seeing the whole conversation. All emits in this location are piped to the [setr(C, v(d.redirect-poses.%0))] channel. %ch[if(t(v(d.channel-functions)), +com/join%b, addcom [ulocal(f.get-channel-alias, %qC)]=)]%qC%cn to join in!; };
 

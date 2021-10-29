@@ -1,4 +1,19 @@
-@@ Here are where the settings go. Change this stuff if you want!
+@@ This definitely needs changed:
+
+@@ Unbannable IPs - for browser-based clients, common sites, etc. Enter your unbannable IP addresses here, separated by spaces.
+@@ Note: staff IPs are always unbannable.
+@@ 54.200.22.252 - Cheese WebMU at http://www.cheesesoftware.com/MUCon/
+@@ 0.0.0.0 - the "all" IP - if blocked, blocks all connections.
+@@ You should add your #1's IP address (e #1/lastip)
+@@ You should add your game's IP address
+&d.unbannable-IP-addresses [v(d.bd)]=54.200.22.252 0.0.0.0
+
+@@ An email address to be shown to players who are banned where they can appeal the banning. It's important to give them some way to reach you, in case someone bans the wrong person.
+&d.staff-email-address [v(d.bd)]=test@example.com
+
+@@ Make sure to also edit your badsite_connect file to include the above email address.
+
+@@ Below are optional settings you can change:
 
 @@ Default alert message
 &d.default-alert [v(d.bd)]=GAME

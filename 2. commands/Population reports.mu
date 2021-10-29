@@ -6,7 +6,7 @@
 
 &layout.player-info [v(d.bf)]=strcat(terminfo(%0), -, height(%0), -, width(%0), -, colordepth(%0), -, host(%0))
 
-&tr.aconnect-player-info [v(d.bc)]=@set %0=_player-info:[setr(0, ulocal(layout.player-info, %0))]|[remove(xget(%0, _player-info), %q0, |, |)]; @set %0=_last-conn:[secs()];
+&tr.aconnect-player-info [v(d.bc)]=@set %0=_player-info:[setr(0, ulocal(layout.player-info, %0))]|[remove(xget(%0, _player-info), %q0, |, |)]; @set %0=_last-conn:[secs()]; @set %0=_unique-ips:[setunion(xget(%0, _unique-ips), xget(%0, lastip))];
 
 &f.hilite-text [v(d.bf)]=ansi(if(ulocal(filter.watched, %0, %1), first(themecolors())), %2)
 
