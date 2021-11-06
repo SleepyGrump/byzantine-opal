@@ -6,6 +6,11 @@
 
 &f.globalpp.isapproved [v(d.bf)]=hasflag(%0, APPROVED)
 
+@@ %0 - count of items OR a player (to determine whether they need plural words)
+@@ %1 - word to use if the count is 1
+@@ %2 - word to use if the count is greater than 1
+&f.global.plural [v(d.bf)]=if(isnum(%0), if(neq(%0, 1), %2, %1), switch(subj(%0), they, %2, %1))
+
 &f.get-ansi [v(d.bf)]=extract(%0, if(lte(%1, words(%0)), %1, inc(mod(%1, words(%0)))), 1)
 
 @@ All effects take the following parameter:
