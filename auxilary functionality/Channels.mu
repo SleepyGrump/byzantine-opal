@@ -107,6 +107,8 @@ TODO: Aliases get a little fucky if you let them build up, delete an old channel
 
 TODO: Clean up the desc.
 
+TODO: Found a bug, when creating a channel the alias showed up as empty. The channel I was creating was done with: +channel/create Jobs=A channel for jobs spam. Will need to figure out what's going on there.
+
 TODO: Check what happens when you mute a channel and speak in a channel-redirected room. You shouldn't still see the messages.
 
 MAYBE: Doubt there's much call for it, but maybe let people modify the following attributes of their channels:

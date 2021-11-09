@@ -30,6 +30,8 @@
 
 @set [v(d.bc)]/c.+motd/set_no_target=no_parse
 
+@@ TODO: Set it up so that MOTD can be randomly selected from a LIST of MOTDs, because honestly I just use it for a pun or joke most of the time. Make sure that random cooperates with static. Do not announce randoms? Or do? Hm. Also do we want *random* or do we want iterative?
+
 @@ =============================================================================
 @@ +glance
 @@ =============================================================================
