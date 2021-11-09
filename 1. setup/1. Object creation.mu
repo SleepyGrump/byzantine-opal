@@ -80,6 +80,9 @@ think if(t(v(d.cron)), Good%, you have Myrddin's mushcron%, we can continue., AL
 @set [v(d.ep)]=SAFE INHERIT TRANSPARENT
 @set [v(d.qr)]=BLIND
 
+@@ If/when you install +jobs, you'll want this. It marks jobs as "read" as soon as you see them and they only show up as "new" when there's new stuff on them.
+&jobsn [v(d.pp)]=1
+
 @@ Set up parents for the existing rooms as OOC.
 
 @force me=@dolist setdiff(search(TYPE=ROOM), v(d.orp))=@parent ##=[v(d.orp)]
