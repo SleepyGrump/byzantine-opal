@@ -113,6 +113,7 @@ think if(t(v(d.cron)), Good%, you have Myrddin's mushcron%, we can continue., AL
 
 @force me=&vb [v(d.bf)]=[v(d.go)]
 @force me=&vc [v(d.go)]=[v(d.bc)]
+@force me=&vc [v(d.bf)]=[v(d.bc)]
 @force me=&vd [v(d.bf)]=[v(d.bd)]
 @force me=&vd [v(d.go)]=[v(d.bd)]
 @force me=&ve [v(d.bf)]=[v(d.crp)]
