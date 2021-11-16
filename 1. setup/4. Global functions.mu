@@ -1,8 +1,12 @@
-@@ These functions are rewrites of the SGP Globals functions.
+@@ ============================================================================
+@@ SGP globals rewrite(s)
+@@ ============================================================================
 
 &f.globalpp.isstaff [v(d.bf)]=or(member(v(d.staff_list), ulocal(f.find-player, %0, %#)), orflags(%0, WZw))
 
-@@ On with the custom stuff below!
+@@ ============================================================================
+@@ Basic custom stuff
+@@ ============================================================================
 
 &f.globalpp.isapproved [v(d.bf)]=hasflag(%0, APPROVED)
 
@@ -10,6 +14,67 @@
 @@ %1 - word to use if the count is 1
 @@ %2 - word to use if the count is greater than 1
 &f.global.plural [v(d.bf)]=if(isnum(%0), if(neq(%0, 1), %2, %1), switch(subj(%0), they, %2, %1))
+
+@@ %0: A delimiter-separated list of items
+@@ %1: The item to match
+@@ %2: Default space.
+@@ finditem(list, item, delimiter) - finds the first item that matches the input. If the input contains a *, then the input itself is returned as a last resort.
+@@ NOTE: This code is written so that your input can contain "0" as part of the list, and will match it. To test the output of this code, use t(strlen(finditem(list, item, delimiter))) rather than just t() when a 0 may be involved in the output.
+&f.globalpp.finditem [v(d.bf)]=if(strlen(%1), strcat(if(t(%2), setq(D, %2), setq(D, %b)), if(t(strlen(setr(S, extract(%0, member(%0, %1, %qD), 1, %qD)))), %qS, if(t(strlen(setr(S, extract(%0, match(%0, %1*, %qD), 1, %qD)))), %qS, if(member(%0, *, %qD), %1)))))
+
+@@ Sets a timer in a standardized way.
+@@ %0 - player to set the timer on
+@@ %1 - name of the timer (must be attribute-friendly)
+@@ %2 - duration of the timer in seconds
+@@ %3 - any additional data to put on the timer
+&f.globalpp.settimer [v(d.bf)]=case(0, cor(isstaff(%#), cand(not(member(num(me), %@)), hastype(%@, THING), andflags(%@, I!h!n), isstaff(owner(%@)))), #-1 PERMISSION DENIED, t(setr(P, ulocal(f.find-player, %0, %#))), #-1 PLAYER NOT FOUND, cand(isnum(%2), gte(%2, 0), lte(%2, secs())), #-1 DURATION NOT A NUMBER, set(%qP, _timer.%1:[secs()]|%2|%3))
+
+@@ Gets the value of an existing timer and does the "is it expired?" check for you.
+@@ Returns:
+@@   0 if timer was invalid
+@@   the data, if any data was set, if the timer is valid
+@@   1 if no data was set and the timer is valid
+&f.globalpp.gettimer [v(d.bf)]=case(0, cor(isstaff(%#), cand(not(member(num(me), %@)), hastype(%@, THING), andflags(%@, I!h!n), isstaff(owner(%@)))), #-1 PERMISSION DENIED, t(setr(P, ulocal(f.find-player, %0, %#))), #-1 PLAYER NOT FOUND, if(t(setr(0, xget(%qP, _timer.%1))), if(lte(sub(secs(), extract(%q0, 1, 1, |)), extract(%q0, 2, 1, |)), if(t(setr(1, extract(%q0, 3, words(%q0, |), |))), %q1, 1), 0), 0))
+
+@@ Output: an entire duration string: 3d 4h 5m 57s
+@@ %0 - number of seconds to calculate the duration of
+&f.duration-string [v(d.bf)]=extract(exptime(%0), 1, 2)
+
+@@ Output: A duration consisting of the largest 2 items in years, 30-day months, weeks, days, hours, minutes, or seconds, but only gives the largest two values.
+@@ %0 - number of seconds.
+&f.calculate-duration [v(d.bf)]=if(lte(%0, 0), 0s, extract(ulocal(f.duration-string, %0), 1, 2))
+
+@@ Function: Output a duration in the largest 2 numbers - 2d 3h or 1m 20s.
+@@ Arguments:
+@@  %0 - Timestamp in seconds.
+&f.globalpp.interval [v(d.bf)]=ulocal(f.calculate-duration, sub(secs(), %0))
+
+@@ Function: Output a duration in the largest 2 numbers - 2d 3h or 1m 20s.
+@@ Arguments:
+@@  %0 - number of seconds
+&f.globalpp.secs2hrs [v(d.bf)]=if(lt(%0, 0), -, ulocal(f.calculate-duration, %0))
+
+&f.global.prettytime [v(d.bf)]=if(t(%0), timefmt($m/$d/$Y $r, %0), timefmt($m/$d/$Y $r))
+
+@@ %0 - the word
+@@ %1 - the position in the string
+@@ Cases:
+@@ If the word has had its case modified AT ALL from lower-case, leave it alone.
+@@ Otherwise, if it is the first word of the sentence, capitalize it,
+@@ Otherwise, if it is a member of the don't-touch group, don't capitalize it.
+
+&f.should-word-be-capitalized [v(d.bf)]=cand(member(lcstr(%0), %0), cor(eq(%1, 1), not(member(v(d.words-to-leave-uncapitalized), ulocal(f.word-without-punctuation, itext(0))))))
+
+&f.word-without-punctuation [v(d.bf)]=strip(%0, v(d.punctuation))
+
+@@ Output: A properly capitalized title-case string
+@@ %0 - the string to title-case
+&f.globalpp.title [v(d.bf)]=iter(%0, if(ulocal(f.should-word-be-capitalized, itext(0), inum(0)), capstr(itext(0)), itext(0)))
+
+
+@@ ============================================================================
+@@ Layout functions
+@@ ============================================================================
 
 &f.get-ansi [v(d.bf)]=extract(%0, if(lte(%1, words(%0)), %1, inc(mod(%1, words(%0)))), 1)
 
@@ -232,41 +297,9 @@
 
 &f.globalpp.wfooter [v(d.bf)]=footer(%0, %1)
 
-@@ Output: an entire duration string: 3d 4h 5m 57s
-@@ %0 - number of seconds to calculate the duration of
-&f.duration-string [v(d.bf)]=extract(exptime(%0), 1, 2)
-
-@@ Output: A duration consisting of the largest 2 items in years, 30-day months, weeks, days, hours, minutes, or seconds, but only gives the largest two values.
-@@ %0 - number of seconds.
-&f.calculate-duration [v(d.bf)]=if(lte(%0, 0), 0s, extract(ulocal(f.duration-string, %0), 1, 2))
-
-@@ Function: Output a duration in the largest 2 numbers - 2d 3h or 1m 20s.
-@@ Arguments:
-@@  %0 - Timestamp in seconds.
-&f.globalpp.interval [v(d.bf)]=ulocal(f.calculate-duration, sub(secs(), %0))
-
-@@ Function: Output a duration in the largest 2 numbers - 2d 3h or 1m 20s.
-@@ Arguments:
-@@  %0 - number of seconds
-&f.globalpp.secs2hrs [v(d.bf)]=if(lt(%0, 0), -, ulocal(f.calculate-duration, %0))
-
-&f.global.prettytime [v(d.bf)]=if(t(%0), timefmt($m/$d/$Y $r, %0), timefmt($m/$d/$Y $r))
-
-
-@@ %0 - the word
-@@ %1 - the position in the string
-@@ Cases:
-@@ If the word has had its case modified AT ALL from lower-case, leave it alone.
-@@ Otherwise, if it is the first word of the sentence, capitalize it,
-@@ Otherwise, if it is a member of the don't-touch group, don't capitalize it.
-
-&f.should-word-be-capitalized [v(d.bf)]=cand(member(lcstr(%0), %0), cor(eq(%1, 1), not(member(v(d.words-to-leave-uncapitalized), ulocal(f.word-without-punctuation, itext(0))))))
-
-&f.word-without-punctuation [v(d.bf)]=strip(%0, v(d.punctuation))
-
-@@ Output: A properly capitalized title-case string
-@@ %0 - the string to title-case
-&f.globalpp.title [v(d.bf)]=iter(%0, if(ulocal(f.should-word-be-capitalized, itext(0), inum(0)), capstr(itext(0)), itext(0)))
+@@ ============================================================================
+@@ Data that must be globally available for the room parents
+@@ ============================================================================
 
 @@ Output: The target's shortdesc
 @@ %0: Person, place, or thing
@@ -294,6 +327,10 @@
 @@ Output: the data of each object for the target's who field settings
 &f.globalpp.whofields [v(d.bf)]=if(member(edit(lcstr(lattr(%vD/d.default-*-fields)), d.default-,, -fields,), lcstr(%2)), ulocal(layout.who-list, %0, %1, %2), #-1 %2 FIELD LIST NOT FOUND)
 
+@@ ============================================================================
+@@ Data that must be globally available for the room parents
+@@ ============================================================================
+
 &layout.debug [v(d.bf)]=strcat(alert(timefmt($X) debug), From, %b, moniker(%0), :%b, %1)
 
 &layout.debug_flag [v(d.bf)]=strcat(Debugging, %b, if(%1, enabled, disabled), %b, on, %b, moniker(%0)., if(%1, strcat(%b, Output will go to, %b, v(d.debug-target).)))
@@ -312,6 +349,24 @@
 @@ %0: target object
 @@ %1: message
 &f.globalpp.report [v(d.bf)]=if(isdbref(v(d.report-target)), pemit(v(d.report-target), ulocal(layout.report, %0, %1)), cemit(v(d.report-target), ulocal(layout.report, %0, %1)))
+
+@@ %0: object to check
+@@ %1: person who might own it
+@@ Output: 0 or 1 depending on whether the person owns it.
+&f.globalpp.isowner [v(d.bf)]=ulocal(filter.is_owner, %0, %1)
+
+@@ %0: Room number
+@@ Output: the views on a room.
+&f.globalpp.lviews [v(d.bf)]=case(0, isdbref(%0), #-1 NOT A VALID DBREF, hastype(%0, ROOM), #-1 NOT A ROOM, cor(isstaff(%#), member(loc(%#), %0)), #-1 CAN'T SEE VIEWS ELSEWHERE, strcat(setq(K, ulocal(f.get-key-prefix, view-)), ulocal(f.list-matching-pairs, %0, view-, lattr(%0/%qK*), %qK)))
+
+@@ %0: Room number
+@@ Output: the public notes on a room.
+&f.globalpp.lnotes [v(d.bf)]=case(0, isdbref(%0), #-1 NOT A VALID DBREF, hastype(%0, ROOM), #-1 NOT A ROOM, cor(isstaff(%#), member(loc(%#), %0)), #-1 CAN'T SEE NOTES ELSEWHERE, strcat(setq(K, ulocal(f.get-key-prefix, _note-)), setq(L, ulocal(f.list-matching-pairs, %0, _note-, lattr(%0/%qK*), %qK)), trim(squish(iter(%qL, if(gte(ulocal(f.get-note-visibility-setting, %0, rest(first(itext(0), v(d.default-column-delimeter)), -)), case(1, isstaff(%2), -1, isowner(%0, %2), 0, 1)), itext(0)), v(d.default-row-delimeter), v(d.default-row-delimeter)), v(d.default-row-delimeter)), b, v(d.default-row-delimeter))))
+
+
+@@ ============================================================================
+@@ Weird esoteric stuff.
+@@ ============================================================================
 
 &f.escape-characters [v(d.bf)]=if(t(setr(0, member(setr(1, v(d.allowed_with_escapes_in_sql)), %0))), strcat(@@ESCAPE@@, extract(%q1, %q0, 1)), %0)
 
@@ -358,26 +413,3 @@
 &f.globalpp.setpair [v(d.bf)]=case(0, cor(isstaff(%#), cand(not(member(num(me), %@)), hastype(%@, THING), andflags(%@, I!h!n), isstaff(owner(%@)))), #-1 PERMISSION DENIED, isdbref(%0), #-2 OBJECT NOT FOUND, t(%1), #-3 PREFIX IS REQUIRED, t(%2), #-4 EXACT TITLE IS REQUIRED, strcat(setq(K, ulocal(f.get-key-prefix, %1)), lte(words(setr(S, ulocal(f.find-pairs-by-exact-title, %0, %1, %2))), 1)), #-5 MULTIPLE KEYS FOUND - MANUAL EDIT BY STAFF REQUIRED, neq(words(%qS), 0), strcat(set(%0, strcat(%1, setr(T, ulocal(f.get-settable-target, %0, %1)), :, %3)), set(%0, strcat(ulocal(f.get-key-prefix, %1), %qT, :, %2)), Set.), neq(words(%qS), 1), strcat(set(%0, %qS:[if(t(%3), %2)]), set(%0, strcat(%1, rest(%qS, ucstr(%qK)), :, %3)), if(t(%3), Updated., Cleared.)))
 
 &f.get-settable-target [v(d.bf)]=inc(lmax(edit(lattr(%0/%1*), ucstr(%1),)))
-
-
-@@ %0: object to check
-@@ %1: person who might own it
-@@ Output: 0 or 1 depending on whether the person owns it.
-&f.globalpp.isowner [v(d.bf)]=ulocal(filter.is_owner, %0, %1)
-
-
-@@ %0: Room number
-@@ Output: the views on a room.
-&f.globalpp.lviews [v(d.bf)]=case(0, isdbref(%0), #-1 NOT A VALID DBREF, hastype(%0, ROOM), #-1 NOT A ROOM, cor(isstaff(%#), member(loc(%#), %0)), #-1 CAN'T SEE VIEWS ELSEWHERE, strcat(setq(K, ulocal(f.get-key-prefix, view-)), ulocal(f.list-matching-pairs, %0, view-, lattr(%0/%qK*), %qK)))
-
-
-@@ %0: Room number
-@@ Output: the public notes on a room.
-&f.globalpp.lnotes [v(d.bf)]=case(0, isdbref(%0), #-1 NOT A VALID DBREF, hastype(%0, ROOM), #-1 NOT A ROOM, cor(isstaff(%#), member(loc(%#), %0)), #-1 CAN'T SEE NOTES ELSEWHERE, strcat(setq(K, ulocal(f.get-key-prefix, _note-)), setq(L, ulocal(f.list-matching-pairs, %0, _note-, lattr(%0/%qK*), %qK)), trim(squish(iter(%qL, if(gte(ulocal(f.get-note-visibility-setting, %0, rest(first(itext(0), v(d.default-column-delimeter)), -)), case(1, isstaff(%2), -1, isowner(%0, %2), 0, 1)), itext(0)), v(d.default-row-delimeter), v(d.default-row-delimeter)), v(d.default-row-delimeter)), b, v(d.default-row-delimeter))))
-
-@@ %0: A delimiter-separated list of items
-@@ %1: The item to match
-@@ %2: Default space.
-@@ finditem(list, item, delimiter) - finds the first item that matches the input. If the input contains a *, then the input itself is returned as a last resort.
-@@ NOTE: This code is written so that your input can contain "0" as part of the list, and will match it. To test the output of this code, use t(strlen(finditem(list, item, delimiter))) rather than just t() when a 0 may be involved in the output.
-&f.globalpp.finditem [v(d.bf)]=if(strlen(%1), strcat(if(t(%2), setq(D, %2), setq(D, %b)), if(t(strlen(setr(S, extract(%0, member(%0, %1, %qD), 1, %qD)))), %qS, if(t(strlen(setr(S, extract(%0, match(%0, %1*, %qD), 1, %qD)))), %qS, if(member(%0, *, %qD), %1)))))
