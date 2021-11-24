@@ -4,7 +4,7 @@
 
 @@ TODO: Maybe add dynamic startups to this as well? +doing/poll/random?
 
-@startup [v(d.bf)]=@trigger me/tr.make-functions; @doing/header [v(d.default-poll)]; @disable building; @trigger me/tr.ban-banned-players; @trigger me/tr.clear-timers;
+@startup [v(d.bf)]=@trigger me/tr.make-functions; @doing/header [v(d.default-poll)]; @enable eventchecking; @disable building; @trigger me/tr.ban-banned-players; @trigger me/tr.clear-timers;
 
 &tr.make-functions [v(d.bf)]=@dolist lattr(me/f.global.*)=@function rest(rest(##, .), .)=me/##; @dolist lattr(me/f.globalp.*)=@function/preserve rest(rest(##, .), .)=me/##; @dolist lattr(me/f.globalpp.*)=@function/preserve/privilege rest(rest(##, .), .)=me/##;
 
@@ -15,6 +15,8 @@
 &tr.clear-player-timers [v(d.bf)]=@dolist lattr(%0/_timer.*)={ @assert t(setr(0, xget(%0, ##))); @assert gte(sub(secs(), extract(%q0, 1, 1, |)), extract(%q0, 2, 1, |)); @wipe %0/##; };
 
 &tr.ban-banned-players [v(d.bf)]=@dolist lattr(%vD/d.ban.*)=@admin forbid_site=rest(##, D.BAN.) 255.255.255.255;
+
+@daily [v(d.bf)]=@trigger me/tr.clear-timers;
 
 @@ =============================================================================
 @@ Locks
