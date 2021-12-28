@@ -30,11 +30,15 @@
 &f.globalpp.settimer [v(d.bf)]=case(0, cor(isstaff(%#), cand(not(member(num(me), %@)), hastype(%@, THING), andflags(%@, I!h!n), isstaff(owner(%@)))), #-1 PERMISSION DENIED, t(setr(P, ulocal(f.find-player, %0, %#))), #-1 PLAYER NOT FOUND, cand(isnum(%2), gte(%2, 0), lte(%2, secs())), #-1 DURATION NOT A NUMBER, set(%qP, _timer.%1:[secs()]|%2|%3))
 
 @@ Gets the value of an existing timer and does the "is it expired?" check for you.
+@@ %0 - player to get the timer on
+@@ %1 - name of the timer (must be attribute-friendly)
+@@ %2 - optional, if provided the data on the timer must match the given data
 @@ Returns:
 @@   0 if timer was invalid
 @@   the data, if any data was set, if the timer is valid
 @@   1 if no data was set and the timer is valid
-&f.globalpp.gettimer [v(d.bf)]=case(0, cor(isstaff(%#), cand(not(member(num(me), %@)), hastype(%@, THING), andflags(%@, I!h!n), isstaff(owner(%@)))), #-1 PERMISSION DENIED, t(setr(P, ulocal(f.find-player, %0, %#))), #-1 PLAYER NOT FOUND, if(t(setr(0, xget(%qP, _timer.%1))), if(lte(sub(secs(), extract(%q0, 1, 1, |)), extract(%q0, 2, 1, |)), if(t(setr(1, extract(%q0, 3, words(%q0, |), |))), %q1, 1), 0), 0))
+@@   1 if data was set and the timer is valid and the optional data matches the data on the timer
+&f.globalpp.gettimer [v(d.bf)]=case(0, cor(isstaff(%#), cand(not(member(num(me), %@)), hastype(%@, THING), andflags(%@, I!h!n), isstaff(owner(%@)))), #-1 PERMISSION DENIED, t(setr(P, ulocal(f.find-player, %0, %#))), #-1 PLAYER NOT FOUND, if(t(setr(0, xget(%qP, _timer.%1))), if(lte(sub(secs(), extract(%q0, 1, 1, |)), extract(%q0, 2, 1, |)), if(t(setr(1, extract(%q0, 3, words(%q0, |), |))), if(t(%2), strmatch(%q1, %2*), %q1), 1), 0), 0))
 
 @@ Output: an entire duration string: 3d 4h 5m 57s
 @@ %0 - number of seconds to calculate the duration of
