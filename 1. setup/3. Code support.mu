@@ -188,7 +188,7 @@
 
 &f.get-location [v(d.bf)]=if(cand(hasflag(%0, unfindable), not(isstaff(%1))), Unfindable, name(loc(%0)))
 
-&f.get-gender [v(d.bf)]=switch(xget(%0, sex), M*, male, F*, female, if(t(#$), non-binary, unset))
+&f.get-gender [v(d.bf)]=default(%0/sex, unset)
 
 &f.get-name [v(d.bf)]=ulocal(f.hilite-text, %0, %1, moniker(%0))
 
@@ -292,7 +292,7 @@
 
 &tr.report [v(d.bf)]=@cemit [v(d.report-target)]=%0;
 
-&tr.redirect-emit-to-channel [v(d.bf)]=@cemit v(d.redirect-poses.%0)=ulocal(f.parse_emit, %2, %1, ulocal(f.is-player-on-redirected-channel, %2, %0), %0); @assert ulocal(filter.isplayer, %0); @assert ulocal(f.is-player-on-redirected-channel, %2, %0)={ @trigger me/tr.message=%2, You aren't seeing the whole conversation. All emits in this location are piped to the [setr(C, v(d.redirect-poses.%0))] channel. %ch[if(t(v(d.channel-functions)), +com/join%b, addcom [ulocal(f.get-channel-alias, %qC)]=)]%qC%cn to join in!; };
+&tr.redirect-emit-to-channel [v(d.bf)]=@cemit v(d.redirect-poses.%0)=ulocal(f.parse_emit, %2, %1, ulocal(f.is-player-on-redirected-channel, %2, %0), %0); @assert ulocal(filter.isplayer, %2); @assert ulocal(f.is-player-on-redirected-channel, %2, %0)={ @trigger me/tr.message=%2, You aren't seeing the whole conversation. All emits in this location are piped to the [setr(C, v(d.redirect-poses.%0))] channel. %ch[if(t(v(d.channel-functions)), +com/join%b, addcom [ulocal(f.get-channel-alias, %qC)]=)]%qC%cn to join in!; };
 
 &tr.remit [v(d.bf)]=@break ulocal(f.is-redirected-to-channel, %0)={ @trigger me/tr.redirect-emit-to-channel=%0, %1, %2; }; @break ulocal(f.is-target-room-gagged, %0)={ @trigger me/tr.error=%2, You can't use this command in here. This room is set quiet.; }; @remit %0=%1;
 
