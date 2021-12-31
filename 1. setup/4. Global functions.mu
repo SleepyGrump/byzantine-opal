@@ -143,7 +143,7 @@
 
 @@ %0 - player or width to calculate the remaining width of
 @@ Output: The width after all the UI elements are removed. Useful for calculating space available to visually display things.
-&f.globalpp.getremainingwidth [v(d.bf)]=strcat(setq(0, ulocal(f.get-width, %0)), setq(1, strlen(v(d.text-left))), setq(2, strlen(v(d.text-right))), sub(%q0, add(%q1, %q2, 6)))
+&f.globalpp.getremainingwidth [v(d.bf)]=strcat(setq(0, ulocal(f.get-width, %0)), setq(1, strlen(v(d.text-left))), setq(2, strlen(v(d.text-right))), sub(%q0, add(%q1, %q2, 2)))
 
 @@ %0: List
 @@ %1: Columns
