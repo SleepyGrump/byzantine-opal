@@ -119,6 +119,8 @@ MAYBE: Doubt there's much call for it, but maybe let people modify the following
 	@speechmod
 
 Changes:
+2021-12-31:
+ - Discovered a bug with MUX2.13: Wizards bypass channel locks no matter what. So Wizards will not be able to /mute, they'll have to /off.
 2021-08-04:
  - Added the alias commands, finally. pub/who FTW.
  - Added /who /on /off, etc.
