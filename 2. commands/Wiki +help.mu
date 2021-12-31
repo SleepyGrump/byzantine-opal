@@ -19,6 +19,8 @@ Implementing this template is up to you. Keep your help entries as simple as pos
 
 TODO: Make the search sub-categories list the name it resolved to.
 
+TODO: BUG: on new game, lots of errors get thrown to the Monitor channel when user hits +help and there's no DB set up.
+
 */
 
 &sql.get-exact-page-text [v(d.bd)]=SELECT `text`.`old_text` FROM `page` INNER JOIN `slots` on `page`.`page_latest`=`slots`.`slot_revision_id` INNER JOIN `content` ON `slots`.`slot_content_id`=`content`.`content_id` INNER JOIN `text` ON SUBSTR(`content`.`content_address`, 4)=`text`.`old_id` INNER JOIN `categorylinks` ON REPLACE(UPPER(CONVERT(`categorylinks`.`cl_sortkey` USING latin1)), '_', ' ')=REPLACE(UPPER(CONVERT(`page`.`page_title` USING latin1)), '_', ' ') WHERE `categorylinks`.`cl_to`='Help' AND `categorylinks`.`cl_type` = 'page' AND REPLACE(LOWER(CONVERT(`page`.`page_title` USING utf8mb4)), "_", " ") = '[ulocal(f.sanitize-where, %0)]'

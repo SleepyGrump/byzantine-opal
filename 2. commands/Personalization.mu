@@ -74,6 +74,8 @@
 @@ +note
 @@ =============================================================================
 
+@@ TODO: make the search function better. I would like to be able to type +note <name> to view a public note, not +note here/<name>.
+
 &layout.note_title [v(d.bf)]=strcat(if(t(%2), %2%b), moniker(%0)'s, %b, if(strmatch(setr(0, getpairkey(%0, _note-, %1)), *[v(d.default-column-delimeter)]*),, %q0), %b, note)
 
 &layout.note_footer [v(d.bf)]=cat(This note is, case(ulocal(f.get-note-visibility-setting, %0, getpairattr(%0, _note-, %1)), -1, hidden, 0, private, 1, public).)
