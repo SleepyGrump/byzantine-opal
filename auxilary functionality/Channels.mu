@@ -250,7 +250,7 @@ Changes:
 &layout.msg [v(d.chf)]=alert(Channel) %0
 
 @@ %0 - user
-&layout.channels [v(d.chf)]=strcat(header(Channels, %0), %r, multicol(strcat(Name|Owner|Status|Players|Description|, iter(ulocal(f.get-channels, %0), strcat(setq(O, ulocal(f.get-channel-owner, itext(0))), setr(T, ulocal(f.get-channel-name, itext(0))), |, if(isstaff(%qO), Staff, ulocal(f.get-name, %qO, %0)), |, ulocal(f.get-channel-lock, itext(0)), |, words(filter(filter.not_dark, cwho(%qT),,, %0)), |, ulocal(f.get-channel-desc, itext(0))),, |)), 20 15 18 7 *, 1, |, %0), %R, footer(+channel <name> for details, %0))
+&layout.channels [v(d.chf)]=strcat(header(Channels, %0), %r, multicol(strcat(Name|Owner|Status|Players|Description|, iter(ulocal(f.get-channels, %0), strcat(setq(O, ulocal(f.get-channel-owner, itext(0))), setr(T, ulocal(f.get-channel-name, itext(0))), |, if(isstaff(%qO), Staff, ulocal(f.get-name, %qO, %0)), |, ulocal(f.get-channel-lock, itext(0)), |, words(filter(filter.not_dark, cwho(%qT),,, %0)), |, ulocal(f.get-channel-desc, itext(0))),, |)), 15 10 10 7 *, 1, |, %0), %R, footer(+channel <name> for details, %0))
 
 @@ %0 - dbref of channel object
 @@ %1 - user
@@ -305,7 +305,7 @@ Changes:
 
 @@ %0 - player
 @@ %1 - dbref of channel
-&f.can-modify-channel [v(d.chf)]=cor(isstaff(%0), cand(hasflag(%0, APPROVED), match(ulocal(f.get-channel-owner, %1), %0, |)))
+&f.can-modify-channel [v(d.chf)]=cor(isstaff(%0), match(ulocal(f.get-channel-owner, %1), %0, |))
 
 @@ %0 - title of channel
 &f.get-channel-dbref [v(d.chf)]=squish(trim(iter(lattr(%vD/channel.*), if(cor(match(ulocal(f.get-channel-name, rest(itext(0), .)), %0, |), match(ulocal(f.get-channel-alias, rest(itext(0), .)), %0, |)), rest(itext(0), .)))))
@@ -604,7 +604,7 @@ th ulocal(v(d.chf)/f.is-banned-alias, quit)
 @@ Input:
 @@ %0 - %#
 @@ %1 - channel title
-&tr.channel-create [v(d.chc)]=@switch setr(E, trim(squish(strcat(if(not(ulocal(f.can-create-channels, %0)), You are not allowed to create channels. This could be because players are not permitted to create channels or because you have already created your max quota of channels.), %b, if(not(t(setr(T, ulocal(f.clean-channel-name, first(%1, =))))), You need to include a title for the new channel.), %b, if(t(ulocal(f.is-banned-name, %qT)), You can't use the name '%qT' because it is in use or not allowed.), setq(D, rest(%1, =))))))=, { @switch setr(E, if(t(setr(N, create(%qT Channel Object, 10))),, Could not create '%qT Channel Object'. %qN))=, { @trigger me/tr.channel-created-or-claimed=%0, %qT, %qN, %qD; @trigger me/tr.log-channel-history=%0, %qN, Created.;  @pemit %0=strcat(ulocal(layout.msg, strcat(Channel '%qT' created., %r%t The channel has been automatically set 'Private'. +channel/public %qT if you want to change it., %r%t, This channel was automatically set 'Nospoof'. You can allow spoofing with +channel/spoof %qT., %r%t, To set your channel header%, type +channel/header %qT=<your decorative header containing %qT for the channel name>. Color codes are allowed. Headers may be a max of 100 characters long., %r%t, The default alias of your new channel is %qA. To change this%, type +channel/alias %qT=<your alias>. Aliases should be 2-3 characters long.))); }, { @pemit %0=ulocal(layout.error, %qE); }; }, { @pemit %0=ulocal(layout.error, %qE); }
+&tr.channel-create [v(d.chc)]=@switch setr(E, trim(squish(strcat(if(not(ulocal(f.can-create-channels, %0)), You are not allowed to create channels. This could be because players are not permitted to create channels or because you have already created your max quota of channels.), %b, if(not(t(setr(T, ulocal(f.clean-channel-name, first(%1, =))))), You need to include a title for the new channel.), %b, if(t(ulocal(f.is-banned-name, %qT)), You can't use the name '%qT' because it is in use or not allowed.), setq(D, rest(%1, =))))))=, { @switch setr(E, if(t(setr(N, create(%qT Channel Object, 10))),, Could not create '%qT Channel Object'. %qN))=, { @trigger me/tr.channel-created-or-claimed=%0, %qT, %qN, %qD; @trigger me/tr.log-channel-history=%0, %qN, Created.;  @pemit %0=strcat(ulocal(layout.msg, strcat(Channel '%qT' created., %r%t The channel has been automatically set 'Private'. +channel/public %qT if you want to change it., %r%t, This channel was automatically set 'Nospoof'. You can allow spoofing with +channel/spoof %qT., %r%t, To set your channel header%, type +channel/header %qT=<your decorative header containing %qT for the channel name>. Color codes are allowed. Headers may be a max of 100 characters long., %r%t, The default alias of your new channel is [ulocal(f.get-channel-alias-by-name, %1)]. To change this%, type +channel/alias %qT=<your alias>. Aliases should be 2-3 characters long.))); }, { @pemit %0=ulocal(layout.error, %qE); }; }, { @pemit %0=ulocal(layout.error, %qE); }
 
 @@ Input:
 @@ %0 - %#

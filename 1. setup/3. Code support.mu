@@ -280,7 +280,7 @@
 &f.can-sender-message-target [v(d.bf)]=cor(isstaff(%0), member(xget(%1, whitelisted-PCs), %0), not(cor(t(xget(%1, block-all)), member(xget(%1, blocked-PCs), %0))))
 
 @@ =============================================================================
-@@ Triggers - these must be globally available to all descendents, so belong on
+@@ Triggers - these must be globally available to all descendants, so belong on
 @@ the Functions object.
 @@ =============================================================================
 
@@ -291,6 +291,8 @@
 &tr.success [v(d.bf)]=@pemit %0=cat(alert(Success), %1);
 
 &tr.report [v(d.bf)]=@cemit [v(d.report-target)]=%0;
+
+@@ TODO: Consider adding options for cemit, job, and msg? And possibly a global trigger which handles all possibilities passed as a flag - channel, job, msg, page, and any future options we come up with, defaulting to remit.
 
 &tr.redirect-emit-to-channel [v(d.bf)]=@cemit v(d.redirect-poses.%0)=ulocal(f.parse_emit, %2, %1, ulocal(f.is-player-on-redirected-channel, %2, %0), %0); @assert ulocal(filter.isplayer, %2); @assert ulocal(f.is-player-on-redirected-channel, %2, %0)={ @trigger me/tr.message=%2, You aren't seeing the whole conversation. All emits in this location are piped to the [setr(C, v(d.redirect-poses.%0))] channel. %ch[if(t(v(d.channel-functions)), +com/join%b, addcom [ulocal(f.get-channel-alias, %qC)]=)]%qC%cn to join in!; };
 
