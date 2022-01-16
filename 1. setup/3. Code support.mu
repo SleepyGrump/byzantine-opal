@@ -260,6 +260,16 @@
 
 &f.get-channel-alias [v(d.bf)]=if(t(v(d.channel-functions)), ulocal(v(d.channel-functions)/f.get-channel-alias-by-name, %0), switch(%0, Chargen, cg, Staff, st, strtrunc(lcstr(%0), 3)))
 
+@@ %0: object to check
+@@ %1: attribute cluster to check
+@@ Returns: The attribute cluster plus a number greater than all pre-existing numbers on that attribute cluster: ex: _stat.crew_advancement_12 (where the last one was 11) or doing1 if there were no previous attributes starting with doing.
+&f.get-next-id-attr [v(d.bf)]=strcat(%1, inc(lmax(edit(lattr(%0/%1*), ucstr(%1),))))
+
+@@ %0: object to check
+@@ %1: attribute cluster to check
+@@ %2: index to extract
+&f.find-attr-by-number [v(d.bf)]=extract(lattr(%0/%1*), %2, 1)
+
 &f.gag-poses-in-quiet-rooms [v(d.bf)]=not(ulocal(f.is-target-room-gagged, loc(%#)))
 
 &f.forward-poses [v(d.bf)]=if(ulocal(f.is-redirected-to-channel, loc(%#)), trigger(me/tr.redirect-emit-to-channel, loc(%#), %m, %#))
