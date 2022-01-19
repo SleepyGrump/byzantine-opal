@@ -310,6 +310,9 @@
 
 &tr.remit-quiet [v(d.bf)]=@break ulocal(f.is-redirected-to-channel, %0); @break ulocal(f.is-target-room-gagged, %0); @remit %0=%1;
 
+@@ %0: Location
+@@ %1: Message
+@@ %2: Player to send to if the room is gagged
 &tr.remit-or-pemit [v(d.bf)]=@break ulocal(f.is-redirected-to-channel, %0)={ @trigger me/tr.redirect-emit-to-channel=%0, %1, %2; }; @break ulocal(f.is-target-room-gagged, %0)={ @trigger me/tr.pemit=%2, %1; }; @remit %0=%1;
 
 &tr.pemit [v(d.bf)]=@break t(words(setr(N, trim(squish(iter(%0, if(ulocal(f.can-sender-message-target, %2, itext(0)),, itext(0))))))))={ @trigger me/tr.error=%2, Sorry%, [itemize(iter(%qN, moniker(itext(0)),, |), |)] [case(words(%qN), 1, is, are)] not accepting messages.; }; @pemit %0=%1;
