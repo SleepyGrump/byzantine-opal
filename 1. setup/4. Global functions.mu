@@ -63,6 +63,8 @@
 
 &f.global.prettytime [v(d.bf)]=if(t(%0), timefmt($m/$d/$Y $r, %0), timefmt($m/$d/$Y $r))
 
+&f.global.unprettytime [v(d.bf)]=convtime(cat(case(extract(%0, 1, 1, /), 01, Jan, 02, Feb, 03, Mar, 04, Apr, 05, May, 06, Jun, 07, Jul, 08, Aug, 09, Sep, 10, Oct, 11, Nov, Dec), extract(%0, 2, 1, /), rest(%0), extract(first(%0), 3, 1, /)))
+
 @@ %0 - the word
 @@ %1 - the position in the string
 @@ Cases:
