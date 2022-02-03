@@ -289,6 +289,11 @@
 @@ %1: Target
 &f.can-sender-message-target [v(d.bf)]=cor(isstaff(%0), member(xget(%1, whitelisted-PCs), %0), not(cor(t(xget(%1, block-all)), member(xget(%1, blocked-PCs), %0))))
 
+@@ %0: player
+@@ %1: log attribute group
+@@ %2: number to get (default 10)
+&f.get-last-X-logs [v(d.bf)]=extract(revwords(lattr(%0/%1*)), 1, if(t(%2), %2, 10))
+
 @@ =============================================================================
 @@ Triggers - these must be globally available to all descendants, so belong on
 @@ the Functions object.
@@ -301,6 +306,12 @@
 &tr.success [v(d.bf)]=@pemit %0=cat(alert(Success), %1);
 
 &tr.report [v(d.bf)]=@cemit [v(d.report-target)]=%0;
+
+@@ %0: player
+@@ %1: attribute group
+@@ %2: setter
+@@ %3: message
+&tr.log [v(d.bf)]=@set %0=[ulocal(f.get-next-id-attr, %0, %1)]:[cat(prettytime(), ulocal(f.get-name, %2):, %3)];
 
 @@ TODO: Consider adding options for cemit, job, and msg? And possibly a global trigger which handles all possibilities passed as a flag - channel, job, msg, page, and any future options we come up with, defaulting to remit.
 
@@ -335,3 +346,5 @@
 @@ When debugging: &tr.report_query_error [v(d.bf)]=report(num(me), ulocal(layout.report_query_error, %0, %1, %2))
 
 &layout.report_query_error [v(d.bf)]=strcat(Error in %0:, %b, \[%1\], :%b, %2)
+
+&layout.log [v(d.bf)]=cat(first(%0), rest(rest(rest(%0))))
