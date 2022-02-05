@@ -43,6 +43,12 @@
 @@   1 if data was set and the timer is valid and the optional data matches the data on the timer
 &f.globalpp.gettimer [v(d.bf)]=case(0, cor(isstaff(%#), cand(not(member(num(me), %@)), hastype(%@, THING), andflags(%@, I!h!n), isstaff(owner(%@)))), #-1 PERMISSION DENIED, t(setr(P, ulocal(f.find-player, %0, %#))), #-1 PLAYER NOT FOUND, if(t(setr(0, xget(%qP, _timer.%1))), if(lte(sub(secs(), extract(%q0, 1, 1, |)), extract(%q0, 2, 1, |)), if(t(setr(1, extract(%q0, 3, words(%q0, |), |))), if(t(%2), strmatch(%q1, %2*), %q1), 1), 0), 0))
 
+@@ Gets the value of an existing timer and tells you how much time is left on it.
+@@ %0 - player to get the timer on
+@@ %1 - name of the timer (must be attribute-friendly)
+@@ Returns the duration in the largest 2 intervals (years/months/etc), or 0 if the timer has expired.
+&f.globalpp.getremainingtime [v(d.bf)]=case(0, cor(isstaff(%#), cand(not(member(num(me), %@)), hastype(%@, THING), andflags(%@, I!h!n), isstaff(owner(%@)))), #-1 PERMISSION DENIED, t(setr(P, ulocal(f.find-player, %0, %#))), #-1 PLAYER NOT FOUND, if(t(setr(0, xget(%qP, _timer.%1))), if(lte(setr(1, sub(secs(), extract(%q0, 1, 1, |))), setr(2, extract(%q0, 2, 1, |))), secs2hrs(sub(%q2, %q1)), 0), #-1 TIMER NOT FOUND))
+
 @@ Output: an entire duration string: 3d 4h 5m 57s
 @@ %0 - number of seconds to calculate the duration of
 &f.duration-string [v(d.bf)]=extract(exptime(%0), 1, 2)
