@@ -33,7 +33,6 @@ idle_timeout 86400
 room_parent 19
 exit_parent 33
 player_parent 17
-guest_parent 18
 hook_obj 32
 
 # For the channel forwarding and pose notices:

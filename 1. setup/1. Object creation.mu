@@ -23,8 +23,6 @@ think if(t(v(d.cron)), Good%, you have Myrddin's mushcron%, we can continue., AL
 
 @force me=@pcreate PlayerParent=[iter(lnum(32), pickrand(a b c d e f g h i j k l m n o p q r s t u v w x y z 1 2 3 4 5 6 7 8 9 0 ! @ # $ ^ & * - _ + = |),, @@)]
 
-@force me=@pcreate GuestParent=[iter(lnum(32), pickrand(a b c d e f g h i j k l m n o p q r s t u v w x y z 1 2 3 4 5 6 7 8 9 0 ! @ # $ ^ & * - _ + = |),, @@)]
-
 @@ Make sure this matches the room you want to make your OOC room.
 @tel #0
 @force me=&d.ooc me=[loc(%#)]
@@ -49,7 +47,6 @@ think if(t(v(d.cron)), Good%, you have Myrddin's mushcron%, we can continue., AL
 
 @force me=&d.go me=[search(EPLAYER=t(member(name(##), GridOwner, |)))]
 @force me=&d.pp me=[search(EPLAYER=t(member(name(##), PlayerParent, |)))]
-@force me=&d.gp me=[search(EPLAYER=t(member(name(##), GuestParent, |)))]
 @force me=&d.rp me=[search(EROOM=t(member(name(##), Room Parent, |)))]
 @force me=&d.orp me=[search(EROOM=t(member(name(##), OOC Room Parent, |)))]
 @force me=&d.crp me=[search(EROOM=t(member(name(##), Commercial Room Parent, |)))]
@@ -67,7 +64,6 @@ think if(t(v(d.cron)), Good%, you have Myrddin's mushcron%, we can continue., AL
 @force me=@force [v(d.pp)]=pub off
 
 @set [v(d.pp)]=ANSI COLOR256 KEEPALIVE
-@set [v(d.gp)]=ANSI COLOR256 KEEPALIVE
 
 @set [v(d.rp)]=FLOATING HALTED LINK_OK NO_COMMAND OPAQUE
 @set [v(d.orp)]=HALTED FLOATING
