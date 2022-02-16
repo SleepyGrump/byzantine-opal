@@ -30,7 +30,7 @@
 @@ %1 - name of the timer (must be attribute-friendly)
 @@ %2 - duration of the timer in seconds
 @@ %3 - any additional data to put on the timer
-&f.globalpp.settimer [v(d.bf)]=case(0, cor(isstaff(%#), cand(not(member(num(me), %@)), hastype(%@, THING), andflags(%@, I!h!n), isstaff(owner(%@)))), #-1 PERMISSION DENIED, t(setr(P, ulocal(f.find-player, %0, %#))), #-1 PLAYER NOT FOUND, cand(isnum(%2), gte(%2, 0), lte(%2, secs())), #-1 DURATION NOT A NUMBER, set(%qP, _timer.%1:[secs()]|%2|%3))
+&f.globalpp.settimer [v(d.bf)]=case(0, cor(isstaff(%#), cand(not(member(num(me), %@)), hastype(%@, THING), andflags(%@, I!h!n), isstaff(owner(%@)))), #-1 PERMISSION DENIED, t(setr(P, ulocal(f.find-player, %0, %#))), #-1 PLAYER NOT FOUND, cand(isint(%2), gte(%2, 0), lte(%2, secs())), #-1 DURATION NOT AN INTEGER, set(%qP, _timer.%1:[secs()]|%2|%3))
 
 @@ Gets the value of an existing timer and does the "is it expired?" check for you.
 @@ %0 - player to get the timer on
@@ -117,7 +117,7 @@
 
 @@ %0 - the player to get the width of the screen of OR a specific width
 @@ Output: the width of the player's screen, max 200 and min 48 (changed from 50 because I've got a player with width 49), or the numeric width given.
-&f.get-width [v(d.bf)]=if(isnum(%0), %0, max(min(width(if(t(%0), %0, %#)), 200), 48))
+&f.get-width [v(d.bf)]=if(isint(%0), %0, max(min(width(if(t(%0), %0, %#)), 200), 48))
 
 @@ %0 - width of the left and right edges
 @@ %1 - width of the middle

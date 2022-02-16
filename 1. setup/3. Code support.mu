@@ -311,7 +311,7 @@
 @@ %1: attribute group
 @@ %2: setter
 @@ %3: message
-&tr.log [v(d.bf)]=@set %0=[ulocal(f.get-next-id-attr, %0, %1)]:[cat(prettytime(), ulocal(f.get-name, %2):, %3)];
+&tr.log [v(d.bf)]=@set %0=[ulocal(f.get-next-id-attr, %0, %1)]:[cat(prettytime(), if(isdbref(%2), ulocal(f.get-name, %2), %2):, %3)];
 
 @@ %0: attribute group
 &tr.clean-old-player-logs [v(d.bf)]=@dolist search(EPLAYER=t(lattr(##/%0*)))={ @trigger me/tr.clean-old-logs=##, %0; };
