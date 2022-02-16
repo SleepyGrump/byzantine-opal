@@ -313,6 +313,14 @@
 @@ %3: message
 &tr.log [v(d.bf)]=@set %0=[ulocal(f.get-next-id-attr, %0, %1)]:[cat(prettytime(), ulocal(f.get-name, %2):, %3)];
 
+@@ %0: attribute group
+&tr.clean-old-player-logs [v(d.bf)]=@dolist search(EPLAYER=t(lattr(##/%0*)))={ @trigger me/tr.clean-old-logs=##, %0; };
+
+@@ %0: player
+@@ %1: attribute group
+@@ Deletes logs that are not in the top 20 log entries and which did not take place within the last 7 days.
+&tr.clean-old-logs [v(d.bf)]=@eval setq(L, lattr(%0/%1*)); @eval setq(L, setdiff(%qL, extract(revwords(%qL), 1, 20))) @assert t(%qL); @dolist %qL={ @assert gt(sub(secs(), unprettytime(extract(xget(%0, ##), 1, 2))), 604800); @wipe %0/##; };
+
 @@ TODO: Consider adding options for cemit, job, and msg? And possibly a global trigger which handles all possibilities passed as a flag - channel, job, msg, page, and any future options we come up with, defaulting to remit.
 
 @@ %0: flag
@@ -347,4 +355,4 @@
 
 &layout.report_query_error [v(d.bf)]=strcat(Error in %0:, %b, \[%1\], :%b, %2)
 
-&layout.log [v(d.bf)]=cat(first(%0), rest(rest(rest(%0))))
+&layout.log [v(d.bf)]=cat(ansi(xh, extract(%0, 1, 2, /)), rest(rest(rest(%0))))
