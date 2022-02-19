@@ -42,7 +42,7 @@
 @@   the data, if any data was set, if the timer is currently running
 @@   1 if no data was set and the timer is currently running (even if optional data is passed)
 @@   1 if data was set and the timer is currently running and the optional data matches the data on the timer
-&f.globalpp.gettimer [v(d.bf)]=case(0, cor(isstaff(%#), cand(not(member(num(me), %@)), hastype(%@, THING), andflags(%@, I!h!n), isstaff(owner(%@)))), #-1 PERMISSION DENIED, t(setr(P, locate(%#, %0, *))), #-1 TARGET NOT FOUND, if(t(setr(0, xget(%qP, _timer.%1))), if(lte(sub(secs(), extract(%q0, 1, 1, |)), extract(%q0, 2, 1, |)), if(t(setr(1, extract(%q0, 3, words(%q0, |), |))), if(t(%2), strmatch(%q1, %2*), %q1), 1), 0), 0))
+&f.globalpp.gettimer [v(d.bf)]=case(0, cor(isstaff(%#), cand(not(member(num(me), %@)), hastype(%@, THING), andflags(%@, I!h!n), isstaff(owner(%@)))), #-1 PERMISSION DENIED, t(setr(P, locate(%#, %0, *))), #-1 TARGET NOT FOUND, if(t(setr(0, xget(%qP, _timer.%1))), if(lte(sub(secs(), extract(%q0, 1, 1, |)), extract(%q0, 2, 1, |)), if(t(setr(1, extract(%q0, 3, words(%q0, |), |))), if(t(%2), strmatch(%q1, %2), %q1), 1), 0), 0))
 
 @@ Gets the value of an existing timer and tells you how much time is left on it.
 @@ %0 - target to get the timer on
