@@ -44,7 +44,9 @@
 
 &d.travel-key [v(d.ic)]=IC
 
-&layout.conformat [v(d.rp)]=strcat(divider(People, %1), %r, whofields(%0, %1, room))
+&layout.conformat [v(d.rp)]=strcat(divider(People, %1), %r, whofields(%0, %1, ic-room))
+
+&layout.conformat [v(d.orp)]=strcat(divider(People, %1), %r, whofields(%0, %1, room))
 
 &layout.objects [v(d.rp)]=strcat(divider(Objects, %1), %r, whofields(%0, %1, object))
 
@@ -96,6 +98,8 @@
 &d.who-sort-order [v(d.bd)]=Idle
 
 &d.default-room-fields [v(d.bd)]=Name|Idle|Short-desc
+
+&d.default-ic-room-fields [v(d.bd)]=Name|Idle|Short-desc
 
 &d.default-object-fields [v(d.bd)]=Name|Short-desc
 
