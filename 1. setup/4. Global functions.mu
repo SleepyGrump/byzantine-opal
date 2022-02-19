@@ -326,7 +326,7 @@
 
 &f.get-field-widths [v(d.bf)]=iter(%0, if(cand(member(object, %1), member(Name, itext(0))), 50p, extract(v(d.who-field-widths), member(v(d.allowed-who-fields), itext(0), |), 1)), |)
 
-&f.sort-players [v(d.bf)]=strcat(setq(P,), null(iter(ulocal(f.get-sort-order, %1, %2), setq(P, ulocal(f.sort.by_[edit(itext(0), %b, _)], edit(%0, %b, |), %1)), |, |)), edit(%qP, |, %b))
+&f.sort-players [v(d.bf)]=strcat(setq(P,), null(iter(ulocal(f.get-sort-order, %1, %2), setq(P, ulocal(if(t(v(setr(A, f.sort.by_[edit(itext(0), %b, _)]))), %qA, f.sort.by_generic), edit(%0, %b, |), %1, itext(0))), |, |)), edit(%qP, |, %b))
 
 &f.get-sort-order [v(d.bf)]=strcat(setq(S,), null(iter(default(%0/d.%1-sort, v(d.who-sort-order)), if(member(v(d.allowed-who-fields), itext(0), |), setq(S, %qS|[itext(0)])), |)), setq(S, trim(%qS, b, |)), %qS)
 
@@ -338,7 +338,7 @@
 @@ %0: list of dbrefs
 @@ %1: Viewer
 @@ %2: which field list to sort by
-&f.globalpp.whosort [v(d.bf)]=if(member(edit(lcstr(lattr(%vD/d.default-*-fields)), d.default-,, -fields,), lcstr(%2)), strcat(setq(P,), null(iter(ulocal(f.get-sort-order, %1, %2), setq(P, ulocal(f.sort.by_[edit(itext(0), %b, _)], edit(%0, %b, |), %1)), |, |)), edit(%qP, |, %b)), #-1 %2 FIELD LIST NOT FOUND)
+&f.globalpp.whosort [v(d.bf)]=if(member(edit(lcstr(lattr(%vD/d.default-*-fields)), d.default-,, -fields,), lcstr(%2)), strcat(setq(P,), null(iter(ulocal(f.get-sort-order, %1, %2), setq(P, ulocal(if(t(v(setr(A, f.sort.by_[edit(itext(0), %b, _)]))), %qA, f.sort.by_generic), edit(%0, %b, |), %1, itext(0))), |, |)), edit(%qP, |, %b)), #-1 %2 FIELD LIST NOT FOUND)
 
 @@ Output: the data of each object for the target's who field settings
 &f.globalpp.whofields [v(d.bf)]=if(member(edit(lcstr(lattr(%vD/d.default-*-fields)), d.default-,, -fields,), lcstr(%2)), ulocal(layout.who-list, %0, %1, %2), #-1 %2 FIELD LIST NOT FOUND)

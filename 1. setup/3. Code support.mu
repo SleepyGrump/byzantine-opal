@@ -108,65 +108,15 @@
 
 &f.sort.generic [v(d.bf)]=strcat(setq(S, iter(%0, lcstr(strip(ulocal(f.get-[edit(%2, %b, _)], itext(0), %1))), |, |)), munge(f.sort-alpha, %qS, edit(%0, %b, |), |))
 
-&f.sort.by_name [v(d.bf)]=ulocal(f.sort.generic, %0, %1, name)
-
-&f.sort.by_alias [v(d.bf)]=ulocal(f.sort.generic, %0, %1, alias)
-
-&f.sort.by_location [v(d.bf)]=ulocal(f.sort.generic, %0, %1, location)
-
-&f.sort.by_doing [v(d.bf)]=ulocal(f.sort.generic, %0, %1, doing)
-
-&f.sort.by_gender [v(d.bf)]=ulocal(f.sort.generic, %0, %1, gender)
+&f.sort.by_generic [v(d.bf)]=ulocal(f.sort.generic, %0, %1, edit(%2, %b, _))
 
 &f.sort.by_dbref [v(d.bf)]=sort(%0, d, |, |)
-
-&f.sort.by_note [v(d.bf)]=ulocal(f.sort.generic, %0, %1, note)
-
-&f.sort.by_position [v(d.bf)]=ulocal(f.sort.generic, %0, %1, position)
-
-&f.sort.by_short-desc [v(d.bf)]=ulocal(f.sort.generic, %0, %1, short-desc)
-
-&f.sort.by_played-by [v(d.bf)]=ulocal(f.sort.generic, %0, %1, played-by)
-
-&f.sort.by_wiki [v(d.bf)]=ulocal(f.sort.generic, %0, %1, wiki)
-
-&f.sort.by_themesong [v(d.bf)]=ulocal(f.sort.generic, %0, %1, themesong)
-
-&f.sort.by_ic_full_name [v(d.bf)]=ulocal(f.sort.generic, %0, %1, ic_full_name)
-
-&f.sort.by_ic_handle [v(d.bf)]=ulocal(f.sort.generic, %0, %1, ic_handle)
-
-&f.sort.by_ic_occupation [v(d.bf)]=ulocal(f.sort.generic, %0, %1, ic_occupation)
-
-&f.sort.by_ic_pronouns [v(d.bf)]=ulocal(f.sort.generic, %0, %1, ic_pronouns)
-
-&f.sort.by_ooc_pronouns [v(d.bf)]=ulocal(f.sort.generic, %0, %1, ooc_pronouns)
 
 &f.sort-connection_time [v(d.bf)]=case(1, gt(%0, %1), -1, lt(%0, %1), 1, 0)
 
 &f.sortby-connection_time [v(d.bf)]=sortby(f.sort-connection_time, %0, |, |)
 
 &f.sort.by_connection_time [v(d.bf)]=strcat(setq(S, iter(%0, xget(itext(0), _last-conn), |, |)), munge(f.sortby-connection_time, %qS, edit(%0, %b, |), |))
-
-&f.sort.by_mail_stats [v(d.bf)]=ulocal(f.sort.generic, %0, %1, mail_stats)
-
-&f.sort.by_rp_prefs [v(d.bf)]=ulocal(f.sort.generic, %0, %1, rp_prefs)
-
-&f.sort.by_timezone [v(d.bf)]=ulocal(f.sort.generic, %0, %1, timezone)
-
-&f.sort.by_public_alts [v(d.bf)]=ulocal(f.sort.generic, %0, %1, public_alts)
-
-&f.sort.by_private_alts [v(d.bf)]=ulocal(f.sort.by_dbref, %0, %1, private_alts)
-
-&f.sort.by_connection_info [v(d.bf)]=ulocal(f.sort.generic, %0, %1, connection_info)
-
-&f.sort.by_last_ip [v(d.bf)]=ulocal(f.sort.generic, %0, %1, last_ip)
-
-&f.sort.by_staff_notes [v(d.bf)]=ulocal(f.sort.generic, %0, %1, staff_notes)
-
-&f.sort.by_quote [v(d.bf)]=ulocal(f.sort.generic, %0, %1, quote)
-
-&f.sort.by_apparent_age [v(d.bf)]=ulocal(f.sort.generic, %0, %1, apparent_age)
 
 @@ =============================================================================
 @@ Functions

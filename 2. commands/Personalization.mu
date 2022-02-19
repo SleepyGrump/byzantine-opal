@@ -1,4 +1,5 @@
 @@ Commands related to personalizing your character or experience on the game.
+@@ TODO: +status so players can set their status (not just staffers)
 
 @@ =============================================================================
 @@ +doing - aliases for @doing, @poll, etc.
