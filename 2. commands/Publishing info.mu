@@ -38,6 +38,6 @@
 
 &layout.glance_line [v(d.bf)]=strcat(moniker(%0), |, first(secs2hrs(idle(%0))), |, shortdesc(%0, %1))
 
-&layout.glance [v(d.bf)]=strcat(setq(P, filter(filter.is_connected_player, lcon(loc(%0)))), setq(O, filter(filter.isobject, lcon(loc(%0)))), header(At a glance..., %0), %r, formattext(shortdesc(loc(%0)), 0, %0), %r, divider(People and things present...), %r, multicol(iter(%qP %qO, ulocal(layout.glance_line, itext(0), %0),, |), 20 4 *, 0, |, %0), %r, footer(l <name> for more, %0))
+&layout.glance [v(d.bf)]=strcat(setq(P, filter(filter.is_connected_player, lcon(loc(%0)))), setq(O, filter(filter.isobject, lcon(loc(%0)))), header(At a glance..., %0), %r, formattext(shortdesc(loc(%0)), 0, %0), %r, divider(People and things present..., %0), %r, multicol(iter(%qP %qO, ulocal(layout.glance_line, itext(0), %0),, |), 20 4 *, 0, |, %0), %r, footer(l <name> for more, %0))
 
 &c.+glance [v(d.bc)]=$+glance:@pemit %#=ulocal(layout.glance, %#);
