@@ -257,7 +257,7 @@
 
 &tr.report [v(d.bf)]=@cemit [v(d.report-target)]=%0;
 
-@@ %0: player
+@@ %0: player or object
 @@ %1: attribute group
 @@ %2: setter
 @@ %3: message
@@ -306,3 +306,5 @@
 &layout.report_query_error [v(d.bf)]=strcat(Error in %0:, %b, \[%1\], :%b, %2)
 
 &layout.log [v(d.bf)]=cat(ansi(xh, extract(%0, 1, 2, /)), rest(rest(rest(%0))))
+
+&layout.list [v(d.bf)]=itemize(setunion(%0, %0, |), |, if(t(%1), %1, and))
