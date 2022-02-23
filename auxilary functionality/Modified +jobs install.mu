@@ -829,7 +829,7 @@ At the end of this file, I create the jgroup +code (because JRS doesn't do it, b
 
 &VERSION [v(JOB_VC)]=v6.4
 
-@switch first(version())=RhostMUSH, {&TRIG_MAIL [v(JOB_VB)]=lit(mail [remove(%0, owner(me))]=%1PennMUSH, {&TRIG_MAIL [v(JOB_VB)]=lit(@mail [remove(%0, owner(me))]=%1/%2)}, {&TRIG_MAIL [v(JOB_VB)]=lit(@mail/quick [remove(%0, owner(me))]/%1=%2)}
+@switch first(version())=RhostMUSH,{&TRIG_MAIL [v(JOB_VB)]=lit(mail [remove(%0,owner(me))]=%1//%2)},PennMUSH,{&TRIG_MAIL [v(JOB_VB)]=lit(@mail [remove(%0,owner(me))]=%1/%2)},{&TRIG_MAIL [v(JOB_VB)]=lit(@mail/quick [remove(%0,owner(me))]/%1=%2)}
 
 &TRIG_POST [v(JOB_VB)]=+bbpost %0/%1=%2
 
