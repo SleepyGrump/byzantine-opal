@@ -6,6 +6,16 @@
 
 &c.+selfboot [v(d.bc)]=$+selfboot:@assert gt(words(ports(%#)), 1)={ @trigger me/tr.error=%#, You don't have any frozen connections to boot.; }; @dolist rest(ports(%#))=@boot/port ##; @trigger me/tr.success=%#, You booted your frozen connections.;
 
+@@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
+@@ +name - claim a name
+@@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
+
+&layout.name-list [v(d.bf)]=strcat(header(Old names beginning with %0*, %1), %r, formattext(cat(Names may be claimed after the player has gone, setr(D, v(d.max-days-before-name-available)), days without logging in. The following names are available starting with your search term of %0*:), 1, %1), %r, multicol(if(t(setr(S, search(EPLAYER=cand(strmatch(name(##), %0*), not(strmatch(name(##), *Parent)), not(strmatch(name(##), *Owner)), not(hasflag(##, CONNECTED)), not(isstaff(##)), gt(sub(secs(), xget(##, _last-conn)), mul(%qD, 24, 60, 60)))))), iter(%qS, ulocal(f.get-name, itext(0), %1),, |), None found.), * * *, 0, |, %1), %r, formattext(To claim a name%, type %ch+name/claim <name>%cn. That player will have their name changed and you will be able to create a character with that name.%r%r%tIf your name was changed by +name/claim%, you can just log in with your changed name%, then %ch@name me=<new name>%cn., 1, %1), %r, footer(, %1))
+
+&c.+name [v(d.bc)]=$+name *:@pemit %#=ulocal(layout.name-list, %0, %#);
+
+&c.+name/claim [v(d.bc)]=$+name/claim *:@assert t(setr(P, ulocal(f.find-player, %0, %#)))={ @trigger me/tr.error=%#, Could not find a player named '%0'.; }; @eval setq(N, ulocal(f.get-name, %qP, %#)); @eval setq(D, v(d.max-days-before-name-available)); @assert cand(not(hasflag(%qP, CONNECTED)), gt(sub(secs(), xget(%qP, _last-conn)), mul(%qD, 24, 60, 60)))={ @trigger me/tr.error=%#, %qN has logged in more recently than %qD days ago.; }; @break strmatch(%qN, *_%qP)={ @trigger me/tr.error=%#, cat(%qN has already had, poss(%qP), name changed.); }; @name %qP=strcat(edit(first(%qN, _), %b, _), edit(%qP, #, _)); @wipe %qP/alias; @trigger me/tr.log=%qP, _app-, Auto, Name and alias taken by another player after %qD+ days idle.; @trigger me/tr.success=%#, You claim the name %qN. %ch@name me=%qN%cn to use it!; 
+
 @@ =============================================================================
 @@ @gender, an alias for @sex
 @@ =============================================================================
