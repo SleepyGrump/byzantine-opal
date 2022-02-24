@@ -53,8 +53,6 @@ Residential: %vF
 
 &f.list-travel-categories [v(d.bf)]=setunion(v(d.travel.categories), Uncategorized, |)
 
-&layout.travel_alert [v(d.bf)]=strcat(alert(+travel), %b, moniker(%0) has %3, if(t(%1), cat(%,, %2, ulocal(f.get-name, %1))), .)
-
 &layout.travel_list [v(d.bf)]=strcat(header(Travel categories, %0), %r, multicol(ulocal(f.list-travel-categories), * * *, 0, |, %0), %r, footer(+travel <category> to see more., %0))
 
 &layout.travel_category_list [v(d.bf)]=strcat(header(Travel destinations in the '%1' category, %0), %r, multicol(strcat(Travel Key|Location|Travel Key|Location, |, iter(ulocal(f.get-travel-rooms-matching-category, %1), strcat(ulocal(f.get-travel-key, itext(0)), |, name(itext(0))),, |)), 10 * 10 *, 1, |, %0), %r, footer(+travel <category> to see more., %0))
