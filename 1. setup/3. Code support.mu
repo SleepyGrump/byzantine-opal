@@ -76,6 +76,8 @@
 
 &filter.is_owner [v(d.bf)]=cor(isstaff(%1), t(member(%0, %1, |)), cand(isapproved(%1), if(hastype(%0, EXIT), cor(hasattr(loc(%0), _owner-%1), hasattr(loc(xget(%0, _exit-pair)), _owner-%1)), hasattr(%0, _owner-%1))))
 
+&filter.is-not-connected [v(d.bf)]=not(hasflag(%0, CONNECTED))
+
 @@ =============================================================================
 @@ Sorts
 @@ =============================================================================
@@ -121,6 +123,10 @@
 @@ =============================================================================
 @@ Functions
 @@ =============================================================================
+
+&f.is-player [v(d.bf)]=cand(not(strmatch(name(%0), *Parent)), not(strmatch(name(%0), *Owner)), not(isstaff(%0)))
+
+&f.days-since-last-connected [v(d.bf)]=if(hasflag(%0, CONNECTED), 0, div(sub(secs(), xget(%0, _last-conn)), 86400))
 
 &f.isstaff-or-staff-object [v(d.bf)]=cor(isstaff(%0), cand(not(member(num(me), %1)), hastype(%1, THING), andflags(%1, I!h!n), isstaff(owner(%1))))
 
@@ -284,7 +290,7 @@
 
 &tr.remit [v(d.bf)]=@break ulocal(f.is-redirected-to-channel, %0)={ @trigger me/tr.redirect-emit-to-channel=%0, %1, %2; }; @break ulocal(f.is-target-room-gagged, %0)={ @trigger me/tr.error=%2, You can't use this command in here. This room is set quiet.; }; @remit %0=%1;
 
-&tr.remit-quiet [v(d.bf)]=@break ulocal(f.is-redirected-to-channel, %0); @break ulocal(f.is-target-room-gagged, %0); @remit %0=%1;
+&tr.remit-quiet [v(d.bf)]=@break ulocal(f.is-redirected-to-channel, %0)={ @pemit lcon(%0)=%1; }; @break ulocal(f.is-target-room-gagged, %0); @remit %0=%1;
 
 @@ %0: Location
 @@ %1: Message
@@ -292,6 +298,8 @@
 &tr.remit-or-pemit [v(d.bf)]=@break ulocal(f.is-redirected-to-channel, %0)={ @trigger me/tr.redirect-emit-to-channel=%0, %1, %2; }; @break ulocal(f.is-target-room-gagged, %0)={ @trigger me/tr.pemit=%2, %1; }; @remit %0=%1;
 
 &tr.pemit [v(d.bf)]=@break t(words(setr(N, trim(squish(iter(%0, if(ulocal(f.can-sender-message-target, %2, itext(0)),, itext(0))))))))={ @trigger me/tr.error=%2, Sorry%, [itemize(iter(%qN, moniker(itext(0)),, |), |)] [case(words(%qN), 1, is, are)] not accepting messages.; }; @pemit %0=%1;
+
+&layout.travel_alert [v(d.bf)]=strcat(alert(+travel), %b, moniker(%0) has %3, if(t(%1), cat(%,, %2, ulocal(f.get-name, %1))), .)
 
 @@ %0: destination
 @@ %1: player to transport
