@@ -18,8 +18,13 @@
 @@ Default alert message
 &d.default-alert [v(d.bd)]=GAME
 
+@@ How much of an indent to use. The default 8 spaces is a bit long for some.
 &d.indent-width [v(d.bd)]=5
 
+@@ How long to wait before allowing a player to steal someone's name:
+&d.max-days-before-name-available [v(d.bd)]=45
+
+@@ For coders.
 &d.debug-target [v(d.bd)]=#1
 
 @@ Where reports go - messages from the code that are important.
@@ -159,6 +164,9 @@
 
 @@ Travel categories, separated by |. These will be specific to your game and could include categories like "Retail" or "Market" depending on your setting. Your players will group their businesses under these categories. The only default is "OOC", so that you can add OOC destinations like the OOC room, the RP Nexus, Chargen, etc.
 &d.travel.categories [v(d.bd)]=OOC
+
+@@ The DBref of your OOC room
+&d.ooc [v(d.bd)]=#0
 
 @@ All communication in room # will go to this channel. You can add as many of these as you like. Users will be alerted that they need to join the channel to see the rest of the conversation if they're not already on the channel. To disable, just remove this attribute. This functionality can be used to direct convo from, say, the Chargen room to the Chargen channel, the OOC room to the Public channel, etc.
 &d.redirect-poses.#0 [v(d.bd)]=Public
