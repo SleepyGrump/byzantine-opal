@@ -21,57 +21,83 @@
 		"description": "creating new code objects"
 	},
 	"Insert standard command": {
-		"prefix": "&c.",
-		"body": "&c.+${1:command_name} [v(d.$2c)]=$+${1:command_name}$3:$4; @trigger me/tr.success=%#, $5;\r\n",
+		"prefix": "&c.+",
+		"body": "&c.+${1:command_name} [v(d.$2c)]=$+${1:command_name}$3:$4; @trigger me/tr.success=${5:%#}, $6;\r\n",
 		"description": "inserting a standard command body"
 	},
 	"Insert assert with error": {
-		"prefix": "@assert",
-		"body": "@assert $1={ @trigger me/tr.error=%#, $2; }; ",
+		"prefix": "@assert ",
+		"body": "@assert $1={ @trigger me/tr.error=${2:%#}, $3; }; ",
 		"description": "assert with an error message"
 	},
+	"Insert assert staff error": {
+		"prefix": "@assert isstaff(",
+		"body": "@assert isstaff(${1:%#})={ @trigger me/tr.error=$1, Only staff can $2.; }; ",
+		"description": "assert staff error"
+	},
+	"Insert find player error": {
+		"prefix": "@assert t(setr(P, ulocal(f.find-player, ",
+		"body": "@assert t(setr(P, ulocal(f.find-player, ${1:%0}, ${2:%#})))={ @trigger me/tr.error=$2, Could not find a player named '$1'.; }; ",
+		"description": "assert find player"
+	},
+	"Insert is approved error": {
+		"prefix": "@assert isapproved(%",
+		"body": "@assert isapproved(${1:%#})={ @trigger me/tr.error=$1, You must be approved to $2.; }; ",
+		"description": "assert is approved"
+	},
+	"Insert assert timer error": {
+		"prefix": "@assert gettimer(",
+		"body": "@assert gettimer(${1:%#}, ${2:timer-attribute}$3)={ @trigger me/tr.message=$1, You are about to $4. This will ${5:have consequences}. Are you sure? If yes%, type %ch+${6:command}${3/,//gi}%cn again within the next 10 minutes. The time is now [prettytime()].; @eval settimer($1, $2, 600$3); }; ",
+		"description": "assert timer error"
+	},
+	"Insert eval name": {
+		"prefix": "@eval setq(N, ulocal(f.get-name, %qP, %;",
+		"body": "@eval setq(N, ulocal(f.get-name, %qP, ${1:%#}));",
+		"description": "eval name variable"
+	},
+	//Eval get name setr n
 	"Insert error trigger": {
-		"prefix": "@trigger",
-		"body": "@trigger me/tr.error=%#, $1; ",
+		"prefix": "@trigger me/tr.error=%",
+		"body": "@trigger me/tr.error=${1:%#}, $2; ",
 		"description": "trigger error message"
 	},
 	"Insert success trigger": {
-		"prefix": "@trigger",
-		"body": "@trigger me/tr.success=%#, $1; ",
+		"prefix": "@trigger me/tr.success=%",
+		"body": "@trigger me/tr.success=${1:%#}, $2; ",
 		"description": "trigger success message"
 	},
 	"Insert alert trigger": {
-		"prefix": "@trigger",
-		"body": "@trigger me/tr.message=%#, $1; ",
+		"prefix": "@trigger me/tr.message=%",
+		"body": "@trigger me/tr.message=${1:%#}, $2; ",
 		"description": "trigger alert message"
 	},
-	"Insert assert without error": {
-		"prefix": "@assert",
-		"body": "@assert $1; ",
-		"description": "assert without an error message"
+	"Insert log trigger": {
+		"prefix": "@trigger me/tr.log=%",
+		"body": "@trigger me/tr.log=${1:%#}, $2, $3, $4; ",
+		"description": "trigger logging on the player"
 	},
 	"Insert break with error": {
-		"prefix": "@break",
-		"body": "@break t($1)={ @trigger me/tr.error=%#, $2; }; ",
+		"prefix": "@break t(",
+		"body": "@break t($1)={ @trigger me/tr.error=${2:%#}, $3; }; ",
 		"description": "break with an error message"
 	},
 	"Insert break without error": {
-		"prefix": "@break",
+		"prefix": "@break strmatch(",
 		"body": "@break strmatch($1, $2); ",
 		"description": "break without an error message"
 	},
 	"Insert standard error/alert/success triggers": {
-		"prefix": "&tr.err",
+		"prefix": "&tr.error [v(d.",
 		"body": "&tr.error [v(d.$1c)]=@pemit %0=cat(alert(Error), %1);\r\n\r\n&tr.message [v(d.$1c)]=@pemit %0=cat(alert(Alert), %1);\r\n\r\n&tr.success [v(d.$1c)]=@pemit %0=cat(alert(Success), %1);\r\n\r\n",
 		"description": "assert with an error message"
 	},
 	"Insert standard function": {
 		"prefix": "&f.",
-		"body": "&f.$1 [v(d.$2f)]=${3:strcat($4)}\r\n"
+		"body": "&f.$1 [v(d.$2f)]=${3|cand,cat,cor,if,strcat|}($0)\r\n"
 	},
 	"Insert layout function": {
 		"prefix": "&layout.",
-		"body": "&layout.$1 [v(d.$2f)]=strcat($3)\r\n"
+		"body": "&layout.$1 [v(d.$2f)]=${3|cat,strcat|}($0)\r\n"
 	},
 	"Insert standard data object": {
 		"prefix": "&d.",
@@ -85,8 +111,12 @@
 		"prefix": "th ulocal(v(d.",
 		"body": "th ulocal(v(d.$1f)/$2, $3)"
 	},
+	"Insert if statement": {
+		"prefix": "@if ",
+		"body": "@if $1={ $2 }${3:, { $4 \\}}"
+	},
 	"Code region comment": {
 		"prefix": "@@~",
-		"body": "@@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@\n@@ $1\n@@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@\n"
+		"body": "@@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@\n@@ $0\n@@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@\n"
 	}
 }
