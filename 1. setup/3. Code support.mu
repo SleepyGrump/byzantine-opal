@@ -214,7 +214,7 @@
 
 &f.is-player-on-redirected-channel [v(d.bf)]=cand(member(cwho(v(d.redirect-poses.%1)), %0), not(hasattr(%0, _mute-channel-[chanobj(v(d.redirect-poses.%1))])))
 
-&f.get-channel-alias [v(d.bf)]=if(t(v(d.channel-functions)), ulocal(v(d.channel-functions)/f.get-channel-alias-by-name, %0), switch(%0, Chargen, cg, Staff, st, strtrunc(lcstr(%0), 3)))
+&f.get-channel-alias [v(d.bf)]=if(t(%vH), ulocal(%vH/f.get-channel-alias-by-name, %0), switch(%0, Chargen, cg, Staff, st, strtrunc(lcstr(%0), 3)))
 
 @@ %0: object to check
 @@ %1: attribute cluster to check
@@ -234,7 +234,7 @@
 @@ %1: Pose
 @@ %2: Is the player on the channel?
 @@ %3: Channel name
-&f.parse_emit [v(d.bf)]=strcat(setq(P, if(setr(O, not(ulocal(filter.isplayer, %0))),, if(t(v(d.channel-functions)), ulocal(v(d.channel-functions)/layout.player-name-or-comtitle, %0,, %3), ulocal(f.get-name, %0)))), switch(%1, *[moniker(%0)]*, %1, strcat(%qP, switch(%1, :*, %b[rest(%1, :)], ;*, rest(%1, ;), pose/*, rest(%1), pose *, %b[rest(%1)], npose *, %b[rest(%1)], "*, %bsays "[rest(%1, ")]", say*, %bsays "[rest(%1)]", nsay*, %bsays "[rest(%1)]", @emit* *, : [rest(%1)], @remit* *=*, : [rest(%1, =)], @remit *, : [rest(%1)], \\*, : [trim(%1, l, \\\\\\\\)], %1))), if(cand(not(%2), not(%qO)), %b--- [capstr(subj(%0))] [switch(subj(%0), they, are, is)] not on this channel and cannot see replies%, but [switch(subj(%0), they, have, has)] been invited to join.))
+&f.parse_emit [v(d.bf)]=strcat(setq(P, if(setr(O, not(ulocal(filter.isplayer, %0))),, if(t(%vH), ulocal(%vH/layout.player-name-or-comtitle, %0,, %3), ulocal(f.get-name, %0)))), switch(%1, *[moniker(%0)]*, %1, strcat(%qP, switch(%1, :*, %b[rest(%1, :)], ;*, rest(%1, ;), pose/*, rest(%1), pose *, %b[rest(%1)], npose *, %b[rest(%1)], "*, %bsays "[rest(%1, ")]", say*, %bsays "[rest(%1)]", nsay*, %bsays "[rest(%1)]", @emit* *, : [rest(%1)], @remit* *=*, : [rest(%1, =)], @remit *, : [rest(%1)], \\*, : [trim(%1, l, \\\\\\\\)], %1))), if(cand(not(%2), not(%qO)), %b--- [capstr(subj(%0))] [switch(subj(%0), they, are, is)] not on this channel and cannot see replies%, but [switch(subj(%0), they, have, has)] been invited to join.))
 
 @@ TODO:
 @@ Make sure that objects can pass along their emits, properly formatted.
@@ -286,7 +286,7 @@
 @@ Note: This is for things that are IC communications. OOC communications should stick to @pemits, @emits, etc, because they cannot be blocked. IC communications are blockable. (For example, IC invitations.)
 &tr.msg-player [v(d.bf)]=@trigger %vC/switch.msg=/%0, %1, :sends: %2, %3;
 
-&tr.redirect-emit-to-channel [v(d.bf)]=@cemit v(d.redirect-poses.%0)=ulocal(f.parse_emit, %2, %1, ulocal(f.is-player-on-redirected-channel, %2, %0), %0); @assert ulocal(filter.isplayer, %2); @assert ulocal(f.is-player-on-redirected-channel, %2, %0)={ @trigger me/tr.message=%2, You aren't seeing the whole conversation. All emits in this location are piped to the [setr(C, v(d.redirect-poses.%0))] channel. %ch[if(t(v(d.channel-functions)), +com/join%b, addcom [ulocal(f.get-channel-alias, %qC)]=)]%qC%cn to join in!; };
+&tr.redirect-emit-to-channel [v(d.bf)]=@cemit v(d.redirect-poses.%0)=ulocal(f.parse_emit, %2, %1, ulocal(f.is-player-on-redirected-channel, %2, %0), %0); @assert ulocal(filter.isplayer, %2); @assert ulocal(f.is-player-on-redirected-channel, %2, %0)={ @trigger me/tr.message=%2, You aren't seeing the whole conversation. All emits in this location are piped to the [setr(C, v(d.redirect-poses.%0))] channel. %ch[if(t(%vH), +com/join%b, addcom [ulocal(f.get-channel-alias, %qC)]=)]%qC%cn to join in!; };
 
 &tr.remit [v(d.bf)]=@break ulocal(f.is-redirected-to-channel, %0)={ @trigger me/tr.redirect-emit-to-channel=%0, %1, %2; }; @break ulocal(f.is-target-room-gagged, %0)={ @trigger me/tr.error=%2, You can't use this command in here. This room is set quiet.; }; @remit %0=%1;
 

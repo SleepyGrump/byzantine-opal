@@ -181,7 +181,7 @@ Changes:
 @force me=&d.chf me=[search(ETHING=t(member(name(##), Channel Functions <CHF>, |)))]
 @force me=&d.cdb me=[search(ETHING=t(member(name(##), Channel Database <CDB>, |)))]
 
-@force me=&d.channel-functions [v(d.bd)]=[v(d.chf)]
+@force me=&vH [v(d.cgf)]=[v(d.chf)]
 
 @force me=&vD [v(d.chf)]=[v(d.cdb)]
 
