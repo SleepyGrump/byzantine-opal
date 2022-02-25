@@ -269,6 +269,11 @@
 @@ %3: message
 &tr.log [v(d.bf)]=@set %0=[ulocal(f.get-next-id-attr, %0, %1)]:[cat(prettytime(), if(isdbref(%2), ulocal(f.get-name, %2), %2):, %3)];
 
+@@ %0: channel
+@@ %1: player or message
+@@ %2: message (if not given, message is assumed to be %1)
+&tr.alert-to-channel [v(d.cg)]=@cemit %0=cat(ansi(xh, extract(prettytime(), 1, 2, /)), ansi(<#777777>, rest(prettytime())), if(t(%2), cat(ulocal(f.get-name, %1):, %2), %1));
+
 @@ %0: attribute group
 &tr.clean-old-player-logs [v(d.bf)]=@dolist search(EPLAYER=t(lattr(##/%0*)))={ @trigger me/tr.clean-old-logs=##, %0; };
 
