@@ -55,7 +55,6 @@
 		"body": "@eval setq(N, ulocal(f.get-name, %qP, ${1:%#}));",
 		"description": "eval name variable"
 	},
-	//Eval get name setr n
 	"Insert error trigger": {
 		"prefix": "@trigger me/tr.error=%",
 		"body": "@trigger me/tr.error=${1:%#}, $2; ",
@@ -116,7 +115,11 @@
 		"body": "@if $1={ $2 }${3:, { $4 \\}}"
 	},
 	"Code region comment": {
-		"prefix": "@@~",
+		"prefix": "@@ ~~~~~~~~~~",
 		"body": "@@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@\n@@ $0\n@@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@\n"
+	},
+	"Code function comment:": {
+		"prefix": "@@ %: ",
+		"body": "@@ %${1:0}: $0\n"
 	}
 }
