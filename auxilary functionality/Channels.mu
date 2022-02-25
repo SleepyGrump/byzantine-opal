@@ -225,7 +225,7 @@ Changes:
 
 &approved-lock [v(d.cdb)]=cand(isapproved(%#), not(member(v(banned-players), %#)))
 
-&password-lock [v(d.cdb)]=cand(match(xget(%#, _channel-password-[v(channel-dbref)]), v(channel-password)), not(member(v(banned-players), %#)))
+&password-lock [v(d.cdb)]=cand(match(xget(%#, _channel-password-%!), v(channel-password)), not(member(v(banned-players), %#)))
 
 &public-lock [v(d.cdb)]=not(member(v(banned-players), %#))
 
@@ -308,7 +308,7 @@ Changes:
 &f.can-modify-channel [v(d.chf)]=cor(isstaff(%0), match(ulocal(f.get-channel-owner, %1), %0, |))
 
 @@ %0 - title of channel
-&f.get-channel-dbref [v(d.chf)]=squish(trim(iter(lattr(%vD/channel.*), if(cor(match(ulocal(f.get-channel-name, rest(itext(0), .)), %0, |), match(ulocal(f.get-channel-alias, rest(itext(0), .)), %0, |)), rest(itext(0), .)))))
+&f.get-channel-dbref [v(d.chf)]=squish(trim(iter(lattr(%vD/channel.*), if(cor(strmatch(ulocal(f.get-channel-name, rest(itext(0), .)), %0), strmatch(ulocal(f.get-channel-alias, rest(itext(0), .)), %0)), rest(itext(0), .)))))
 
 @@ %0 - dbref of channel
 &f.get-channel-owner [v(d.chf)]=xget(%0, creator-dbref)
@@ -533,7 +533,7 @@ th ulocal(v(d.chf)/f.is-banned-alias, quit)
 @@ Input:
 @@ %0 - %#
 @@ %1 - channel title
-&tr.channel-join [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), setq(A, comalias(%0, %qT)), setq(D, ulocal(f.get-channel-alias-by-name, %qT)), if(not(t(%qA)), setq(A, %qD)), %b, if(match(cwho(%qT), %0), You are already on %qT.)))))=,{ @switch t(comalias(%0, %qT))=1, { @force %0={ %qA on; }; }, { @force %0={ addcom %qA=%qT; }; }; @wipe %0/_mute-channel-%qN; @assert t(setr(A, comalias(%0, %qT))); @trigger me/tr.join-message=%0, %qD, %qT;  }, { @pemit %0=ulocal(layout.error, %qE); }
+&tr.channel-join [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), setq(A, comalias(%0, %qT)), setq(D, ulocal(f.get-channel-alias-by-name, %qT)), if(not(t(%qA)), setq(A, %qD)), %b, if(ulocal(filter.is-on-channel, %qN, %0), You are already on %qT. [pemit(#12, %qN|%0)])))))=,{ @switch t(comalias(%0, %qT))=1, { @force %0={ %qA on; }; }, { @force %0={ addcom %qA=%qT; }; }; @wipe %0/_mute-channel-%qN; @assert t(setr(A, comalias(%0, %qT))); @trigger me/tr.join-message=%0, %qD, %qT;  }, { @pemit %0=ulocal(layout.error, %qE); }
 
 @@ Input:
 @@ %0 - %#
