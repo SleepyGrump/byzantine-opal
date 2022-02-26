@@ -289,7 +289,7 @@
 @@ %2: message
 @@ %3: sender
 @@ Note: This is for things that are IC communications. OOC communications should stick to @pemits, @emits, etc, because they cannot be blocked. IC communications are blockable. (For example, IC invitations.)
-&tr.msg-player [v(d.bf)]=@trigger %vC/switch.msg=/%0, %1, :sends: %2, %3;
+&tr.msg-player [v(d.bf)]=@trigger %vC/switch.msg=/%0 %1=:sends: %2, %3;
 
 &tr.redirect-emit-to-channel [v(d.bf)]=@cemit v(d.redirect-poses.%0)=ulocal(f.parse_emit, %2, %1, ulocal(f.is-player-on-redirected-channel, %2, %0), %0); @assert ulocal(filter.isplayer, %2); @assert ulocal(f.is-player-on-redirected-channel, %2, %0)={ @trigger me/tr.message=%2, You aren't seeing the whole conversation. All emits in this location are piped to the [setr(C, v(d.redirect-poses.%0))] channel. %ch[if(t(%vH), +com/join%b, addcom [ulocal(f.get-channel-alias, %qC)]=)]%qC%cn to join in!; };
 
