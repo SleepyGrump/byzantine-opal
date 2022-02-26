@@ -18,6 +18,9 @@
 @@ Same arguments as setdiff but doesn't reorder the list.
 &f.globalpp.diffset [v(d.bf)]=strcat(setq(0, %0), null(iter(%1, setq(0, remove(%q0, itext(0), %2, %3)), %2, %3)), %q0)
 
+@@ Same arguments as trim is case insensitive - because trim(%Rblah, l, %r) should just work.
+&f.globalpp.trimi [v(d.bf)]=strcat(setq(0, %0), iter(lnum(strlen(%2)), setq(0, trim(trim(%q0, %1, ucstr(mid(%2, itext(0), 1))), %1, lcstr(mid(%2, itext(0), 1)))),, @@), %q0)
+
 @@ %0: A delimiter-separated list of items
 @@ %1: The item to match
 @@ %2: Default space.
