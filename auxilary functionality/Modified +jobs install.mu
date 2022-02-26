@@ -1,5 +1,9 @@
 /*
-AFTER THIS IS COMPLETE, log into #1 and use:
+Main goal of this file: mostly unchanged +jobs and JRS install, with a few tiny tweaks to make them compatible with byzantine-opal.
+
+================================================================================
+
+AFTER YOU RUN THIS FILE, log into #1 and use:
 
 @attribute/access JOBSB=WIZARD
 @attribute/access JOBSH=HIDDEN
@@ -24,16 +28,19 @@ touch M-reqlog.log
 
 ================================================================================
 
-This includes Thenomain's JRS, available here: https://github.com/thenomain/Mu--Support-Systems/blob/aa764df1618ca22512b6ff09fe5702ae214abc28/Jobs%20Request%20System.txt
+This file also includes Thenomain's JRS, available here: https://github.com/thenomain/Mu--Support-Systems/blob/aa764df1618ca22512b6ff09fe5702ae214abc28/Jobs%20Request%20System.txt
 
-This adds the ability to make your buckets dynamic, and creates a new jgroup.
+JRS adds the ability to let players directly add jobs to the buckets you choose, and creates a new jgroup, +allstaff.
 
-I also changed the .msg function to show the request type and formatted it in the game theme style with alert(). I also didn't like how it was formatted "<req/request> <message>", so changed it to just "<REQUEST> <message>".
+I changed the .msg function to show the request type and formatted it in the game theme style with alert(). I also didn't like how it was formatted "<req/request> <message>", so changed it to just "<PREFIX> <message>".
+
+That single carriage return Theno added? I made it 2 because I like formatting and readability and wanted even more. Thanks Theno!
+
+At the end of this file, I create the jgroups +code and +build because JRS doesn't create those and neither does AnomalyJobs, but JRS does reference both of them.
+
+I also added +allplayers, so that jobs can be assigned to all approved players. This one is not in use in any default JRS buckets. +job/assign <public job everyone can see>=+allplayers might be a handy thing to have.
 
 ================================================================================
-
-At the end of this file, I create the jgroup +code (because JRS doesn't do it, but does reference it), and +allplayers, so that jobs can be assigned to all approved players. I thought those might be useful.
-
 */
 
 @switch [ifelse(isdbref(setr(0, switch(first(version()), PennMUSH, lsearch(all, eobjects, %[strmatch(name(##), Job Global Object <JGO>)%]), RhostMUSH, searchng(object=Job Global Object <JGO>), search(object=Job Global Object <JGO>)))), setq(1, get(%q0/VA)), [setq(1, switch(first(version()), PennMUSH, lsearch(all, eobjects, %[strmatch(name(##), Job Database <JD>)%]), RhostMUSH, searchng(object=Job Database <JD>), search(object=Job Database <JD>)))][setq(0, loc(%q1))])][isdbref(%q0)][and(isdbref(%q1), gte(edit(first(default(%q1/version, 0), .), v,), 5))]=0*, {think [ansi(hc, ANOMALY JOBS:)] No previous jobs installation found. Creating a new one.;&JOB_GO %#=setr(0, create(Job Global Object <JGO>, 10));&JOB_VA %#=setr(1, create(Job Database <JD>, 10));&JOB_VB %#=setr(2, create(Job Tracker, 10));&JOB_VC %#=setr(3, create(Job Parent Object <JPO>, 10));&JOB_PATCH %#=0;@tel %q1=%q0;@tel %q2=%q0;@tel %q3=%q0;}, 10*, {think [ansi(hc, ANOMALY JOBS:)] [ansi(hr, Not a valid Jobs 5 or later installation.)];think [ansi(hc, ANOMALY JOBS:)] [ansi(hr, Aborting. Cancel this script in your client.)];&JOB_GO %#=#-1;&JOB_VA %#=#-1;&JOB_VB %#=#-1;&JOB_VC %#=#-1;&JOB_PATCH %#=1;}, {think [ansi(hc, ANOMALY JOBS:)] Current installation found. Updating.;&JOB_GO %#=%q0;&JOB_VA %#=%q1;&JOB_VB %#=get(%q0/VB);&JOB_VC %#=get(%q0/VC);&JOB_PATCH %#=1;}
@@ -1073,6 +1080,9 @@ At the end of this file, I create the jgroup +code (because JRS doesn't do it, b
 &HOOK_DNY [v(JOB_VC)]=@trigger [v(VA)]/TRIG_LOG=%0,[v(VA)]
 &HOOK_COM [v(JOB_VC)]=@trigger [v(VA)]/TRIG_LOG=%0,[v(VA)]
 
+@@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
+@@ Thenomain's JRS, only slightly modified
+@@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
 
 @create Jobs Request System <jrs>=10
 
@@ -1104,7 +1114,7 @@ At the end of this file, I create the jgroup +code (because JRS doesn't do it, b
 
 &trig.create.request [v(d.jrs)]=think strcat(a:%b, setr(a, ucstr(u(f.get.bucket, %0))), %r, b:%b, setr(b, u(%va/FN_FIND-BUCKET, %qa)), %r, i:%b, setr(i, lcstr(u(f.get.jgroup, %0))), %r, j:%b, setr(j, u(%va/FN_FIND-JGROUP, %qi)), %r,); @assert t(%qb)={@pemit %1=u(.msg, %0, I can't find the '%qa' bucket for this.)}; @assert t(%qj)={@pemit %1=u(.msg, %0, I can't find the '%qi' jgroup for this.)}; @pemit %1=u(.msg, %0, u(f.get.msg, %0, %2, %3)); @trigger %!/trig.create.job=%1, %qb, u(f.get.level, %0), [if(strlen(u(f.get.prefix, %0, %1)), [u(f.get.prefix, %0, %1)]:%b)][u(%va/FN_STRTRUNC, trim(%2), 30)], u(%va/FN_STRTRUNC, trim(%3), get(%va/BUFFER)), %qj;
 
-&trig.create.job [v(d.jrs)]=@trigger %va/TRIG_CREATE=%0, %1, %2, %3, %r%4,, %5, 2
+&trig.create.job [v(d.jrs)]=@trigger %va/TRIG_CREATE=%0, %1, %2, %3, cat(%r%r, trimi(%4, l, %r)),, %5, 2
 
 &.msg [v(d.jrs)]=cat(alert(ucstr(%0)), %1)
 
@@ -1150,14 +1160,27 @@ At the end of this file, I create the jgroup +code (because JRS doesn't do it, b
 
 &d.build.msg [v(d.jrs)]=u(display.generic_msg, %0, build)
 
-@force me=&vZ [v(JOB_GO)]=[v(d.bf)]
-
 @tel [v(d.jrs)]=#2
 
 @tel [v(JOB_GO)]=#2
+
+@@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
+@@ JGroup creation
+@@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
 
 +jgroup/create +code=Code monkeys unite!
 @force me=+jgroup/member %#=+code
 
 +jgroup/create +allplayers=Every approved player on the grid. Spammy!
 @wait 1=&ismember [search(ETHING=t(member(name(##), +allplayers)))]=lit(isapproved(%0))
+
++jgroup/create +build=For building stuff.
+@force me=+jgroup/member %#=+build
+
+@@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
+@@ Add a reference to byzantine-opal so that buckets and the JRS can use it
+@@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
+
+@force me=&vZ [v(JOB_GO)]=[v(d.bf)]
+
+@force me=&vZ [v(d.jrs)]=[v(d.bf)]
