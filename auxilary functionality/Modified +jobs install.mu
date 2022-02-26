@@ -26,6 +26,10 @@ mkdir logs
 touch M-joblog.log
 touch M-reqlog.log
 
+CHANGES:
+
+Fixed a bug with &CMD_JOB/LOG where a comma wasn't escaped.
+
 ================================================================================
 
 This file also includes Thenomain's JRS, available here: https://github.com/thenomain/Mu--Support-Systems/blob/aa764df1618ca22512b6ff09fe5702ae214abc28/Jobs%20Request%20System.txt
@@ -39,6 +43,8 @@ That single carriage return Theno added? I made it 2 because I like formatting a
 At the end of this file, I create the jgroups +code and +build because JRS doesn't create those and neither does AnomalyJobs, but JRS does reference both of them.
 
 I also added +allplayers, so that jobs can be assigned to all approved players. This one is not in use in any default JRS buckets. +job/assign <public job everyone can see>=+allplayers might be a handy thing to have.
+
+I added req/typo and made +typo use it. It also reports the player's location.
 
 ================================================================================
 */
@@ -131,7 +137,8 @@ I also added +allplayers, so that jobs can be assigned to all approved players. 
 
 &CMD_JOB/LOCK [v(JOB_GO)]=$+job/lock *:@switch [u(%va/HAS_ACCESS, %#)][setq(0, u(%va/FN_FIND-JOB, %0))][isdbref(%q0)][u(%va/FN_ACCESSCHECK, parent(%q0), %#, %q0)][not(u(%va/FN_HASATTR, %q0, LOCKED))][udefault(%q0/LOK_ACCESS, 1, %#)]=0*, {@pemit %#=Permission denied.}, 10*, {@pemit %#=That is an invalid job number.}, 110*, {@pemit %#=You do not have access to that job.}, 1110*, {@pemit %#=That job is already locked.}, 11110*, {@pemit %#=That action is not available for that job.}, {@pemit %#=You have locked [name(%q0)]. No further modifications can be made to this job until it is unlocked.;&LOCKED_BY %q0=%#;&LOCKED %q0=1;@trigger %va/TRIG_ADD=%q0, Locked by %n., %#, LOK;@trigger %va/TRIG_BROADCAST=%q0, %#, LOK}
 
-&CMD_JOB/LOG [v(JOB_GO)]=$+job/log *:@switch [u(%va/HAS_ACCESS, %#)][u(%va/LOG_ACCESS, %#)][setq(0, u(%va/FN_FIND-JOB, %0))][isdbref(%q0)][u(%va/FN_ACCESSCHECK, parent(%q0), %#, %q0)][u(%va/FN_HASATTRP, %q0, LOGFILE)]=0*, {@pemit %#=Permission denied.}, 10*, {@pemit %#=Permission denied.}, 110*, {@pemit %#=There is no job by that name. Please type '+jobs/all' for all jobs or '+jobs/<type>' to list by type.}, 1110*, {@pemit %#=You do not have access to that job.}, 11110*, {@pemit %#=There is no logfile for that bucket.}, {@pemit %#=Logging [name(%q0)] to game/[switch(first(version()), PennMUSH, log/command.log, TinyMUSH, netmush.log, RhostMUSH, [get(%q0/LOGFILE)]_manual.log, logs/M-[get(%q0/LOGFILE)].log%rNote that if the log file does not exist, then it did not get logged.)];@trigger %va/TRIG_LOG=%q0, %#}
+@@ Fixed a bug with this code where a comma wasn't escaped: "does not exist," should have been "does not exist%,":
+&CMD_JOB/LOG [v(JOB_GO)]=$+job/log *:@switch [u(%va/HAS_ACCESS, %#)][u(%va/LOG_ACCESS, %#)][setq(0, u(%va/FN_FIND-JOB, %0))][isdbref(%q0)][u(%va/FN_ACCESSCHECK, parent(%q0), %#, %q0)][u(%va/FN_HASATTRP, %q0, LOGFILE)]=0*, {@pemit %#=Permission denied.}, 10*, {@pemit %#=Permission denied.}, 110*, {@pemit %#=There is no job by that name. Please type '+jobs/all' for all jobs or '+jobs/<type>' to list by type.}, 1110*, {@pemit %#=You do not have access to that job.}, 11110*, {@pemit %#=There is no logfile for that bucket.}, {@pemit %#=Logging [name(%q0)] to game/[switch(first(version()), PennMUSH, log/command.log, TinyMUSH, netmush.log, RhostMUSH, [get(%q0/LOGFILE)]_manual.log, logs/M-[get(%q0/LOGFILE)].log%rNote that if the log file does not exist%, then it did not get logged.)]; @trigger %va/TRIG_LOG=%q0, %#}
 
 &CMD_JOB/MAIL [v(JOB_GO)]=$+job/mail *=*:@switch [u(%va/HAS_ACCESS, %#)][u(%va/MAIL_ACCESS, %#)][setq(0, u(%va/FN_FIND-JOB, %0))][isdbref(%q0)][u(%va/FN_ACCESSCHECK, parent(%q0), %#, %q0)][u(%va/IS_PUBLIC, %q0)][not(u(%va/IS_LOCKED, %q0, %#))][udefault(%q0/MAI_ACCESS, 1, %#)]=0*, {@pemit %#=Permission denied.}, 10*, {@pemit %#=Permission denied.}, 110*, {@pemit %#=There is no job by that number.}, 1110*, {@pemit %#=You do not have access to that job.}, 11110*, {@pemit %#=+job/mail cannot be used on the job because the bucket in which it is stored is not set PUBLIC %(+myjobs-accessible%).}, 111110*, {@pemit %#=That job is presently [ifelse(u(%va/FN_HASATTRP, %q0, CHECKOUT), checked out to [name(first(get(%q0/CHECKOUT)))], locked)]}, 1111110*, {@pemit %#=That action is not available for that job.}, {@pemit %#=You have mailed [u(%va/FN_PLAYERLIST, %q0)] about [name(%q0)], with the comments: [trim(%1)];@trigger %va/TRIG_ADD=%q0, [u(%va/FN_STRTRUNC, ansi(h, Mail sent to [u(%va/FN_PLAYERLIST, %q0)]:)%r%r[trim(%1)], get(%va/BUFFER))], %#, MAI;@trigger %va/TRIG_BROADCAST=%q0, %#, MAI, %q1}
 
@@ -1110,7 +1117,9 @@ I also added +allplayers, so that jobs can be assigned to all approved players. 
 
 @set v(d.jrs)/c.request=no_parse
 
-&trig.command.request [v(d.jrs)]=@break u(%va/FN_GUEST, %1)={@pemit %1=u(.msg, %qr, This command is not available to guests.)}; think strcat(s:%b, setr(s, trim(rest(before(%0), /))), %r, 0:%b, setr(0, trim(if(strlen(%qs), rest(%0), %0))), %r, t:%b, setr(t, first(%q0, =)), %r, c:%b, setr(c, rest(%q0, =)), %r, s:%b, setr(s, if(strlen(%qs), %qs, request)), %r, m:%b, setr(m, lattr(%!/d.%qs*.bucket)), %r, m:%b, setr(m, if(words(%qm), %qm, lattr(%!/d.*.bucket))), %r,); @assert hasattr(%!, d.%qs.bucket)={@pemit %1=u(.msg, %qs, strcat(Request type not found., %b, It could have been:, %b, lcstr(itemize(edit(%qm, D.,, .BUCKET,),, or))))}; @assert u(f.validate.access, %qs, %1)={@pemit %1=u(.msg, %qs, This request type is staff-only.)}; @assert strlen(%qt)={@pemit %1=u(.msg, %qs, Your request needs a title.)}; @assert strlen(%qc)={@pemit %1=u(.msg, %qs, Your request needs some content.)}; @trig %!/trig.create.request=%qs, %1, %qt, %qc;
+@@ Fixed an issue where the error message would show some weird stuff: Request type not found. It could have been: request, bug, code,  builbucket... Now it shows: Request type not found. It could have been: request, bug, code, build, etc. I sorted it too.
+
+&trig.command.request [v(d.jrs)]=@break u(%va/FN_GUEST, %1)={@pemit %1=u(.msg, %qr, This command is not available to guests.)}; think strcat(s:%b, setr(s, trim(rest(before(%0), /))), %r, 0:%b, setr(0, trim(if(strlen(%qs), rest(%0), %0))), %r, t:%b, setr(t, first(%q0, =)), %r, c:%b, setr(c, rest(%q0, =)), %r, s:%b, setr(s, if(strlen(%qs), %qs, request)), %r, m:%b, setr(m, lattr(%!/d.%qs*.bucket)), %r, m:%b, setr(m, if(words(%qm), %qm, lattr(%!/d.*.bucket))), %r,); @assert hasattr(%!, d.%qs.bucket)={@pemit %1=u(.msg, %qs, strcat(Request type not found., %b, It could have been:, %b, lcstr(itemize(sort(iter(%qM, extract(itext(0), 2, 1, .)), i),, or))))}; @assert u(f.validate.access, %qs, %1)={@pemit %1=u(.msg, %qs, This request type is staff-only.)}; @assert strlen(%qt)={@pemit %1=u(.msg, %qs, Your request needs a title.)}; @assert strlen(%qc)={@pemit %1=u(.msg, %qs, Your request needs some content.)}; @trig %!/trig.create.request=%qs, %1, %qt, %qc;
 
 &trig.create.request [v(d.jrs)]=think strcat(a:%b, setr(a, ucstr(u(f.get.bucket, %0))), %r, b:%b, setr(b, u(%va/FN_FIND-BUCKET, %qa)), %r, i:%b, setr(i, lcstr(u(f.get.jgroup, %0))), %r, j:%b, setr(j, u(%va/FN_FIND-JGROUP, %qi)), %r,); @assert t(%qb)={@pemit %1=u(.msg, %0, I can't find the '%qa' bucket for this.)}; @assert t(%qj)={@pemit %1=u(.msg, %0, I can't find the '%qi' jgroup for this.)}; @pemit %1=u(.msg, %0, u(f.get.msg, %0, %2, %3)); @trigger %!/trig.create.job=%1, %qb, u(f.get.level, %0), [if(strlen(u(f.get.prefix, %0, %1)), [u(f.get.prefix, %0, %1)]:%b)][u(%va/FN_STRTRUNC, trim(%2), 30)], u(%va/FN_STRTRUNC, trim(%3), get(%va/BUFFER)), %qj;
 
@@ -1183,4 +1192,21 @@ I also added +allplayers, so that jobs can be assigned to all approved players. 
 
 @force me=&vZ [v(JOB_GO)]=[v(d.bf)]
 
+@force me=&vZ [v(JOB_VC)]=[v(d.bf)]
+
 @force me=&vZ [v(d.jrs)]=[v(d.bf)]
+
+@@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
+@@ Changed +typo to submit the player's location and use JRS:
+@@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
+
+&d.typo.bucket [v(d.jrs)]=BUILD
+
+&d.typo.jgroup [v(d.jrs)]=+allstaff
+
+&d.typo.msg [v(d.jrs)]=u(display.generic_msg, %0, typo)
+
+@@ Use JRS for +typo and grab the player's location along with their comments.
+&CMD_TYPO [v(JOB_GO)]=$+typo *:@force %#=req/typo [switch(rest(%0), *=*, %0, strcat(Typo:, %b, name(loc(%#)), =, Player location:, %b, loc(%#), %b>>>%b, name(loc(%#)), %%r, %b, Player comment:, %%r%%r, trimi(%0, l, %r)))]
+
+@set [v(JOB_GO)]/CMD_TYPO=no_parse
