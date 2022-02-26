@@ -119,6 +119,7 @@ MAYBE: Doubt there's much call for it, but maybe let people modify the following
 	@speechmod
 
 Changes:
+2022-02-26: Fixed booting, banning, etc to be over-ridable by staff.
 2021-12-31:
  - Discovered a bug with MUX2.13: Wizards bypass channel locks no matter what. So Wizards will not be able to /mute, they'll have to /off.
 2021-08-04:
@@ -289,6 +290,10 @@ Changes:
 @@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
 @@ Local functions
 @@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
+
+@@ %0: player
+@@ %1: channel dbref
+&f.is-channel-owner [v(d.chf)]=cor(match(ulocal(f.get-channel-owner, %1), %0), isstaff(%0))
 
 @@ %0 - dbref of channel
 @@ %1 - player
@@ -703,19 +708,19 @@ th ulocal(v(d.chf)/f.is-banned-alias, quit)
 @@ %0 - %#
 @@ %1 - channel title
 @@ %2 - player to be booted
-&tr.channel-boot [v(d.chc)]=@assert not(t(setr(E, u(f.get-channel-by-name-error, %0, %1))))={ @pemit %0=ulocal(layout.error, %qE); }; @assert match(ulocal(f.get-channel-owner, %1), %0)={ @pemit %0=ulocal(layout.error, You must own the channel in order to boot people.); }; @assert t(setr(P, ulocal(f.find-player, %2)))={ @pemit %0=ulocal(layout.error, Cannot find a player named '%2'.); }; @assert not(isstaff(%qP))={ @pemit %0=ulocal(layout.error, ulocal(f.get-name, %qP) is staff and cannot be booted.); }; @assert ulocal(filter.is-on-channel, %qN, %qP)={ @pemit %0=ulocal(layout.error, ulocal(f.get-name, %qP) is not on %qT and cannot be booted.); }; @cemit/noheader %qT=cat(alert(Channel), %[, prettytime(), %], ulocal(f.get-name, %0), boots, ulocal(f.get-name, %qP), from %qT.); @trigger me/tr.channel-alias-cleanup=%qP, %qT,  ulocal(f.get-name, %0, %qP) booted you from %qT.; @cboot/quiet %qT=%qP; @pemit %0=ulocal(layout.msg, ulocal(f.get-name, %qP, %0) was booted from %qT.);
+&tr.channel-boot [v(d.chc)]=@assert not(t(setr(E, u(f.get-channel-by-name-error, %0, %1))))={ @pemit %0=ulocal(layout.error, %qE); }; @assert ulocal(f.is-channel-owner, %0, %qN)={ @pemit %0=ulocal(layout.error, You must own the channel in order to boot people.); }; @assert t(setr(P, ulocal(f.find-player, %2)))={ @pemit %0=ulocal(layout.error, Cannot find a player named '%2'.); }; @assert not(isstaff(%qP))={ @pemit %0=ulocal(layout.error, ulocal(f.get-name, %qP) is staff and cannot be booted.); }; @assert ulocal(filter.is-on-channel, %qN, %qP)={ @pemit %0=ulocal(layout.error, ulocal(f.get-name, %qP) is not on %qT and cannot be booted.); }; @cemit/noheader %qT=cat(alert(Channel), %[, prettytime(), %], ulocal(f.get-name, %0), boots, ulocal(f.get-name, %qP), from %qT.); @trigger me/tr.channel-alias-cleanup=%qP, %qT,  ulocal(f.get-name, %0, %qP) booted you from %qT.; @cboot/quiet %qT=%qP; @pemit %0=ulocal(layout.msg, ulocal(f.get-name, %qP, %0) was booted from %qT.);
 
 @@ Input:
 @@ %0 - %#
 @@ %1 - channel title
 @@ %2 - player to be banned
-&tr.channel-ban [v(d.chc)]=@assert not(t(setr(E, u(f.get-channel-by-name-error, %0, %1))))={ @pemit %0=ulocal(layout.error, %qE); }; @assert match(ulocal(f.get-channel-owner, %1), %0)={ @pemit %0=ulocal(layout.error, You must own the channel in order to ban people.); }; @assert t(setr(P, ulocal(f.find-player, %2)))={ @pemit %0=ulocal(layout.error, Cannot find a player named '%2'.); }; @assert not(isstaff(%qP))={ @pemit %0=ulocal(layout.error, ulocal(f.get-name, %qP) is staff and cannot be banned.); }; @assert not(member(xget(%qN, banned-players), %qP))={ @pemit %0=ulocal(layout.error, ulocal(f.get-name, %qP) is already banned from %qT.); }; @trigger me/tr.lock-channel=%0, %qN, %qT, ban, %qP, cat(Banned, ulocal(f.get-name, %qP), %(%qP%)).; @trigger me/tr.channel-alias-cleanup=%qP, %qT, ulocal(f.get-name, %0, %qP) banned you from %qT.; @cboot/quiet %qT=%qP; @pemit %0=ulocal(layout.msg, ulocal(f.get-name, %qP, %0) was banned from %qT.);
+&tr.channel-ban [v(d.chc)]=@assert not(t(setr(E, u(f.get-channel-by-name-error, %0, %1))))={ @pemit %0=ulocal(layout.error, %qE); }; @assert ulocal(f.is-channel-owner, %0, %qN)={ @pemit %0=ulocal(layout.error, You must own the channel in order to ban people.); }; @assert t(setr(P, ulocal(f.find-player, %2)))={ @pemit %0=ulocal(layout.error, Cannot find a player named '%2'.); }; @assert not(isstaff(%qP))={ @pemit %0=ulocal(layout.error, ulocal(f.get-name, %qP) is staff and cannot be banned.); }; @assert not(member(xget(%qN, banned-players), %qP))={ @pemit %0=ulocal(layout.error, ulocal(f.get-name, %qP) is already banned from %qT.); }; @trigger me/tr.lock-channel=%0, %qN, %qT, ban, %qP, cat(Banned, ulocal(f.get-name, %qP), %(%qP%)).; @trigger me/tr.channel-alias-cleanup=%qP, %qT, ulocal(f.get-name, %0, %qP) banned you from %qT.; @cboot/quiet %qT=%qP; @pemit %0=ulocal(layout.msg, ulocal(f.get-name, %qP, %0) was banned from %qT.);
 
 @@ Input:
 @@ %0 - %#
 @@ %1 - channel title
 @@ %2 - player to be unbanned
-&tr.channel-unban [v(d.chc)]=@assert not(t(setr(E, u(f.get-channel-by-name-error, %0, %1))))={ @pemit %0=ulocal(layout.error, %qE); }; @assert match(ulocal(f.get-channel-owner, %1), %0)={ @pemit %0=ulocal(layout.error, You must own the channel in order to unban people.); }; @assert t(setr(P, ulocal(f.find-player, %2)))={ @pemit %0=ulocal(layout.error, Cannot find a player named '%2'.); }; @assert t(member(xget(%qN, banned-players), %qP))={ @pemit %0=ulocal(layout.error, ulocal(f.get-name, %qP) is not banned from %qT.); }; @trigger me/tr.lock-channel=%0, %qN, %qT, unban, %qP, cat(Unbanned, ulocal(f.get-name, %qP), %(%qP%)).; @pemit %0=ulocal(layout.msg, ulocal(f.get-name, %qP, %0) was unbanned from %qT.);
+&tr.channel-unban [v(d.chc)]=@assert not(t(setr(E, u(f.get-channel-by-name-error, %0, %1))))={ @pemit %0=ulocal(layout.error, %qE); }; @assert ulocal(f.is-channel-owner, %0, %qN)={ @pemit %0=ulocal(layout.error, You must own the channel in order to unban people.); }; @assert t(setr(P, ulocal(f.find-player, %2)))={ @pemit %0=ulocal(layout.error, Cannot find a player named '%2'.); }; @assert t(member(xget(%qN, banned-players), %qP))={ @pemit %0=ulocal(layout.error, ulocal(f.get-name, %qP) is not banned from %qT.); }; @trigger me/tr.lock-channel=%0, %qN, %qT, unban, %qP, cat(Unbanned, ulocal(f.get-name, %qP), %(%qP%)).; @pemit %0=ulocal(layout.msg, ulocal(f.get-name, %qP, %0) was unbanned from %qT.);
 
 @@ Input:
 @@ %0 - %#
