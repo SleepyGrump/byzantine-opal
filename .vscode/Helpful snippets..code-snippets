@@ -45,6 +45,11 @@
 		"body": "@assert isapproved(${1:%#})={ @trigger me/tr.error=$1, You must be approved to $2.; }; ",
 		"description": "assert is approved"
 	},
+	"Insert find crew error": {
+		"prefix": "@assert t(setr(C, ulocal(f.get-player-stat, crew object))=",
+		"body": "@eval setq(N, ulocal(f.get-name, %qP, ${1:%#})); @assert t(setr(C, ulocal(f.get-player-stat, %qP, crew object)))={ @trigger me/tr.error=$1, %qN is not a member of a crew.; };",
+		"description": "assert is member of a crew"
+	},
 	"Insert assert timer error": {
 		"prefix": "@assert gettimer(",
 		"body": "@assert gettimer(${1:%#}, ${2:timer-attribute}$3)={ @trigger me/tr.message=$1, You are about to $4. This will ${5:have consequences}. Are you sure? If yes%, type %ch+${6:command}${3/,//gi}%cn again within the next 10 minutes. The time is now [prettytime()].; @eval settimer($1, $2, 600$3); }; ",
@@ -53,6 +58,11 @@
 	"Insert eval name": {
 		"prefix": "@eval setq(N, ulocal(f.get-name, %qP, %;",
 		"body": "@eval setq(N, ulocal(f.get-name, %qP, ${1:%#}));",
+		"description": "eval name variable"
+	},
+	"Insert eval crew name": {
+		"prefix": "@eval setq(W, ulocal(f.get-crew-name, %qC);",
+		"body": "@eval setq(W, ulocal(f.get-crew-name, %qC);",
 		"description": "eval name variable"
 	},
 	"Insert error trigger": {
