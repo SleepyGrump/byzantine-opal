@@ -15,8 +15,14 @@
 @@ %2 - word to use if the count is greater than 1
 &f.global.plural [v(d.bf)]=if(isnum(%0), if(neq(%0, 1), %2, %1), switch(subj(%0), they, %2, %1))
 
-@@ Same arguments as setdiff but doesn't reorder the list.
-&f.globalpp.diffset [v(d.bf)]=strcat(setq(0, %0), null(iter(%1, setq(0, remove(%q0, itext(0), %2, %3)), %2, %3)), %q0)
+@@ Same arguments as setunion but doesn't reorder the list.
+&f.globalpp.unionset [v(d.bf)]=strcat(setq(2, if(t(%2), %2, %b)), setq(3, if(t(%3), %3, %b)), squish(trim(strcat(edit(%0, %q2, %q3), %q3, edit(%1, %q2, %q3)), l, %q3), %q3))
+
+@@ Same arguments as setdiff but doesn't reorder the list. Also, case-insensitive.
+&f.globalpp.diffset [v(d.bf)]=strcat(setq(0, %0), null(iter(%0, iter(%1, setq(0, removei(%q0, itext(0), %2, %3)), %2, %3), %2, %3)), squish(trim(%q0, b, %3), %3))
+
+@@ Same arguments as remove but case insensitive.
+&f.globalpp.removei [v(d.bf)]=if(gt(words(%1, %2), 1), #-1 CAN ONLY DELETE ONE ELEMENT, squish(trim(iter(%0, if(strmatch(itext(0), %1),, itext(0)), %2, %3), b, %3), %3))
 
 @@ Same arguments as trim is case insensitive - because trim(%Rblah, l, %r) should just work.
 &f.globalpp.trimi [v(d.bf)]=strcat(setq(0, %0), iter(lnum(strlen(%2)), setq(0, trim(trim(%q0, %1, ucstr(mid(%2, itext(0), 1))), %1, lcstr(mid(%2, itext(0), 1)))),, @@), %q0)
