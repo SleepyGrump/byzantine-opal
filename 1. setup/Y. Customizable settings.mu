@@ -13,7 +13,8 @@
 
 @@ Make sure to also edit your badsite_connect file to include the above email address.
 
-@@ Below are optional settings you can change:
+@@ I like Posebreak on by default. Change this to 0 if you don't.
+&_posebreak [v(d.pp)]=1
 
 @@ Default alert message
 &d.default-alert [v(d.bd)]=GAME
@@ -21,7 +22,7 @@
 @@ How much of an indent to use. The default 8 spaces is a bit long for some.
 &d.indent-width [v(d.bd)]=5
 
-@@ How long to wait before allowing a player to steal someone's name:
+@@ How long to wait before allowing a player to claim someone's name:
 &d.max-days-before-name-available [v(d.bd)]=45
 
 @@ For coders.

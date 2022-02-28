@@ -88,3 +88,9 @@
 
 @set [v(d.bc)]/switch.msg=no_parse
 
+@@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
+@@ Posebreak, taken from:
+@@ https://github.com/thenomain/Mu--Support-Systems/blob/main/%2Bposebreak.txt
+@@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
+
+&c.posebreak [v(d.bc)]=$+posebreak*:@pemit %#=[setq(0, trim(%0))][null(case(%q0, on, set(%#, _posebreak:1), off, set(%#, _posebreak:), clear, set(%#, posebreak:), [if(t(words(%q0)), [set(%#, posebreak:%q0)][set(%#, _posebreak:1)])]))]Posebreak is: [if(t(get(%#/_posebreak)), default(%#/posebreak, On), Off)]

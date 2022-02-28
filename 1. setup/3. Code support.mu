@@ -228,7 +228,18 @@
 
 &f.gag-poses-in-quiet-rooms [v(d.bf)]=not(ulocal(f.is-target-room-gagged, loc(%#)))
 
-&f.forward-poses [v(d.bf)]=if(ulocal(f.is-redirected-to-channel, loc(%#)), trigger(me/tr.redirect-emit-to-channel, loc(%#), %m, %#))
+&f.forward-poses [v(d.bf)]=if(ulocal(f.is-redirected-to-channel, loc(%#)), trigger(me/tr.redirect-emit-to-channel, loc(%#), %m, %#), ulocal(f.posebreak))
+
+@@ Posebreak code from:
+@@ https://github.com/thenomain/Mu--Support-Systems/blob/main/%2Bposebreak.txt
+
+@@ Slightly modified to use our OOC/IC system
+&f.posebreak-allow [v(d.bf)]=not(ulocal(f.is-location-ooc, %l))
+
+@@ switched from and to cand for efficiency
+&fil.posebreak [v(d.bf)]=cand(u(%0/_posebreak), udefault(f.posebreak-allow, 1, %0))
+
+&f.posebreak [v(d.bf)]=[iter(filter(fil.posebreak, lcon(loc(%#), connect)), pemit(%i0, default(%i0/posebreak, %b)))]
 
 @@ %0: Player
 @@ %1: Pose
