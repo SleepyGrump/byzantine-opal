@@ -126,8 +126,8 @@
 &f.construct-title [v(d.bf)]=if(t(%0), strcat(ulocal(f.apply-effect, v(d.title-left)), %b, ansi(v(d.text-color), %0), %b, if(switch(v(d.effect), fade, 1, altrev, 1, 0), ulocal(f.reverse-fade, v(d.title-right)), ulocal(f.apply-effect, v(d.title-right)))))
 
 @@ %0 - the player to get the width of the screen of OR a specific width
-@@ Output: the width of the player's screen, max 200 and min 48 (changed from 50 because I've got a player with width 49), or the numeric width given.
-&f.get-width [v(d.bf)]=if(isint(%0), %0, max(min(width(if(t(%0), %0, %#)), 200), 48))
+@@ Output: the width of the player's screen, between the min and max settings, or the numeric width given. The player can also set their width using +width <#>.
+&f.get-width [v(d.bf)]=if(isint(%0), %0, if(cand(isdbref(%0), isint(setr(W, xget(%0, width))), lte(%qW, v(d.max-possible-player-width)), gte(%qW, v(d.min-possible-player-width))), %qW, max(min(width(if(t(%0), %0, %#)), v(d.max-possible-player-width)), v(d.min-possible-player-width))))
 
 @@ %0 - width of the left and right edges
 @@ %1 - width of the middle

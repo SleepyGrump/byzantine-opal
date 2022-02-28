@@ -24,6 +24,12 @@
 
 &c.+sweep [v(d.bc)]=$+sweep: @break cand(ulocal(f.is-location-ooc, %L), not(isstaff(%#)))={ @trigger me/tr.error=%#, This location is OOC. You can't +sweep here.; }; @assert isowner(%L, %#)={ @trigger me/tr.error=%#, cat(You are not the owner of, name(%qL), and cannot +sweep here.); }; @assert t(setr(A, filter(filter.is-not-connected, filter(filter.isplayer, lcon(%L)))))={ @trigger me/tr.error=%#, There are no disconnected players in your location.; }; @dolist %qA={ @tel/quiet ##=[v(d.ooc)]; }; @trigger me/tr.success=%#, You sweep all disconnected players to the OOC room.;
 
+@@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
+@@ Set the player's screen width (for clients that don't report it accurately)
+@@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
+
+&c.+width [v(d.bc)]=$+width *:@assert isint(%0)={ @wipe %#/width; @trigger me/tr.success=%#, You clear your width. It's back to the default value provided by your client now. Try it out - hit +who!; }; @assert cand(lte(%0, v(d.max-possible-player-width)), gte(%0, v(d.min-possible-player-width)))={ @trigger me/tr.error=%#, '%0' must be an integer between [v(d.min-possible-player-width)] and [v(d.max-possible-player-width)].; }; @set %#=width:%0; @trigger me/tr.success=%#, You set your screen width to %0. Try it out - hit +who!;
+
 @@ =============================================================================
 @@ @gender, an alias for @sex
 @@ =============================================================================

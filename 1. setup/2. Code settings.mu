@@ -2,6 +2,10 @@
 
 &d.max-shortdesc-length [v(d.bd)]=200
 
+&d.max-possible-player-width [v(d.bd)]=200
+
+&d.min-possible-player-width [v(d.bd)]=48
+
 @@ Make sure these match the defaults in your SQL Commands install if you change those. Note that these are used for other things beyond SQL so consider carefully before changing them.
 &d.default-row-delimeter [v(d.bd)]=|
 
