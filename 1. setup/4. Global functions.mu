@@ -27,6 +27,9 @@
 @@ Same arguments as trim is case insensitive - because trim(%Rblah, l, %r) should just work.
 &f.globalpp.trimi [v(d.bf)]=strcat(setq(0, %0), iter(lnum(strlen(%2)), setq(0, trim(trim(%q0, %1, ucstr(mid(%2, itext(0), 1))), %1, lcstr(mid(%2, itext(0), 1)))),, @@), %q0)
 
+@@ Same arguments as member but case insensitive.
+&f.globalpp.memberi [v(d.bf)]=strcat(setq(0, first(iter(%0, if(strmatch(itext(0), %1), inum(0)), %2))), if(t(%q0), %q0, 0))
+
 @@ %0: A delimiter-separated list of items
 @@ %1: The item to match
 @@ %2: Default space.
@@ -332,7 +335,7 @@
 @@ Output: The target's shortdesc
 @@ %0: Person, place, or thing
 @@ %1: Viewer
-&f.globalpp.shortdesc [v(d.bf)]=strcat(setq(0, default(%0/short-desc, ansi(xh, if(member(%0, %1), &short-desc me=<short desc> to set your short-desc., No short-desc set.)))), setq(1, v(d.max-shortdesc-length)), if(gt(strlen(%q0), %q1), mid(%q0, 0, sub(%q1, 3))..., %q0))
+&f.globalpp.shortdesc [v(d.bf)]=strcat(setq(0, udefault(%0/short-desc, ansi(xh, if(member(%0, %1), &short-desc me=<short desc> to set your short-desc., No short-desc set.)))), setq(1, v(d.max-shortdesc-length)), if(gt(strlen(%q0), %q1), mid(%q0, 0, sub(%q1, 3))..., %q0))
 
 &f.get-fields [v(d.bf)]=strcat(setq(F,), null(iter(default(%0/d.%1-fields, %2), if(member(v(d.allowed-who-fields), itext(0), |), setq(F, strcat(%qF, |, itext(0)))), |)), trim(squish(%qF, |), b, |))
 
