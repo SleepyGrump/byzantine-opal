@@ -140,6 +140,9 @@
 
 &f.get-staffer-status [v(d.bf)]=if(cand(isstaff(%1), andflags(%0, Dc)), dark, if(andflags(%0, Dc), offline, if(hasflag(%0, connected), if(hasflag(%0, transparent), ansi(first(themecolors()), ON DUTY), off duty), if(hasflag(%0, vacation), vacation, offline))))
 
+@@ Added the option for a staffer to give a player a name highlight OOC. &_name-highlights player=<their name with ansi>
+&f.hilite-text [v(d.bf)]=if(ulocal(f.is-location-ooc, loc(%0)), udefault(%0/_name-highlights, ansi(if(ulocal(filter.watched, %0, %1), first(themecolors())), %2)), %2)
+
 &f.get-status [v(d.bf)]=ulocal(f.hilite-text, %0, %1, if(isstaff(%0), ulocal(f.get-staffer-status, %0, %1), if(ulocal(f.is-location-ooc, loc(%0)), ooc, ic)))
 
 &f.get-location [v(d.bf)]=if(cand(hasflag(%0, unfindable), not(isstaff(%1))), Unfindable, name(loc(%0)))
@@ -148,7 +151,7 @@
 
 &f.get-name [v(d.bf)]=ulocal(f.hilite-text, %0, %1, moniker(%0))
 
-&f.get-alias [v(d.bf)]=ulocal(f.hilite-text, %0, %1, xget(%0, alias))
+&f.get-alias [v(d.bf)]=xget(%0, alias)
 
 &f.get-dbref [v(d.bf)]=%0
 
@@ -226,9 +229,9 @@
 @@ %2: index to extract
 &f.find-attr-by-number [v(d.bf)]=extract(lattr(%0/%1*), %2, 1)
 
-&f.gag-poses-in-quiet-rooms [v(d.bf)]=not(ulocal(f.is-target-room-gagged, loc(%#)))
+&f.gag-poses-in-quiet-rooms [v(d.bf)]=cand(not(ulocal(f.is-target-room-gagged, loc(%#))), not(ulocal(f.is-redirected-to-channel, loc(%#))))
 
-&f.forward-poses [v(d.bf)]=if(ulocal(f.is-redirected-to-channel, loc(%#)), trigger(me/tr.redirect-emit-to-channel, loc(%#), %m, %#), ulocal(f.posebreak))
+&f.forward-poses [v(d.bf)]=if(ulocal(f.is-redirected-to-channel, loc(%#)), trigger(me/tr.redirect-emit-to-channel, loc(%#), %m, %#), pemit(%#, Permission denied.))
 
 @@ Posebreak code from:
 @@ https://github.com/thenomain/Mu--Support-Systems/blob/main/%2Bposebreak.txt
@@ -331,4 +334,4 @@
 
 &layout.log [v(d.bf)]=cat(ansi(xh, extract(%0, 1, 2, /)), rest(rest(rest(%0))))
 
-&layout.list [v(d.bf)]=itemize(setunion(%0, %0, |), |, if(t(%1), %1, and))
+&layout.list [v(d.bf)]=if(t(%0), itemize(setunion(%0, %0, |), |, if(t(%1), %1, and)), None)
