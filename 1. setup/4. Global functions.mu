@@ -16,7 +16,7 @@
 &f.global.plural [v(d.bf)]=if(isnum(%0), if(neq(%0, 1), %2, %1), switch(subj(%0), they, %2, %1))
 
 @@ Same arguments as setunion but doesn't reorder the list.
-&f.globalpp.unionset [v(d.bf)]=strcat(setq(2, if(t(%2), %2, %b)), setq(3, if(t(%3), %3, %b)), squish(trim(strcat(edit(%0, %q2, %q3), %q3, edit(%1, %q2, %q3)), l, %q3), %q3))
+&f.globalpp.unionset [v(d.bf)]=strcat(setq(2, if(t(%2), %2, %b)), setq(3, if(t(%3), %3, %q2)), squish(trim(strcat(edit(%0, %q2, %q3), %q3, edit(%1, %q2, %q3)), l, %q3), %q3))
 
 @@ Same arguments as setdiff but doesn't reorder the list. Also, case-insensitive.
 &f.globalpp.diffset [v(d.bf)]=strcat(setq(0, %0), null(iter(%0, iter(%1, setq(0, removei(%q0, itext(0), %2, %3)), %2, %3), %2, %3)), squish(trim(%q0, b, %3), %3))
@@ -26,9 +26,6 @@
 
 @@ Same arguments as trim is case insensitive - because trim(%Rblah, l, %r) should just work.
 &f.globalpp.trimi [v(d.bf)]=strcat(setq(0, %0), iter(lnum(strlen(%2)), setq(0, trim(trim(%q0, %1, ucstr(mid(%2, itext(0), 1))), %1, lcstr(mid(%2, itext(0), 1)))),, @@), %q0)
-
-@@ Same arguments as member but case insensitive.
-&f.globalpp.memberi [v(d.bf)]=strcat(setq(0, first(iter(%0, if(strmatch(itext(0), %1), inum(0)), %2))), if(t(%q0), %q0, 0))
 
 @@ %0: A delimiter-separated list of items
 @@ %1: The item to match
@@ -152,11 +149,11 @@
 @@ %1 - width, optional
 &f.apply-effect [v(d.bf)]=ulocal(effect.[v(d.effect)], %0, %1)
 
-&f.globalpp.header [v(d.bf)]=strcat(u(f.get-layout-vars, %0, %1), %b, ulocal(f.apply-effect, %q2), %q1, ulocal(f.apply-effect, strcat(mid(repeat(%q4, %q5), 0, %q5), %q3)), %b)
+&f.globalpp.header [v(d.bf)]=strcat(u(f.get-layout-vars, %0, %1), %b, ulocal(f.apply-effect, %q2), %q1, ulocal(f.apply-effect, strcat(mid(repeat(%q4, %q5), 0, %q5), %q3)))
 
-&f.globalpp.footer [v(d.bf)]=strcat(u(f.get-layout-vars, %0, %1), %b, ulocal(f.apply-effect, strcat(%q2, mid(repeat(%q4, %q5), 0, %q5))), %q1, ulocal(f.apply-effect, %q3), %b)
+&f.globalpp.footer [v(d.bf)]=strcat(u(f.get-layout-vars, %0, %1), %b, ulocal(f.apply-effect, strcat(%q2, mid(repeat(%q4, %q5), 0, %q5))), %q1, ulocal(f.apply-effect, %q3))
 
-&f.globalpp.divider [v(d.bf)]=strcat(u(f.get-layout-vars, %0, %1), setq(6, strcat(%q2, mid(repeat(%q4, %q5), 0, %q5), %q3)), %b, ulocal(f.apply-effect, mid(%q6, 0, div(strlen(%q6), 2))), %q1, ulocal(f.apply-effect, mid(%q6, div(strlen(%q6), 2), 999)), %b)
+&f.globalpp.divider [v(d.bf)]=strcat(u(f.get-layout-vars, %0, %1), setq(6, strcat(%q2, mid(repeat(%q4, %q5), 0, %q5), %q3)), %b, ulocal(f.apply-effect, mid(%q6, 0, div(strlen(%q6), 2))), %q1, ulocal(f.apply-effect, mid(%q6, div(strlen(%q6), 2), 999)))
 
 @@ %0 - text (optional)
 &f.globalpp.alert [v(d.bf)]=strcat(ulocal(f.apply-effect, v(d.text-left)), ulocal(f.construct-title, if(t(%0), %0, v(d.default-alert))), ulocal(f.apply-effect, v(d.text-right)))
