@@ -63,6 +63,8 @@ Channel owner cocmmands:
 
 	+channel/spoof <channel> - set a channel spoofable (anonymous)
 	+channel/nospoof <channel> - set a channel non-spoofable (not anonymous)
+	+channel/notitle <channel> - restrict comtitles
+	+channel/yestitle <channel> - unrestrict comtitles
 	+channel/loud <channel> - set a channel noisy (emits connects/disconnects)
 	+channel/quiet <channel> - set a channel quiet (no connects/disconnects)
 
@@ -118,7 +120,10 @@ MAYBE: Doubt there's much call for it, but maybe let people modify the following
 	@comoff
 	@speechmod
 
+TODO: Add some kind of +com/allowtitlebypass <player> command so that players can designate who gets to use comtitles on their channels. /denytitlebypass would be good too. Need a better set of commands for this...
+
 Changes:
+2022-03-05: Added the ability to restrict comtitle-setting on a channel. There's also a coded bypass to let other code enable a comtitle for each player. See demure-bismuth/Other functionality/Sharps.mu +name/title for an example.
 2022-02-26: Fixed booting, banning, etc to be over-ridable by staff.
 2021-12-31:
  - Discovered a bug with MUX2.13: Wizards bypass channel locks no matter what. So Wizards will not be able to /mute, they'll have to /off.
@@ -182,7 +187,7 @@ Changes:
 @force me=&d.chf me=[search(ETHING=t(member(name(##), Channel Functions <CHF>, |)))]
 @force me=&d.cdb me=[search(ETHING=t(member(name(##), Channel Database <CDB>, |)))]
 
-@force me=&vH [v(d.cgf)]=[v(d.chf)]
+@force me=&vH [v(d.bf)]=[v(d.chf)]
 
 @force me=&vD [v(d.chf)]=[v(d.cdb)]
 
@@ -212,11 +217,17 @@ Changes:
 @@ Words that would be bad to have as channels. Add any commands that do not have a special character in front of them, as well as their short-form versions. This keeps players from making channels with these names or aliases, since those can interfere with regular command use.
 &d.banned-words [v(d.cdb)]=msg i in inf info l lo log logo logou logout o ou out outp outpu output outputp outputpr outputpre outputpref outputprefi outputprefix outputs outputsu outputsuf outputsuff outputsuffi outputsuffix q qu qui quit s se ses sess sessi sessio session w wh who d do doi doin doing dr dro drop e en ent ente enter ex exa exam exami examin examine g ge get gi giv give go got goto h he hel help i in inv inve inven invent invento inventor inventory k ki kil kill l le lea leav leave lo loo look m mo mov move n ne new news p pa pag page po pos pose r re rea read rep repo repor report s sa say sc sco scor score sl sla slay t ta tak take th thi thin think thr thro throw tr tra trai train u us use v ve ver vers versi versio version w wh whi whis whisp whispe whisper wi wiz wizh wizhe wizhel wizhelp addcom delcom clearcom comlist comtitle on off who last allcom
 
-&d.commands-with-no-value [v(d.cdb)]=history|info|join|last|leave|mute|off|on|unmute|who|approved|loud|nospoof|private|public|quiet|spoof|staff
+&d.commands-with-no-value [v(d.cdb)]=history|info|join|last|leave|mute|off|on|unmute|who|approved|loud|nospoof|notitle|private|public|quiet|spoof|staff|yestitle
 
 &d.commands-with-value [v(d.cdb)]=emit|history|join|last|on|password|title|alias|ban|boot|description|header|unban
 
-@desc [v(d.chc)]=%RCommands:%R%R[space(3)]+channel - list all channels%R[space(3)]+channel/join <title> - join a channel with the default alias%R[space(3)]+channel/join <title>=<password> - join a password-protected channel%R[space(3)]+channel/title <channel>=<your title> - set a comtitle%R[space(3)]+channel/create <title>%R[space(3)]+channel/create <title>=<details>%R%R[space(3)]+channel/claim <existing channel> - (staff only) claim an existing channel and make it possible to administer the channel via this system. Will automatically create a channel log for this channel. If one already exists, use the second form of this command.%R%R[space(3)]+channel/claim <existing channel>=<dbref> - as above, but with an existing log object.%R%R[space(3)]+channel/give <channel>=<player> - give a channel you administer to someone else.%R%R[space(3)]+channel/history <channel> - staff only, see the last 10 history entries%R[space(3)]+channel/history <channel>=<#> - same, last # history of the channel%R%ROnly the owner (or staff) can perform the following commands:%R%R[space(3)]+channel/header <title>=<value> - set a channel's header (the "<format>" part)%R[space(3)]+channel/desc <title>=<value> - set a channel's description%R[space(3)]+channel/alias <title>=<value> - set a channel's alias. Players can still change this.%R%R[space(3)]+channel/public <title> - set a channel public%R[space(3)]+channel/private <title> - set a channel private%R[space(3)]+channel/staff <title> - set a channel staff-only (only usable by staffers) - set it public or private to unset%R[space(3)]+channel/approved <title> - set a channel approved-only - set it public or private to unset%R[space(3)]+channel/password <title>=<value> - set a channel's password - set it public or private to unset%R%R[space(3)]+channel/spoof <title> - set a channel spoofable (anonymous)%R[space(3)]+channel/nospoof <title> - set a channel non-spoofable (not anonymous)%R%R[space(3)]+channel/loud <title> - set a channel noisy (emits connects/disconnects)%R[space(3)]+channel/quiet <title> - set a channel quiet (no connects/disconnects)%R%R[space(3)]+channel/destroy <title> - nukes a channel (must be the owner or staff)%R%R[space(3)]+channel/cleanup - deletes any channel which meets all of these criteria:%R[space(3)][space(3)]- No one has spoken on the channel in the last 180 days.%R[space(3)][space(3)]- The owner has not logged in in over 180 days.%R[space(3)][space(3)]- The owner is not staff.%R
+@desc [v(d.chc)]=%RCommands:%R%R[space(3)]+channel - list all channels%R[space(3)]+channel/join <title> - join a channel with the default alias%R[space(3)]+channel/join <title>=<password> - join a password-protected channel%R[space(3)]+channel/title <channel>=<your title> - set a comtitle%R[space(3)]+channel/create <title>%R[space(3)]+channel/create <title>=<details>%R%R[space(3)]+channel/claim <existing channel> - (staff only) claim an existing channel and make it possible to administer the channel via this system. Will automatically create a channel log for this channel. If one already exists, use the second form of this command.%R%R[space(3)]+channel/claim <existing channel>=<dbref> - as above, but with an existing log object.%R%R[space(3)]+channel/give <channel>=<player> - give a channel you administer to someone else.%R%R[space(3)]+channel/history <channel> - staff only, see the last 10 history entries%R[space(3)]+channel/history <channel>=<#> - same, last # history of the channel%R%ROnly the owner (or staff) can perform the following commands:%R%R[space(3)]+channel/header <title>=<value> - set a channel's header (the "<format>" part)%R[space(3)]+channel/desc <title>=<value> - set a channel's description%R[space(3)]+channel/alias <title>=<value> - set a channel's alias. Players can still change this.%R%R[space(3)]+channel/public <title> - set a channel public%R[space(3)]+channel/private <title> - set a channel private%R[space(3)]+channel/staff <title> - set a channel staff-only (only usable by staffers) - set it public or private to unset%R[space(3)]+channel/approved <title> - set a channel approved-only - set it public or private to unset%R[space(3)]+channel/password <title>=<value> - set a channel's password - set it public or private to unset%R%R[space(3)]+channel/spoof <title> - set a channel spoofable (anonymous)%R[space(3)]+channel/nospoof <title> - set a channel non-spoofable (not anonymous)%R%R[space(3)]+channel/notitle <title> - restrict comtitles on this channel%R[space(3)]+channel/yestitle <title> - unrestrict comtitles%R%R[space(3)]+channel/loud <title> - set a channel noisy (emits connects/disconnects)%R[space(3)]+channel/quiet <title> - set a channel quiet (no connects/disconnects)%R%R[space(3)]+channel/destroy <title> - nukes a channel (must be the owner or staff)%R%R[space(3)]+channel/cleanup - deletes any channel which meets all of these criteria:%R[space(3)][space(3)]- No one has spoken on the channel in the last 180 days.%R[space(3)][space(3)]- The owner has not logged in in over 180 days.%R[space(3)][space(3)]- The owner is not staff.%R
+
+@@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
+@@ Hooks
+@@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
+
+&p_comtitle [v(d.ho)]=ulocal(%vH/f.channel-allows-comtitles)
 
 @@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
 @@ Locks
@@ -255,7 +266,7 @@ Changes:
 
 @@ %0 - dbref of channel object
 @@ %1 - user
-&layout.channel-details [v(d.chf)]=strcat(setq(N, ulocal(f.get-channel-name, %0)), setq(O, ulocal(f.get-channel-owner, %0)), header(strcat(%qN channel details, if(isstaff(%1), %b%(%0%))), %1), %r, multicol(strcat(Owner:, |, ulocal(f.get-name, %qO, %1) %(%qO%), |, Default alias:, |, ulocal(f.get-channel-alias-by-name, %qN), |, Description:, |, ulocal(f.get-channel-desc, %0), |, Status:, |, ulocal(f.get-channel-lock, %0), %,%b, ulocal(f.get-channel-spoof, %0), |, Connected members:, |, ulocal(layout.player-list, cwho(%qN, on), %1, %qN)), 20 *, 0, |, %1), if(ulocal(f.can-modify-channel, %1, %0), ulocal(layout.channel-admin-details, %0, %1, %qN)), %r, footer(, %1))
+&layout.channel-details [v(d.chf)]=strcat(setq(N, ulocal(f.get-channel-name, %0)), setq(O, ulocal(f.get-channel-owner, %0)), header(strcat(%qN channel details, if(isstaff(%1), %b%(%0%))), %1), %r, multicol(strcat(Owner:, |, ulocal(f.get-name, %qO, %1) %(%qO%), |, Default alias:, |, ulocal(f.get-channel-alias-by-name, %qN), |, Description:, |, ulocal(f.get-channel-desc, %0), |, Status:, |, ulocal(f.get-channel-lock, %0), %,%b, ulocal(f.get-channel-spoof, %0), %,%b, ulocal(f.get-channel-comtitle-restricted, %0), |, Connected members:, |, ulocal(layout.player-list, cwho(%qN, on), %1, %qN)), 20 *, 0, |, %1), if(ulocal(f.can-modify-channel, %1, %0), ulocal(layout.channel-admin-details, %0, %1, %qN)), %r, footer(, %1))
 
 @@ %0 - dbref of channel object
 @@ %1 - user
@@ -342,8 +353,15 @@ Changes:
 @@ %0 - dbref of channel
 &f.get-channel-lock [v(d.chf)]=xget(%0, channel.lock-status)
 
+@@ %0 - dbref of channel
+&f.get-channel-comtitle-restricted [v(d.chf)]=default(%0/comtitle-restricted, Comtitles unrestricted)
+
+&f.get-channel-comtitle-bypass-restrictions [v(d.chf)]=xget(%0, bypass-comtitle-restrictions)
+
 @@ %0 - name of channel
 &f.get-channel-alias-by-name [v(d.chf)]=strcat(setq(D, ulocal(f.get-channel-dbref, %0)), default(%qD/channel-alias, switch(%0, Chargen, cg, Staff, st, strtrunc(lcstr(%0), 3))))
+
+&f.channel-allows-comtitles [v(d.chf)]=strcat(setq(E, u(f.get-channel-by-name-error, %#, setr(C, ulocal(f.get-channel-name, before(rest(%m), =))))), cor(isstaff(%#), strmatch(ulocal(f.get-channel-comtitle-restricted, %qN), Comtitles unrestricted), t(member(ulocal(f.get-channel-comtitle-bypass-restrictions, %qN), %#))))
 
 @@ %0 - title of the new channel
 @@ NOTE: This must:
@@ -433,7 +451,6 @@ th ulocal(v(d.chf)/f.is-banned-alias, quit)
 
 @force me=&cmd-alias_with_text [v(d.chc)]=edit(xget(v(d.cdb), command-alias/cmd_txt), aliases_go_here, iter(lattr([v(d.cdb)]/channel.*), ulocal([v(d.chf)]/f.get-channel-alias, edit(itext(0), CHANNEL.,)),, |), d.commands-with-value, xget(v(d.cdb), d.commands-with-value))
 
-
 @set [v(d.chc)]/cmd-alias_with_text=no_parse
 
 @set [v(d.chc)]/cmd-alias_with_text=regexp
@@ -512,6 +529,10 @@ th ulocal(v(d.chf)/f.is-banned-alias, quit)
 
 &switch.7.last [v(d.chc)]=@trigger me/tr.channel-history=%0, first(rest(%1), =), rest(%1, =);
 
+&switch.8.notitle [v(d.chc)]=@trigger me/tr.channel-notitle=%0, rest(%1);
+
+&switch.8.yestitle [v(d.chc)]=@trigger me/tr.channel-yestitle=%0, rest(%1);
+
 &switch.98.cleanup [v(d.chc)]=@trigger me/tr.channel-cleanup=%0;
 
 &switch.99.destroy [v(d.chc)]=@switch/first %1=*=*, { @trigger me/tr.destroy-channel=%0, first(rest(%1), =), rest(%1, =); }, { @trigger me/tr.confirm-destroy=%0, rest(%1); }
@@ -538,7 +559,7 @@ th ulocal(v(d.chf)/f.is-banned-alias, quit)
 @@ Input:
 @@ %0 - %#
 @@ %1 - channel title
-&tr.channel-join [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), setq(A, comalias(%0, %qT)), setq(D, ulocal(f.get-channel-alias-by-name, %qT)), if(not(t(%qA)), setq(A, %qD)), %b, if(ulocal(filter.is-on-channel, %qN, %0), You are already on %qT. [pemit(#12, %qN|%0)])))))=,{ @switch t(comalias(%0, %qT))=1, { @force %0={ %qA on; }; }, { @force %0={ addcom %qA=%qT; }; }; @wipe %0/_mute-channel-%qN; @assert t(setr(A, comalias(%0, %qT))); @trigger me/tr.join-message=%0, %qD, %qT;  }, { @pemit %0=ulocal(layout.error, %qE); }
+&tr.channel-join [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), setq(A, comalias(%0, %qT)), setq(D, ulocal(f.get-channel-alias-by-name, %qT)), if(not(t(%qA)), setq(A, %qD)), %b, if(ulocal(filter.is-on-channel, %qN, %0), You are already on %qT.)))))=,{ @switch t(comalias(%0, %qT))=1, { @force %0={ %qA on; }; }, { @force %0={ addcom %qA=%qT; }; }; @wipe %0/_mute-channel-%qN; @assert t(setr(A, comalias(%0, %qT))); @trigger me/tr.join-message=%0, %qD, %qT;  }, { @pemit %0=ulocal(layout.error, %qE); }
 
 @@ Input:
 @@ %0 - %#
@@ -691,6 +712,15 @@ th ulocal(v(d.chf)/f.is-banned-alias, quit)
 @@ %1 - channel title
 &tr.channel-nospoof [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), %b, if(not(ulocal(f.can-modify-channel, %0, %qN)), You are not staff or the owner of the channel '%qT' and cannot change it.)))))=, { @trigger me/tr.log-channel-history=%0, %qN, Set no-spoof.; @cset/nospoof %qT; @set %qN=channel-spoof:; @pemit %0=ulocal(layout.msg, Changed '%qT' to 'Non-spoofable'.); }, { @pemit %0=ulocal(layout.error, %qE); }
 
+@@ Input:
+@@ %0 - %#
+@@ %1 - channel title
+&tr.channel-notitle [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), %b, if(not(ulocal(f.can-modify-channel, %0, %qN)), You are not staff or the owner of the channel '%qT' and cannot change it.)))))=, { @trigger me/tr.log-channel-history=%0, %qN, Comtitles disabled.; @set %qN=comtitle-restricted:Comtitles restricted; @pemit %0=ulocal(layout.msg, Changed '%qT' to 'Comtitles restricted'.); }, { @pemit %0=ulocal(layout.error, %qE); }
+
+@@ Input:
+@@ %0 - %#
+@@ %1 - channel title
+&tr.channel-yestitle [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), %b, if(not(ulocal(f.can-modify-channel, %0, %qN)), You are not staff or the owner of the channel '%qT' and cannot change it.)))))=, { @trigger me/tr.log-channel-history=%0, %qN, Comtitles disabled.; @set %qN=comtitle-restricted:; @pemit %0=ulocal(layout.msg, Changed '%qT' to 'Comtitles not restricted'.); }, { @pemit %0=ulocal(layout.error, %qE); }
 
 @@ Input:
 @@ %0 - %#
