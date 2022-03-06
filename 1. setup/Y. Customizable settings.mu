@@ -163,8 +163,8 @@
 @@ Default poll (shows when you type DOING or +who). Max length is 45 characters. This is a MUX limit.
 &d.default-poll [v(d.bd)]=Whatcha doing?
 
-@@ Travel categories, separated by |. These will be specific to your game and could include categories like "Retail" or "Market" depending on your setting. Your players will group their businesses under these categories. The only default is "OOC", so that you can add OOC destinations like the OOC room, the RP Nexus, Chargen, etc.
-&d.travel.categories [v(d.bd)]=OOC
+@@ Travel categories, separated by |. These will be specific to your game and could include categories like "Retail" or "Market" depending on your setting. Your players will group their businesses under these categories. The only default is "OOC Rooms", so that you can add OOC destinations like the OOC room, the RP Nexus, Chargen, etc.
+&d.travel.categories [v(d.bd)]=OOC Rooms
 
 @@ The DBref of your OOC room
 &d.ooc [v(d.bd)]=#0

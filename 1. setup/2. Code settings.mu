@@ -6,6 +6,9 @@
 
 &d.min-possible-player-width [v(d.bd)]=48
 
+@@ The maximum number of travel categories a player can set on a location.
+&d.max-travel-categories [v(d.bd)]=3
+
 @@ Make sure these match the defaults in your SQL Commands install if you change those. Note that these are used for other things beyond SQL so consider carefully before changing them.
 &d.default-row-delimeter [v(d.bd)]=|
 
@@ -34,17 +37,17 @@
 
 @desc [v(d.qr)]=%R%TThis is the quiet room. No talking!%R
 
-&d.travel-categories [v(d.qr)]=OOC
+&d.travel-categories [v(d.qr)]=OOC Rooms
 
 &d.travel-key [v(d.qr)]=QUIET
 
-&d.travel-key [v(d.ooc)]=OOCROOM
+&d.travel-key [v(d.ooc)]=OOC
 
 @force me=&d.default-ooc-room [v(d.bd)]=[v(d.ooc)]
 
 @force me=&d.default-ic-room [v(d.bd)]=[v(d.ic)]
 
-&d.travel-categories [v(d.ooc)]=OOC
+&d.travel-categories [v(d.ooc)]=OOC Rooms
 
 &d.travel-key [v(d.ic)]=IC
 
@@ -62,9 +65,9 @@
 
 &layout.exits [v(d.rp)]=if(t(%0), strcat(divider(%1 exits, %2), %r, formatcolumns(iter(%0, name(itext(0)),, |), |, %2), %r))
 
-&layout.exitformat [v(d.rp)]=strcat(if(t(setr(0, filter(filter.visible-exit, lexits(me),,, %0))), strcat(ulocal(layout.commercial-exits, %0, %q0), ulocal(layout.residential-exits, %0, %q0), ulocal(layout.remaining-exits, %0, %q0))), footer(if(t(%q0), words(%q0), No) exit[if(neq(words(%q0), 1), s)]))
+&layout.exitformat [v(d.rp)]=strcat(if(t(setr(0, filter(filter.visible-exit, lexits(me),,, %0))), strcat(ulocal(layout.commercial-exits, %0, %q0), ulocal(layout.residential-exits, %0, %q0), ulocal(layout.remaining-exits, %0, %q0))), footer(if(t(%q0), words(%q0), No) exit[if(neq(words(%q0), 1), s)], %0))
 
-&layout.exitformat [v(d.orp)]=strcat(if(t(setr(0, filter(filter.visible-exit, lexits(me),,, %0))), ulocal(layout.exits, %q0, General, %0)), footer(if(t(%q0), words(%q0), No) exit[if(neq(words(%q0), 1), s)]))
+&layout.exitformat [v(d.orp)]=strcat(if(t(setr(0, filter(filter.visible-exit, lexits(me),,, %0))), ulocal(layout.exits, %q0, General, %0)), footer(if(t(%q0), words(%q0), No) exit[if(neq(words(%q0), 1), s)], %0))
 
 @desc [v(d.rp)]=%R%TThis is the default room description.%R
 
@@ -74,7 +77,7 @@
 
 @descformat [v(d.rp)]=strcat(formattext(%0, 1, %#), if(t(setr(V, lviews(num(me)))), ulocal(layout.views, num(me), %qV, %#)), if(t(setr(N, lnotes(num(me)))), ulocal(layout.notes, num(me), %qN, %#)))
 
-@nameformat [v(d.rp)]=header(name(me), %#)
+@nameformat [v(d.rp)]=header(strcat(name(me), if(isstaff(%#), %b%(%!%))), %#)
 
 @conformat [v(d.rp)]=strcat(if(t(setr(0, filter(filter.not_dark, lcon(me),,, %#))), ulocal(layout.conformat, whosort(%q0, %#, room), %#)), if(t(setr(1, filter(filter.visible-objects, lcon(me),,, %#))), ulocal(layout.objects, whosort(%q1, %#, object), %#)), if(not(t(words(lexits(me)))), strcat(%r, footer(No exits, %#))))
 

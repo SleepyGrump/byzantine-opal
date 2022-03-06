@@ -16,7 +16,7 @@
 
 &tr.ban-banned-players [v(d.bf)]=@dolist lattr(%vD/d.ban.*)=@admin forbid_site=rest(##, D.BAN.) 255.255.255.255;
 
-@daily [v(d.bf)]=@trigger me/tr.clear-timers;
+@daily [v(d.bf)]=@trigger me/tr.clear-timers; @trigger me/tr.clean-old-player-logs=_ownerlog-;
 
 @@ =============================================================================
 @@ Locks
@@ -286,7 +286,7 @@
 @@ %0: channel
 @@ %1: player or message
 @@ %2: message (if not given, message is assumed to be %1)
-&tr.alert-to-channel [v(d.cg)]=@cemit %0=cat(ansi(xh, extract(prettytime(), 1, 2, /)), ansi(<#777777>, rest(prettytime())), if(t(%2), cat(ulocal(f.get-name, %1):, %2), %1));
+&tr.alert-to-channel [v(d.bf)]=@cemit %0=cat(ansi(xh, extract(prettytime(), 1, 2, /)), ansi(<#777777>, rest(prettytime())), if(t(%2), cat(ulocal(f.get-name, %1):, %2), %1));
 
 @@ %0: attribute group
 &tr.clean-old-player-logs [v(d.bf)]=@dolist search(EPLAYER=t(lattr(##/%0*)))={ @trigger me/tr.clean-old-logs=##, %0; };
