@@ -123,6 +123,7 @@ MAYBE: Doubt there's much call for it, but maybe let people modify the following
 TODO: Add some kind of +com/allowtitlebypass <player> command so that players can designate who gets to use comtitles on their channels. /denytitlebypass would be good too. Need a better set of commands for this...
 
 Changes:
+2022-03-07: Stopped +com from catching just any command that starts with +com.
 2022-03-05: Added the ability to restrict comtitle-setting on a channel. There's also a coded bypass to let other code enable a comtitle for each player. See demure-bismuth/Other functionality/Sharps.mu +name/title for an example.
 2022-02-26: Fixed booting, banning, etc to be over-ridable by staff.
 2021-12-31:
@@ -433,9 +434,7 @@ th ulocal(v(d.chf)/f.is-banned-alias, quit)
 
 @set [v(d.chc)]/cmd-+channel=no_parse
 
-&cmd-+com [v(d.chc)]=$+com*:@switch setr(E, strcat(setq(C, ulocal(f.find-command-switch, %0)), if(not(t(%qC)), Could not find command: +com%0)))=, { @trigger me/%qC=%#, %0; }, { @pemit %#=ulocal(layout.error, %qE); }
-
-@set [v(d.chc)]/cmd-+com=no_parse
+&cmd-+com [v(d.chc)]=$+com/*:@switch setr(E, strcat(setq(C, ulocal(f.find-command-switch, /%0)), if(not(t(%qC)), Could not find command: +com%0)))=, { @trigger me/%qC=%#, %0; }, { @pemit %#=ulocal(layout.error, %qE); }
 
 &command-alias/cmd [v(d.cdb)]=$^(aliases_go_here)/(d.commands-with-no-value): @trigger me/tr.alias-command=%#, %1, %2;
 
