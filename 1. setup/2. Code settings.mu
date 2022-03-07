@@ -77,9 +77,9 @@
 
 @descformat [v(d.rp)]=strcat(formattext(%0, 1, %#), if(t(setr(V, lviews(num(me)))), ulocal(layout.views, num(me), %qV, %#)), if(t(setr(N, lnotes(num(me)))), ulocal(layout.notes, num(me), %qN, %#)))
 
-@nameformat [v(d.rp)]=header(strcat(name(me), if(isstaff(%#), %b%(%!%))), %#)
+@nameformat [v(d.rp)]=header(strcat(if(hasflag(me, TEMPROOM), TEMPROOM:%b), name(me), if(isstaff(%#), %b%(%!%))), %#)
 
-@conformat [v(d.rp)]=strcat(if(t(setr(0, filter(filter.not_dark, lcon(me),,, %#))), ulocal(layout.conformat, whosort(%q0, %#, room), %#)), if(t(setr(1, filter(filter.visible-objects, lcon(me),,, %#))), ulocal(layout.objects, whosort(%q1, %#, object), %#)), if(not(t(words(lexits(me)))), strcat(%r, footer(No exits, %#))))
+@conformat [v(d.rp)]=strcat(if(t(setr(0, if(hasflag(me, BLIND),, filter(filter.not_dark, lcon(me),,, %#)))), ulocal(layout.conformat, whosort(%q0, %#, room), %#)), if(t(setr(1, filter(filter.visible-objects, lcon(me),,, %#))), ulocal(layout.objects, whosort(%q1, %#, object), %#)), if(not(t(words(lexits(me)))), strcat(%r, footer(No exits, %#))))
 
 @exitformat [v(d.rp)]=ulocal(layout.exitformat, %#)
 

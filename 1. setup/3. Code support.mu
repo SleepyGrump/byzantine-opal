@@ -38,7 +38,7 @@
 
 &filter.not_dark [v(d.bf)]=cand(ulocal(filter.is_connected_player, %0), cor(isstaff(%1), andflags(%0, !D)))
 
-&filter.not_unfindable [v(d.bf)]=cand(ulocal(filter.is_connected_player, %0), cor(isstaff(%1), andflags(%0, !U!D)))
+&filter.not_unfindable [v(d.bf)]=cand(ulocal(filter.is_connected_player, %0), cor(isstaff(%1), cand(andflags(%0, !U!D), andflags(loc(%0), !U!D))))
 
 &filter.name [v(d.bf)]=strmatch(name(%0), %1*)
 
@@ -131,6 +131,18 @@
 &f.isstaff-or-staff-object [v(d.bf)]=cor(isstaff(%0), cand(not(member(num(me), %1)), hastype(%1, THING), andflags(%1, I!h!n), isstaff(owner(%1))))
 
 &f.can-build [v(d.bf)]=cor(isstaff(%0), match(%0, %vB))
+
+@@ Logic:
+@@ 	If one of these is true:
+@@    Player passes f.can-build (staff or builder object)
+@@    Location is TEMPROOMOK
+@@    Location is an IC location
+@@      AND is not a sub-room (District - Building - Apartment)
+@@  And the following are all also true:
+@@    Location is not a temproom
+@@    Player doesn't have a current temproom already created
+@@ -
+&f.can-build-temproom [v(d.bf)]=strcat(setq(L, loc(%0)), cand(cor(ulocal(f.can-build, %0), hasflag(%qL, TEMPROOMOK), cand(not(ulocal(f.is-location-ooc, %qL)), not(strmatch(name(%qL), * - * - *)))), not(hasflag(%qL, TEMPROOM)), not(hasattr(%0, _current-temproom))))
 
 &f.find-player [v(d.bf)]=pmatch(switch(%0, me, %1, %0))
 

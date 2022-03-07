@@ -14,6 +14,10 @@ Run this code from a character with a wizard bit or from #1. (#1 is easier but l
 
 */
 
+@@ Make sure this matches the room you want to make your OOC room.
+@tel #0
+@force me=&d.ooc me=[loc(%#)]
+
 @force me=&d.cron me=[search(ETHING=t(member(name(##), CRON - Myrddin's mushcron, |)))]
 
 think if(t(v(d.cron)), Good%, you have Myrddin's mushcron%, we can continue., ALERT: You don't have Myrddin's mushcron installed! Stop this install and grab that%, then re-run the above command.)
@@ -22,10 +26,6 @@ think if(t(v(d.cron)), Good%, you have Myrddin's mushcron%, we can continue., AL
 @force me=@pcreate GridOwner=[iter(lnum(32), pickrand(a b c d e f g h i j k l m n o p q r s t u v w x y z 1 2 3 4 5 6 7 8 9 0 ! @ # $ ^ & * - _ + = |),, @@)]
 
 @force me=@pcreate PlayerParent=[iter(lnum(32), pickrand(a b c d e f g h i j k l m n o p q r s t u v w x y z 1 2 3 4 5 6 7 8 9 0 ! @ # $ ^ & * - _ + = |),, @@)]
-
-@@ Make sure this matches the room you want to make your OOC room.
-@tel #0
-@force me=&d.ooc me=[loc(%#)]
 
 @dig Room Parent
 @dig OOC Room Parent
@@ -58,6 +58,9 @@ think if(t(v(d.cron)), Good%, you have Myrddin's mushcron%, we can continue., AL
 @force me=&d.bc me=[search(ETHING=t(member(name(##), Basic Commands <BC>, |)))]
 @force me=&d.ho me=[search(ETHING=t(member(name(##), Hook Object <HO>, |)))]
 @force me=&d.ep me=[search(ETHING=t(member(name(##), Exit Parent <EP>, |)))]
+
+@set QR=TRANSPARENT
+@set [lexits([v(d.qr)])]=TRANSPARENT
 
 @@ These only exist to make sure that if you have a public channel, our two created bits aren't on it.
 @force me=@force [v(d.go)]=pub off
@@ -114,8 +117,11 @@ think if(t(v(d.cron)), Good%, you have Myrddin's mushcron%, we can continue., AL
 @force me=&vd [v(d.go)]=[v(d.bd)]
 @force me=&ve [v(d.bf)]=[v(d.crp)]
 @force me=&vf [v(d.bf)]=[v(d.rrp)]
+@force me=&vi [v(d.bf)]=[v(d.ic)]
 @force me=&vk [v(d.ep)]=[v(d.bf)]
+@force me=&vl [v(d.bf)]=[v(d.ooc)]
 @force me=&vo [v(d.bf)]=[v(d.orp)]
 @force me=&vr [v(d.bf)]=[v(d.rp)]
+@force me=&vx [v(d.bf)]=[v(d.ep)]
 
 @tel [v(d.bc)]=#2
