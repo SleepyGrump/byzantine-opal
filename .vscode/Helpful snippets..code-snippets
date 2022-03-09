@@ -16,33 +16,33 @@
 	// 	"description": "Log output to console"
 	// }
 	"Create new code objects": {
-		"prefix": "@create ",
+		"prefix": "@create",
 		"body": "@create $1 Functions <$2F>=10\r\n@set $2F=SAFE INHERIT\r\n@force me=&d.$2f me=[num($2F)]\r\n\r\n@create $1 Commands <$2C>=10\r\n@set $2C=SAFE INHERIT OPAQUE\r\n@parent $2C=$2F\r\n@force me=&d.$2c me=[num($2C)]\r\n\r\n@tel [v(d.$2f)]=[v(d.$2c)]\r\n",
 		"description": "creating new code objects"
 	},
 	"Insert standard command": {
 		"prefix": "&c.+",
-		"body": "&c.+${1:command_name} [v(d.$2c)]=$+${1:command_name}$3:$4; @trigger me/tr.success=${5:%#}, $6;\r\n",
+		"body": "&c.+${1:command_name} [v(d.$2c)]=$+${1:command_name}$3:${0:@trigger me/tr.error=%#, Not implemented yet.;}\r\n",
 		"description": "inserting a standard command body"
 	},
 	"Insert assert with error": {
-		"prefix": "@assert ",
-		"body": "@assert $1={ @trigger me/tr.error=${2:%#}, $3; }; ",
+		"prefix": "@assert",
+		"body": "@assert $1={ @trigger me/tr.error=%${2:#}, $0; };",
 		"description": "assert with an error message"
 	},
 	"Insert assert staff error": {
 		"prefix": "@assert isstaff(",
-		"body": "@assert isstaff(${1:%#})={ @trigger me/tr.error=$1, Only staff can $2.; }; ",
+		"body": "@assert isstaff(%${1:#})={ @trigger me/tr.error=$1, Only staff can $0.; };",
 		"description": "assert staff error"
 	},
 	"Insert find player error": {
-		"prefix": "@assert t(setr(P, ulocal(f.find-player, ",
-		"body": "@assert t(setr(P, ulocal(f.find-player, ${1:%0}, ${2:%#})))={ @trigger me/tr.error=$2, Could not find a player named '$1'.; }; ",
+		"prefix": "@assert t(setr(P,",
+		"body": "@assert t(setr(P, ulocal(f.find-player, %${1:0}, %${2:#})))={ @trigger me/tr.error=%$2, Could not find a player named '%$1'.; }; $0",
 		"description": "assert find player"
 	},
 	"Insert is approved error": {
 		"prefix": "@assert isapproved(%",
-		"body": "@assert isapproved(${1:%#})={ @trigger me/tr.error=$1, You must be approved to $2.; }; ",
+		"body": "@assert isapproved(${1:%#})={ @trigger me/tr.error=$1, You must be approved to $2.; };",
 		"description": "assert is approved"
 	},
 	"Insert find crew error": {
@@ -52,7 +52,7 @@
 	},
 	"Insert assert timer error": {
 		"prefix": "@assert gettimer(",
-		"body": "@assert gettimer(${1:%#}, ${2:timer-attribute}$3)={ @trigger me/tr.message=$1, You are about to $4. This will ${5:have consequences}. Are you sure? If yes%, type %ch+${6:command}${3/,//gi}%cn again within the next 10 minutes. The time is now [prettytime()].; @eval settimer($1, $2, 600$3); }; ",
+		"body": "@assert gettimer(${1:%#}, ${2:timer-attribute}$3)={ @trigger me/tr.message=$1, You are about to $4. This will ${5:have consequences}. Are you sure? If yes%, type %ch+${6:command}${3/,//gi}%cn again within the next 10 minutes. The time is now [prettytime()].; @eval settimer($1, $2, 600$3); };",
 		"description": "assert timer error"
 	},
 	"Insert eval name": {
@@ -67,32 +67,32 @@
 	},
 	"Insert error trigger": {
 		"prefix": "@trigger me/tr.error=%",
-		"body": "@trigger me/tr.error=${1:%#}, $2; ",
+		"body": "@trigger me/tr.error=${1:%#}, $0;",
 		"description": "trigger error message"
 	},
 	"Insert success trigger": {
 		"prefix": "@trigger me/tr.success=%",
-		"body": "@trigger me/tr.success=${1:%#}, $2; ",
+		"body": "@trigger me/tr.success=${1:%#}, $0;",
 		"description": "trigger success message"
 	},
 	"Insert alert trigger": {
 		"prefix": "@trigger me/tr.message=%",
-		"body": "@trigger me/tr.message=${1:%#}, $2; ",
+		"body": "@trigger me/tr.message=${1:%#}, $0;",
 		"description": "trigger alert message"
 	},
 	"Insert log trigger": {
 		"prefix": "@trigger me/tr.log=%",
-		"body": "@trigger me/tr.log=${1:%#}, $2, $3, $4; ",
+		"body": "@trigger me/tr.log=${1:%#}, $2, $3, $4;",
 		"description": "trigger logging on the player"
 	},
 	"Insert break with error": {
 		"prefix": "@break t(",
-		"body": "@break t($1)={ @trigger me/tr.error=${2:%#}, $3; }; ",
+		"body": "@break t($1)={ @trigger me/tr.error=${2:%#}, $3; };",
 		"description": "break with an error message"
 	},
 	"Insert break without error": {
 		"prefix": "@break strmatch(",
-		"body": "@break strmatch($1, $2); ",
+		"body": "@break strmatch($1, $2);",
 		"description": "break without an error message"
 	},
 	"Insert standard error/alert/success triggers": {
@@ -121,7 +121,7 @@
 		"body": "th ulocal(v(d.$1f)/$0)"
 	},
 	"Insert if statement": {
-		"prefix": "@if ",
+		"prefix": "@if",
 		"body": "@if $1={ $2 }${3:, { $4 \\}}"
 	},
 	"Code region comment": {
@@ -129,7 +129,7 @@
 		"body": "@@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@\n@@ $0\n@@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@"
 	},
 	"Code function comment:": {
-		"prefix": "@@ %: ",
+		"prefix": "@@ %:",
 		"body": "@@ %${1:0}: $0"
 	},
 	"Line break comment": {
