@@ -31,7 +31,7 @@
 
 @adesc [v(d.pp)]=think [moniker(%#)] looked at you.[if(not(hasattr(me, desc)), %b@desc me=[lit(%%R%%T<Description>%%R)] to set your description.)]
 
-@desc [v(d.ep)]=A path leading off to...
+@desc [v(d.ep)]=if(hasflag(me, transparent), An exit leading to..., An ordinary exit.)
 
 @descformat [v(d.ep)]=alert(name(me)) %0
 
@@ -57,7 +57,7 @@
 
 &layout.objects [v(d.rp)]=strcat(divider(Objects, %1), %r, whofields(%0, %1, object))
 
-&layout.commercial-exits [v(d.rp)]=ulocal(layout.exits, filter(filter.is-exit-commercial, %1), Commercial, %0)
+&layout.commercial-exits [v(d.rp)]=ulocal(layout.exits, filter(filter.is-exit-commercial, %1), Non-residential, %0)
 
 &layout.residential-exits [v(d.rp)]=ulocal(layout.exits, filter(filter.is-exit-residential, %1), Residential, %0)
 
@@ -77,7 +77,11 @@
 
 @descformat [v(d.rp)]=strcat(formattext(%0, 1, %#), if(t(setr(V, lviews(num(me)))), ulocal(layout.views, num(me), %qV, %#)), if(t(setr(N, lnotes(num(me)))), ulocal(layout.notes, num(me), %qN, %#)))
 
-@nameformat [v(d.rp)]=header(strcat(if(hasflag(me, TEMPROOM), TEMPROOM:%b), name(me), if(isstaff(%#), %b%(%!%))), %#)
+&layout.room-name [v(d.rp)]=if(strmatch(%0, * - *), revwords(after(revwords(%0, %b-%b), %b-%b), %b-%b), %0)
+
+&layout.room-header [v(d.rp)]=strcat(setq(S, isstaff(%#)), header(strcat(if(hasflag(me, TEMPROOM), TEMPROOM:%b), ulocal(layout.room-name, name(me))), %#), strcat(%r, multicol(strcat(if(%qS, ansi(xh, num(me))), |, ansi(first(themecolors()), last(name(me), %b-%b)), |, ansi(xh, setr(Y, strcat(if(%qS, case(parent(me), %vF, Residential, %vE, Non-residential, %vR, IC, OOC)%,%b), if(hasflag(me, UNFINDABLE), Private, Public))))), cat(strlen(%qY), *c, strlen(%qY)r), 0, |, %#)))
+
+@nameformat [v(d.rp)]=ulocal(layout.room-header)
 
 @conformat [v(d.rp)]=strcat(if(t(setr(0, if(hasflag(me, BLIND),, filter(filter.not_dark, lcon(me),,, %#)))), ulocal(layout.conformat, whosort(%q0, %#, room), %#)), if(t(setr(1, filter(filter.visible-objects, lcon(me),,, %#))), ulocal(layout.objects, whosort(%q1, %#, object), %#)), if(not(t(words(lexits(me)))), strcat(%r, footer(No exits, %#))))
 

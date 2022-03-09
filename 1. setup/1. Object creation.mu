@@ -29,7 +29,7 @@ think if(t(v(d.cron)), Good%, you have Myrddin's mushcron%, we can continue., AL
 
 @dig Room Parent
 @dig OOC Room Parent
-@dig Commercial Room Parent
+@dig Non-residential Room Parent
 @dig Residential Room Parent
 @dig Quiet Room=Quiet Room <QR>;qr;quiet,Out <O>;out;o;exit
 
@@ -49,7 +49,7 @@ think if(t(v(d.cron)), Good%, you have Myrddin's mushcron%, we can continue., AL
 @force me=&d.pp me=[search(EPLAYER=t(member(name(##), PlayerParent, |)))]
 @force me=&d.rp me=[search(EROOM=t(member(name(##), Room Parent, |)))]
 @force me=&d.orp me=[search(EROOM=t(member(name(##), OOC Room Parent, |)))]
-@force me=&d.crp me=[search(EROOM=t(member(name(##), Commercial Room Parent, |)))]
+@force me=&d.crp me=[search(EROOM=t(member(name(##), Non-residential Room Parent, |)))]
 @force me=&d.rrp me=[search(EROOM=t(member(name(##), Residential Room Parent, |)))]
 @force me=&d.qr me=[search(EROOM=t(member(name(##), Quiet Room, |)))]
 @force me=&d.ic me=[search(EROOM=t(member(name(##), In Character, |)))]

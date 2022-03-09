@@ -62,9 +62,9 @@
 
 &filter.visible-exit [v(d.bf)]=andflags(%0, E!D)
 
-&filter.is-exit-commercial [v(d.bf)]=member(%vE, parent(loc(%0)))
+&filter.is-exit-commercial [v(d.bf)]=isnonresidential(%0)
 
-&filter.is-exit-residential [v(d.bf)]=member(%vF, parent(loc(%0)))
+&filter.is-exit-residential [v(d.bf)]=isresidential(%0)
 
 &filter.is-exit-neither-commercial-nor-residential [v(d.bf)]=cand(not(ulocal(filter.is-exit-commercial, %0)), not(ulocal(filter.is-exit-residential, %0)))
 
@@ -293,7 +293,7 @@
 @@ %1: attribute group
 @@ %2: setter
 @@ %3: message
-&tr.log [v(d.bf)]=@set %0=[ulocal(f.get-next-id-attr, %0, %1)]:[cat(prettytime(), if(isdbref(%2), ulocal(f.get-name, %2), %2):, %3)];
+&tr.log [v(d.bf)]=@set %0=[ulocal(f.get-next-id-attr, %0, %1)]:[ulocal(layout.log-data, %2, %3)];
 
 @@ %0: channel
 @@ %1: player or message
@@ -343,6 +343,8 @@
 @@ When debugging: &tr.report_query_error [v(d.bf)]=report(num(me), ulocal(layout.report_query_error, %0, %1, %2))
 
 &layout.report_query_error [v(d.bf)]=strcat(Error in %0:, %b, \[%1\], :%b, %2)
+
+&layout.log-data [v(d.bf)]=cat(prettytime(), if(isdbref(%0), ulocal(f.get-name, %0), %0):, %1)
 
 &layout.log [v(d.bf)]=cat(ansi(xh, extract(%0, 1, 2, /)), rest(rest(rest(%0))))
 

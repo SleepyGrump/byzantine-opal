@@ -383,6 +383,14 @@
 @@ Output: 0 or 1 depending on whether the person owns it.
 &f.globalpp.isowner [v(d.bf)]=ulocal(filter.is_owner, %0, %1)
 
+@@ %0: object to check
+@@ Output: 0 or 1 depending on whether the thing is residential.
+&f.globalpp.isresidential [v(d.bf)]=case(%vF, parent(%0), 1, parent(loc(%0)), 1, parent(where(%0)), 1, 0)
+
+@@ %0: object to check
+@@ Output: 0 or 1 depending on whether the thing is non-residential.
+&f.globalpp.isnonresidential [v(d.bf)]=case(%vE, parent(%0), 1, parent(loc(%0)), 1, parent(where(%0)), 1, 0)
+
 @@ %0: Room number
 @@ Output: the views on a room.
 &f.globalpp.lviews [v(d.bf)]=case(0, isdbref(%0), #-1 NOT A VALID DBREF, hastype(%0, ROOM), #-1 NOT A ROOM, cor(isstaff(%#), member(loc(%#), %0)), #-1 CAN'T SEE VIEWS ELSEWHERE, strcat(setq(K, ulocal(f.get-key-prefix, view-)), ulocal(f.list-matching-pairs, %0, view-, lattr(%0/%qK*), %qK)))
