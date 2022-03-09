@@ -28,7 +28,9 @@
 @@ Set the player's screen width (for clients that don't report it accurately)
 @@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
 
-&c.+width [v(d.bc)]=$+width *:@assert isint(%0)={ @wipe %#/width; @trigger me/tr.success=%#, You clear your width. It's back to the default value provided by your client now. Try it out - hit +who!; }; @assert cand(lte(%0, v(d.max-possible-player-width)), gte(%0, v(d.min-possible-player-width)))={ @trigger me/tr.error=%#, '%0' must be an integer between [v(d.min-possible-player-width)] and [v(d.max-possible-player-width)].; }; @set %#=width:%0; @trigger me/tr.success=%#, You set your screen width to %0. Try it out - hit +who!;
+&c.+width [v(d.bc)]=$+width:@trigger me/tr.message=%#, Your width reads as [width(%#)] to the game. Your display width is set to %ch[ulocal(f.get-width, %#)]%cn. If you want to change it%, type %ch+width <#>%cn. It must be a number between [v(d.min-possible-player-width)] and [v(d.max-possible-player-width)].;
+
+&c.+width_text [v(d.bc)]=$+width *:@assert isint(%0)={ @wipe %#/width; @trigger me/tr.success=%#, You clear your width. It's back to the default value provided by your client now. Try it out - hit +who!; }; @assert cand(lte(%0, v(d.max-possible-player-width)), gte(%0, v(d.min-possible-player-width)))={ @trigger me/tr.error=%#, '%0' must be an integer between [v(d.min-possible-player-width)] and [v(d.max-possible-player-width)].; }; @set %#=width:%0; @trigger me/tr.success=%#, You set your screen width to %0. Try it out - hit +who!;
 
 @@ =============================================================================
 @@ @gender, an alias for @sex
