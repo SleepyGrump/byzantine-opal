@@ -62,11 +62,9 @@
 
 &filter.visible-exit [v(d.bf)]=andflags(%0, E!D)
 
-&filter.is-exit-commercial [v(d.bf)]=isnonresidential(%0)
+&filter.is-exit-general [v(d.bf)]=not(isprivate(%0))
 
-&filter.is-exit-residential [v(d.bf)]=isresidential(%0)
-
-&filter.is-exit-neither-commercial-nor-residential [v(d.bf)]=cand(not(ulocal(filter.is-exit-commercial, %0)), not(ulocal(filter.is-exit-residential, %0)))
+&filter.is-exit-private [v(d.bf)]=isprivate(%0)
 
 &filter.has-views [v(d.bf)]=t(lattr(%0/view-*))
 

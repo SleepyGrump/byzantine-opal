@@ -29,8 +29,6 @@ think if(t(v(d.cron)), Good%, you have Myrddin's mushcron%, we can continue., AL
 
 @dig Room Parent
 @dig OOC Room Parent
-@dig Non-residential Room Parent
-@dig Residential Room Parent
 @dig Quiet Room=Quiet Room <QR>;qr;quiet,Out <O>;out;o;exit
 
 @dig In Character=In Character <IC>;ic, Out of Character <OOC>;ooc; out;o;exit
@@ -49,8 +47,6 @@ think if(t(v(d.cron)), Good%, you have Myrddin's mushcron%, we can continue., AL
 @force me=&d.pp me=[search(EPLAYER=t(member(name(##), PlayerParent, |)))]
 @force me=&d.rp me=[search(EROOM=t(member(name(##), Room Parent, |)))]
 @force me=&d.orp me=[search(EROOM=t(member(name(##), OOC Room Parent, |)))]
-@force me=&d.crp me=[search(EROOM=t(member(name(##), Non-residential Room Parent, |)))]
-@force me=&d.rrp me=[search(EROOM=t(member(name(##), Residential Room Parent, |)))]
 @force me=&d.qr me=[search(EROOM=t(member(name(##), Quiet Room, |)))]
 @force me=&d.ic me=[search(EROOM=t(member(name(##), In Character, |)))]
 @force me=&d.bd me=[search(ETHING=t(member(name(##), Basic Data <BD>, |)))]
@@ -71,7 +67,6 @@ think if(t(v(d.cron)), Good%, you have Myrddin's mushcron%, we can continue., AL
 @set [v(d.rp)]=FLOATING HALTED LINK_OK NO_COMMAND OPAQUE
 @set [v(d.orp)]=HALTED FLOATING
 @set [v(d.crp)]=HALTED FLOATING
-@set [v(d.rrp)]=HALTED FLOATING
 @set [v(d.bd)]=SAFE
 @set [v(d.bf)]=SAFE INHERIT
 @set [v(d.bc)]=SAFE INHERIT
@@ -96,7 +91,6 @@ think if(t(v(d.cron)), Good%, you have Myrddin's mushcron%, we can continue., AL
 
 @force me=@parent [v(d.qr)]=[v(d.orp)]
 @force me=@parent [v(d.orp)]=[v(d.rp)]
-@force me=@parent [v(d.rrp)]=[v(d.rp)]
 @force me=@parent [v(d.crp)]=[v(d.rp)]
 @force me=@parent [v(d.ic)]=[v(d.rp)]
 @force me=@parent [v(d.bf)]=[v(d.bd)]
@@ -115,8 +109,6 @@ think if(t(v(d.cron)), Good%, you have Myrddin's mushcron%, we can continue., AL
 @force me=&vc [v(d.bf)]=[v(d.bc)]
 @force me=&vd [v(d.bf)]=[v(d.bd)]
 @force me=&vd [v(d.go)]=[v(d.bd)]
-@force me=&ve [v(d.bf)]=[v(d.crp)]
-@force me=&vf [v(d.bf)]=[v(d.rrp)]
 @force me=&vi [v(d.bf)]=[v(d.ic)]
 @force me=&vk [v(d.ep)]=[v(d.bf)]
 @force me=&vl [v(d.bf)]=[v(d.ooc)]

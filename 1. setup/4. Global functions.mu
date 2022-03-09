@@ -384,12 +384,9 @@
 &f.globalpp.isowner [v(d.bf)]=ulocal(filter.is_owner, %0, %1)
 
 @@ %0: object to check
-@@ Output: 0 or 1 depending on whether the thing is residential.
-&f.globalpp.isresidential [v(d.bf)]=case(%vF, parent(%0), 1, parent(loc(%0)), 1, parent(where(%0)), 1, 0)
+@@ Output: 0 or 1 depending on whether the room is private, AKA unfindable
+&f.globalpp.isprivate [v(d.bf)]=cor(hasflag(%0, UNFINDABLE), hasflag(loc(%0), UNFINDABLE))
 
-@@ %0: object to check
-@@ Output: 0 or 1 depending on whether the thing is non-residential.
-&f.globalpp.isnonresidential [v(d.bf)]=case(%vE, parent(%0), 1, parent(loc(%0)), 1, parent(where(%0)), 1, 0)
 
 @@ %0: Room number
 @@ Output: the views on a room.

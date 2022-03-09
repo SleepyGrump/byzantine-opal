@@ -33,6 +33,16 @@
 
 @desc [v(d.ep)]=if(hasflag(me, transparent), An exit leading to..., An ordinary exit.)
 
+@osucc [v(d.ep)]=cat(heads into, trim(first(name(me), <)).)
+
+@odrop [v(d.ep)]=cat(emerges from, trim(first(name(where(me)), <)).)
+
+@succ [v(d.ep)]=You head into...
+
+@ofail [v(d.ep)]=strcat(tries to go into, %b, trim(first(name(me), <)), %, but the door is locked.)
+
+@fail [v(d.ep)]=strcat(alert(), %b, trim(first(name(me), <)) is locked.)
+
 @descformat [v(d.ep)]=alert(name(me)) %0
 
 @desc [v(d.qr)]=%R%TThis is the quiet room. No talking!%R
@@ -57,17 +67,17 @@
 
 &layout.objects [v(d.rp)]=strcat(divider(Objects, %1), %r, whofields(%0, %1, object))
 
-&layout.commercial-exits [v(d.rp)]=ulocal(layout.exits, filter(filter.is-exit-commercial, %1), Non-residential, %0)
+&layout.private-exits [v(d.rp)]=ulocal(layout.exits, filter(filter.is-exit-private, %1), Private, %0)
 
-&layout.residential-exits [v(d.rp)]=ulocal(layout.exits, filter(filter.is-exit-residential, %1), Residential, %0)
-
-&layout.remaining-exits [v(d.rp)]=ulocal(layout.exits, filter(filter.is-exit-neither-commercial-nor-residential, %1), General, %0)
+&layout.remaining-exits [v(d.rp)]=ulocal(layout.exits, filter(filter.is-exit-general, %1), General, %0)
 
 &layout.exits [v(d.rp)]=if(t(%0), strcat(divider(%1 exits, %2), %r, formatcolumns(iter(%0, name(itext(0)),, |), |, %2), %r))
 
-&layout.exitformat [v(d.rp)]=strcat(if(t(setr(0, filter(filter.visible-exit, lexits(me),,, %0))), strcat(ulocal(layout.commercial-exits, %0, %q0), ulocal(layout.residential-exits, %0, %q0), ulocal(layout.remaining-exits, %0, %q0))), footer(if(t(%q0), words(%q0), No) exit[if(neq(words(%q0), 1), s)], %0))
+&layout.exitformat [v(d.rp)]=strcat(if(t(setr(0, filter(filter.visible-exit, lexits(me),,, %0))), strcat(ulocal(layout.remaining-exits, %0, %q0), ulocal(layout.private-exits, %0, %q0))), footer(if(t(%q0), words(%q0), No) exit[if(neq(words(%q0), 1), s)], %0))
 
-&layout.exitformat [v(d.orp)]=strcat(if(t(setr(0, filter(filter.visible-exit, lexits(me),,, %0))), ulocal(layout.exits, %q0, General, %0)), footer(if(t(%q0), words(%q0), No) exit[if(neq(words(%q0), 1), s)], %0))
+&layout.exitformat [v(d.orp)]=
+
+strcat(if(t(setr(0, filter(filter.visible-exit, lexits(me),,, %0))), ulocal(layout.exits, %q0, General, %0)), footer(if(t(%q0), words(%q0), No) exit[if(neq(words(%q0), 1), s)], %0))
 
 @desc [v(d.rp)]=%R%TThis is the default room description.%R
 
@@ -79,7 +89,7 @@
 
 &layout.room-name [v(d.rp)]=if(strmatch(%0, * - *), revwords(after(revwords(%0, %b-%b), %b-%b), %b-%b), %0)
 
-&layout.room-header [v(d.rp)]=strcat(setq(S, isstaff(%#)), header(strcat(if(hasflag(me, TEMPROOM), TEMPROOM:%b), ulocal(layout.room-name, name(me))), %#), strcat(%r, multicol(strcat(if(%qS, ansi(xh, num(me))), |, ansi(first(themecolors()), last(name(me), %b-%b)), |, ansi(xh, setr(Y, strcat(if(%qS, case(parent(me), %vF, Residential, %vE, Non-residential, %vR, IC, OOC)%,%b), if(hasflag(me, UNFINDABLE), Private, Public))))), cat(strlen(%qY), *c, strlen(%qY)r), 0, |, %#)))
+&layout.room-header [v(d.rp)]=strcat(setq(S, isstaff(%#)), header(strcat(if(hasflag(me, TEMPROOM), TEMPROOM:%b), ulocal(layout.room-name, name(me))), %#), strcat(%r, multicol(strcat(if(%qS, ansi(xh, num(me))), |, ansi(first(themecolors()), last(name(me), %b-%b)), |, ansi(xh, setr(Y, strcat(if(%qS, case(parent(me), %vR, IC%,%b, OOC%,%b)), if(hasflag(me, UNFINDABLE), Private, Public))))), cat(strlen(%qY), *c, strlen(%qY)r), 0, |, %#)))
 
 @nameformat [v(d.rp)]=ulocal(layout.room-header)
 
