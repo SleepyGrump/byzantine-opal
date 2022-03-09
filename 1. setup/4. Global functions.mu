@@ -332,7 +332,7 @@
 @@ Output: The target's shortdesc
 @@ %0: Person, place, or thing
 @@ %1: Viewer
-&f.globalpp.shortdesc [v(d.bf)]=strcat(setq(0, udefault(%0/short-desc, ansi(xh, if(member(%0, %1), &short-desc me=<short desc> to set your short-desc., No short-desc set.)))), setq(1, v(d.max-shortdesc-length)), if(gt(strlen(%q0), %q1), mid(%q0, 0, sub(%q1, 3))..., %q0))
+&f.globalpp.shortdesc [v(d.bf)]=strcat(setq(0, udefault(%0/short-desc, ansi(xh, if(member(%0, %1), +shortdesc me=<short desc> to set your short-desc., No short-desc set.)))), setq(1, v(d.max-shortdesc-length)), if(gt(strlen(%q0), %q1), mid(%q0, 0, sub(%q1, 3))..., %q0))
 
 &f.get-fields [v(d.bf)]=strcat(setq(F,), null(iter(default(%0/d.%1-fields, %2), if(member(v(d.allowed-who-fields), itext(0), |), setq(F, strcat(%qF, |, itext(0)))), |)), trim(squish(%qF, |), b, |))
 

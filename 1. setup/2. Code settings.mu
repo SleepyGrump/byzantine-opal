@@ -29,7 +29,7 @@
 
 &ooc [v(d.orp)]=1
 
-@adesc [v(d.pp)]=think [moniker(%#)] looked at you.[if(not(hasattr(me, desc)), %b@desc me=[lit(%%R%%T<Description>%%R)] to set your description.)]
+@adesc [v(d.pp)]=think [moniker(%#)] looked at you.[if(not(hasattr(me, desc)), %b%ch+desc me=[lit(%%R%%T<Description>%%R)]%cn to set your description.)]
 
 @desc [v(d.ep)]=if(hasflag(me, transparent), An exit leading to..., An ordinary exit.)
 
@@ -75,10 +75,6 @@
 
 &layout.exitformat [v(d.rp)]=strcat(if(t(setr(0, filter(filter.visible-exit, lexits(me),,, %0))), strcat(ulocal(layout.remaining-exits, %0, %q0), ulocal(layout.private-exits, %0, %q0))), footer(if(t(%q0), words(%q0), No) exit[if(neq(words(%q0), 1), s)], %0))
 
-&layout.exitformat [v(d.orp)]=
-
-strcat(if(t(setr(0, filter(filter.visible-exit, lexits(me),,, %0))), ulocal(layout.exits, %q0, General, %0)), footer(if(t(%q0), words(%q0), No) exit[if(neq(words(%q0), 1), s)], %0))
-
 @desc [v(d.rp)]=%R%TThis is the default room description.%R
 
 &layout.views [v(d.rp)]=strcat(%r, divider(+views, %2), %r, formatcolumns(iter(%1, rest(itext(0), v(d.default-column-delimeter)), v(d.default-row-delimeter), v(d.default-row-delimeter)), v(d.default-row-delimeter), %2))
@@ -89,7 +85,7 @@ strcat(if(t(setr(0, filter(filter.visible-exit, lexits(me),,, %0))), ulocal(layo
 
 &layout.room-name [v(d.rp)]=if(strmatch(%0, * - *), revwords(after(revwords(%0, %b-%b), %b-%b), %b-%b), %0)
 
-&layout.room-header [v(d.rp)]=strcat(setq(S, isstaff(%#)), header(strcat(if(hasflag(me, TEMPROOM), TEMPROOM:%b), ulocal(layout.room-name, name(me))), %#), strcat(%r, multicol(strcat(if(%qS, ansi(xh, num(me))), |, ansi(first(themecolors()), last(name(me), %b-%b)), |, ansi(xh, setr(Y, strcat(if(%qS, case(parent(me), %vR, IC%,%b, OOC%,%b)), if(hasflag(me, UNFINDABLE), Private, Public))))), cat(strlen(%qY), *c, strlen(%qY)r), 0, |, %#)))
+&layout.room-header [v(d.rp)]=strcat(header(strcat(if(hasflag(me, TEMPROOM), TEMPROOM:%b), ulocal(layout.room-name, name(me))), %#), strcat(%r, multicol(strcat(if(isstaff(%#), ansi(xh, num(me))), |, ansi(first(themecolors()), last(name(me), %b-%b)), |, ansi(xh, setr(Y, strcat(case(parent(me), %vR, IC, OOC), %,%b, if(hasflag(me, UNFINDABLE), Private, Public))))), cat(strlen(%qY), *c, strlen(%qY)r), 0, |, %#)))
 
 @nameformat [v(d.rp)]=ulocal(layout.room-header)
 
