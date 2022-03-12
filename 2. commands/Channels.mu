@@ -794,4 +794,4 @@ th ulocal(v(d.chf)/f.is-banned-alias, quit)
 
 @tel [v(d.cdb)]=[v(d.chf)]
 @tel [v(d.chf)]=[v(d.chc)]
-@tel [v(d.chc)]=#2
+@tel [v(d.chc)]=[config(master_room)]
