@@ -16,6 +16,12 @@
 @@ I like Posebreak on by default. Change this to 0 if you don't.
 &_posebreak [v(d.pp)]=1
 
+@@ Do you want pose alerts? (Warns players when they're up next, alerts when it's their turn.) This only applies if you add the Pose Order Machine.
+@@  2, loud: beep the client when messaging them about their pose order.
+@@  1, quiet: simple message when it's their turn/about to be their turn (no "beep")
+@@  0, off: no pose alerts unless the player enables them
+&_pose.alert [v(d.pp)]=1
+
 @@ Default alert message
 &d.default-alert [v(d.bd)]=GAME
 
