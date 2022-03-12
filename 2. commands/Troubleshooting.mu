@@ -32,6 +32,14 @@
 
 &c.+width_text [v(d.bc)]=$+width *:@assert isint(%0)={ @wipe %#/width; @trigger me/tr.success=%#, You clear your width. It's back to the default value provided by your client now. Try it out - hit +who!; }; @assert cand(lte(%0, v(d.max-possible-player-width)), gte(%0, v(d.min-possible-player-width)))={ @trigger me/tr.error=%#, '%0' must be an integer between [v(d.min-possible-player-width)] and [v(d.max-possible-player-width)].; }; @set %#=width:%0; @trigger me/tr.success=%#, You set your screen width to %0. Try it out - hit +who!;
 
+@@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
+@@ skewskewskew's Beep Test, slightly  expanded
+@@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
+
+&c.beep [v(d.bc)]=$+beep:@trigger me/tr.message=%#, This is to see if your beep is working. Beep beep![beep()] The test will now wait 3 seconds and beep you again.; @wait 3={ @trigger me/tr.message=%#, This is your second beep test.[beep()] Beep! One more in 3 seconds.; }; @wait 6={ @trigger me/tr.message=%#, This is your third and final beep test.[beep()] Beep! If you heard a sound%, it works. If not%, check your client's settings.; };
+
+&c.+beeptest [v(d.bc)]=$+beeptest:@force %#=+beep;
+
 @@ =============================================================================
 @@ @gender, an alias for @sex
 @@ =============================================================================
