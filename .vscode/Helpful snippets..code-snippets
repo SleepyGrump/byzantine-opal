@@ -22,7 +22,7 @@
 	},
 	"Insert standard command": {
 		"prefix": "&c.+",
-		"body": "&c.+${1:command_name} [v(d.$2c)]=$+${1:command_name}$3:${0:@trigger me/tr.error=%#, Not implemented yet.;}\r\n",
+		"body": "&c.+${1:command_name} [v(d.$2)]=$+${1:command_name}$3:${0:@trigger me/tr.error=%#, Not implemented yet.;}\r\n",
 		"description": "inserting a standard command body"
 	},
 	"Insert assert with error": {
@@ -97,20 +97,20 @@
 	},
 	"Insert standard error/alert/success triggers": {
 		"prefix": "&tr.error [v(d.",
-		"body": "&tr.error [v(d.$1c)]=@pemit %0=cat(alert(Error), %1);\r\n\r\n&tr.message [v(d.$1c)]=@pemit %0=cat(alert(Alert), %1);\r\n\r\n&tr.success [v(d.$1c)]=@pemit %0=cat(alert(Success), %1);\r\n\r\n",
+		"body": "&tr.error [v(d.$1)]=@pemit %0=cat(alert(Error), %1);\r\n\r\n&tr.message [v(d.$1)]=@pemit %0=cat(alert(Alert), %1);\r\n\r\n&tr.success [v(d.$1)]=@pemit %0=cat(alert(Success), %1);\r\n\r\n",
 		"description": "assert with an error message"
 	},
 	"Insert standard function": {
 		"prefix": "&f.",
-		"body": "&f.$1 [v(d.$2f)]=${3|cand,cat,cor,if,strcat|}($0)\r\n"
+		"body": "&f.$1 [v(d.$2)]=${3|cand,cat,cor,if,strcat|}($0)\r\n"
 	},
 	"Insert layout function": {
 		"prefix": "&layout.",
-		"body": "&layout.$1 [v(d.$2f)]=${3|cat,strcat|}($0)\r\n"
+		"body": "&layout.$1 [v(d.$2)]=${3|cat,strcat|}($0)\r\n"
 	},
 	"Insert standard data object": {
 		"prefix": "&d.",
-		"body": "&d.$1 [v(d.$2d)]=$3"
+		"body": "&d.$1 [v(d.$2)]=$3"
 	},
 	"Insert other attribute": {
 		"prefix": "&",
@@ -118,7 +118,7 @@
 	},
 	"Test function": {
 		"prefix": "th ulocal(v(d.",
-		"body": "th ulocal(v(d.$1f)/$0)"
+		"body": "th ulocal(v(d.$1)/$0)"
 	},
 	"Insert if statement": {
 		"prefix": "@if",
