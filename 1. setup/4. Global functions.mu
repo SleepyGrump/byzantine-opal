@@ -15,8 +15,8 @@
 @@ %2 - word to use if the count is greater than 1
 &f.global.plural [v(d.bf)]=if(isnum(%0), if(neq(%0, 1), %2, %1), switch(subj(%0), they, %2, %1))
 
-@@ Same arguments as setunion but doesn't reorder the list.
-&f.globalpp.unionset [v(d.bf)]=strcat(setq(2, if(t(%2), %2, %b)), setq(3, if(t(%3), %3, %q2)), squish(trim(strcat(edit(%0, %q2, %q3), %q3, edit(%1, %q2, %q3)), l, %q3), %q3))
+@@ Same arguments as setunion but doesn't reorder the list. Also doesn't get rid of duplicates already in the list, but will refuse to add a duplicate.
+&f.globalpp.unionset [v(d.bf)]=strcat(setq(2, if(t(%2), %2, %b)), setq(3, if(t(%3), %3, %q2)), if(not(t(member(%0, %1, %q2))), squish(trim(strcat(edit(%0, %q2, %q3), %q3, edit(%1, %q2, %q3)), l, %q3), %q3), %0))
 
 @@ Same arguments as setdiff but doesn't reorder the list. Also, case-insensitive.
 &f.globalpp.diffset [v(d.bf)]=strcat(setq(0, %0), null(iter(%0, iter(%1, setq(0, removei(%q0, itext(0), %2, %3)), %2, %3), %2, %3)), squish(trim(%q0, b, %3), %3))
