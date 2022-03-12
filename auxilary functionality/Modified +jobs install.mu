@@ -1169,9 +1169,9 @@ I added req/typo and made +typo use it. It also reports the player's location.
 
 &d.build.msg [v(d.jrs)]=u(display.generic_msg, %0, build)
 
-@tel [v(d.jrs)]=#2
+@tel [v(d.jrs)]=[config(master_room)]
 
-@tel [v(JOB_GO)]=#2
+@tel [v(JOB_GO)]=[config(master_room)]
 
 @@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
 @@ JGroup creation

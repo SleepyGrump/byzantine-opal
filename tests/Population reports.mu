@@ -14,7 +14,7 @@
 +who/col room=Name Quote RP_Prefs Short-desc Staff_Notes Status
 +who/col room=Name Themesong Timezone Wiki
 +who/col room=
-@tel #2
+@tel [config(master_room)]
 +who/col object=Name Alias Apparent_Age Connection_Info
 +who/col object=Name Connection_Time DBref Doing Gender IC_Full_Name
 +who/col object=Name IC_Handle IC_Occupation IC_Pronouns Idle Last_IP

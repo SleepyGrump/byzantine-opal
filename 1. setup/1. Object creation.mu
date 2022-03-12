@@ -116,4 +116,4 @@ think if(t(v(d.cron)), Good%, you have Myrddin's mushcron%, we can continue., AL
 @force me=&vr [v(d.bf)]=[v(d.rp)]
 @force me=&vx [v(d.bf)]=[v(d.ep)]
 
-@tel [v(d.bc)]=#2
+@tel [v(d.bc)]=[config(master_room)]
