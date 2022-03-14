@@ -20,6 +20,12 @@
 
 &c.+staffnote [v(d.bc)]=$+staffnote *=*:@break strmatch(%0, */*); @assert isstaff(%#)={ @trigger me/tr.error=%#, You must be staff to use this command.; }; @assert t(setr(P, ulocal(f.find-player, %0, %#)))={ @trigger me/tr.error=%#, Could not find a player named '%0'.; }; &_d.staff-notes %qP=%1; @trigger me/tr.success=%#, moniker(%qP)'s staff note now reads: %1;
 
+@@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
+@@ +wall - so even non-wizbit staffers can @wall stuff
+@@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
+
+&c.+wall [v(d.bc)]=$+wall* *:@assert isstaff(%#)={ @trigger me/tr.error=#, Only staff can send wall messages.; }; @assert t(%1)={ @trigger me/tr.error=%#, You must enter something to message.; }; @assert switch(%0, /e*, 1,, 1, 0)={ @trigger me/tr.error=%#, Right now +wall only works with /emit.; }; @wall/no_prefix/emit switch(%0, /e*, cat(alert(Announcement), %1), cat(alert(Announcement), ulocal(f.get-name, %#): %1));
+
 @@ =============================================================================
 @@ +find
 @@ +find[/rooms|/players|/things|/channels] <text>
