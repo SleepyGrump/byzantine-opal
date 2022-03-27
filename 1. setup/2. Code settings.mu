@@ -33,13 +33,13 @@
 
 @desc [v(d.ep)]=if(hasflag(me, transparent), An exit leading to..., An ordinary exit.)
 
-@osucc [v(d.ep)]=cat(heads into, trim(first(name(me), <)).)
+@osucc [v(d.ep)]=if(not(hasflag(where(me), BLIND)), cat(heads into, trim(first(name(me), <)).))
 
-@odrop [v(d.ep)]=cat(emerges from, trim(first(name(where(me)), <)).)
+@odrop [v(d.ep)]=if(not(hasflag(loc(me), BLIND)), cat(emerges from, trim(first(name(where(me)), <)).))
 
 @succ [v(d.ep)]=You head into...
 
-@ofail [v(d.ep)]=strcat(tries to go into, %b, trim(first(name(me), <)), %, but the door is locked.)
+@ofail [v(d.ep)]=if(not(hasflag(where(me), BLIND)), strcat(tries to go into, %b, trim(first(name(me), <)), %, but the door is locked.))
 
 @fail [v(d.ep)]=strcat(alert(), %b, trim(first(name(me), <)) is locked.)
 

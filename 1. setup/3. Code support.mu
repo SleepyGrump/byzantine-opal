@@ -88,6 +88,13 @@
 
 &f.is-location-ooc [v(d.bf)]=hasattrp(%0, OOC)
 
+&f.is-location-ooc-temproom [v(d.bf)]=cand(hasflag(%0, TEMPROOM), hasattrp(where(xget(first(trim(iter(lexits(%0), if(strmatch(name(itext(0)), * <O>), itext(0))))), _exit-pair)), OOC))
+
+@@ %0: Player going to destination
+@@ %1: Destination
+@@ %2: invoking player
+&f.is-destination-ok [v(d.bf)]=cor(ulocal(lock.allowed_ic, %0), isstaff(%2), ulocal(f.is-location-ooc, %1), ulocal(f.is-location-ooc-temproom, %1))
+
 &f.sort-alpha [v(d.bf)]=sort(%0, ?, |, |)
 
 &f.sort-dbref [v(d.bf)]=comp(lcstr(name(%0)), lcstr(name(%1)))
@@ -334,7 +341,7 @@
 @@ %1: player to transport
 @@ %2: player calling/sending them (if any)
 @@ %3: type of call or send - summon, join, etc.
-&tr.travel_to_destination [v(d.bf)]=@assert eq(words(%0), 1)={ @trigger me/tr.error=%1, The key you gave resolved to [words(%0)] destinations. Please try again.; }; @assert match(type(%0), ROOM)={ @trigger me/tr.error=if(t(%2), %2, %1), The room selected as a destination does not exist.; }; @break match(loc(%1), %0)={ @trigger me/tr.error=if(t(%2), %2, %1), cat(if(t(%2), ulocal(f.get-name, %1) is , You are), already at the destination).; }; @assert cor(ulocal(lock.isapproved_or_staff, %1), ulocal(f.is-location-ooc, %0), ulocal(lock.isstaff, %2))={ @trigger me/tr.error=%1, You are not approved or staff so can't use +travel to go IC yet.; }; &_last-location %1=loc(%1); &_last-[if(hasattrp(loc(%1), ooc), ooc, ic)]-location %1=loc(%1); @trigger me/tr.remit-quiet=loc(%1), ulocal(layout.travel_alert, %1, %2, %3, departed), %1; @tel/quiet %1=%0; @trigger me/tr.remit-quiet=%0, ulocal(layout.travel_alert, %1, %2, %3, arrived), %1;
+&tr.travel_to_destination [v(d.bf)]=@assert eq(words(%0), 1)={ @trigger me/tr.error=%1, The key you gave resolved to [words(%0)] destinations. Please try again.; }; @assert match(type(%0), ROOM)={ @trigger me/tr.error=if(t(%2), %2, %1), The room selected as a destination does not exist.; }; @break match(loc(%1), %0)={ @trigger me/tr.error=if(t(%2), %2, %1), cat(if(t(%2), ulocal(f.get-name, %1) is , You are), already at the destination).; }; @assert ulocal(f.is-destination-ok, %1, %0, %2)={ @trigger me/tr.error=%1, You are not approved or staff so can't use travel commands to go IC yet.; }; &_last-location %1=loc(%1); &_last-[if(hasattrp(loc(%1), ooc), ooc, ic)]-location %1=loc(%1); @trigger me/tr.remit-quiet=loc(%1), ulocal(layout.travel_alert, %1, %2, %3, departed), %1; @tel/quiet %1=%0; @trigger me/tr.remit-quiet=%0, ulocal(layout.travel_alert, %1, %2, %3, arrived), %1;
 
 &tr.report_query_error [v(d.bf)]=if(cand(not(t(%1)), t(strlen(%1))), report(num(me), ulocal(layout.report_query_error, %0, %1, %2)))
 
