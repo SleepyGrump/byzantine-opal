@@ -176,7 +176,10 @@
 &d.ooc [v(d.bd)]=#0
 
 @@ All communication in room # will go to this channel. You can add as many of these as you like. Users will be alerted that they need to join the channel to see the rest of the conversation if they're not already on the channel. To disable, just remove this attribute. This functionality can be used to direct convo from, say, the Chargen room to the Chargen channel, the OOC room to the Public channel, etc.
-&d.redirect-poses.#0 [v(d.bd)]=Public
+@force me=&d.redirect-poses.[v(d.ooc)] [v(d.bd)]=Public
+
+@@ Include this only if you want things like dice rolls to also be directed to the channel. If you don't include it, only the player who rolled the dice will see the roll. No one else in the OOC room will. Some commands override this, such as the ooc <text> command, and post directly to the channel anyway.
+@force me=&d.redirect-remits.[v(d.ooc)] [v(d.bd)]=Public
 
 @@ Set this to the DBref of your quiet room and any other room you want silent.
 @force me=&d.gag-emits [v(d.bd)]=[v(d.qr)]

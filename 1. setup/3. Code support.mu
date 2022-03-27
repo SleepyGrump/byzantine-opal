@@ -230,6 +230,8 @@
 
 &f.is-redirected-to-channel [v(d.bf)]=hasattrp(me, d.redirect-poses.%0)
 
+&f.redirect-remits-to-channel [v(d.bf)]=hasattrp(me, d.redirect-remits.%0)
+
 &f.is-target-room-gagged [v(d.bf)]=member(v(d.gag-emits), %0)
 
 &f.is-player-on-redirected-channel [v(d.bf)]=cand(member(cwho(v(d.redirect-poses.%1)), %0), not(hasattr(%0, _mute-channel-[chanobj(v(d.redirect-poses.%1))])))
@@ -265,7 +267,7 @@
 @@ %1: Pose
 @@ %2: Is the player on the channel?
 @@ %3: Channel name
-&f.parse_emit [v(d.bf)]=strcat(setq(P, if(setr(O, not(ulocal(filter.isplayer, %0))),, if(t(%vH), ulocal(%vH/layout.player-name-or-comtitle, %0,, %3), ulocal(f.get-name, %0)))), switch(%1, *[moniker(%0)]*, %1, strcat(%qP, switch(%1, :*, %b[rest(%1, :)], ;*, rest(%1, ;), pose/*, rest(%1), pose *, %b[rest(%1)], npose *, %b[rest(%1)], "*, %bsays "[rest(%1, ")]", say*, %bsays "[rest(%1)]", nsay*, %bsays "[rest(%1)]", @emit* *, : [rest(%1)], @remit* *=*, : [rest(%1, =)], @remit *, : [rest(%1)], \\*, : [trim(%1, l, \\\\\\\\)], %1))), if(cand(not(%2), not(%qO)), %b--- [capstr(subj(%0))] [switch(subj(%0), they, are, is)] not on this channel and cannot see replies%, but [switch(subj(%0), they, have, has)] been invited to join.))
+&f.parse_emit [v(d.bf)]=strcat(setq(P, if(setr(O, not(ulocal(filter.isplayer, %0))),, if(t(%vH), ulocal(%vH/layout.player-name-or-comtitle, %0,, %3), ulocal(f.get-name, %0)))), switch(%1, alert(*) *, %1, *[moniker(%0)]*, %1, strcat(%qP, switch(%1, :*, %b[rest(%1, :)], ;*, rest(%1, ;), pose/*, rest(%1), pose *, %b[rest(%1)], npose *, %b[rest(%1)], "*, %bsays "[rest(%1, ")]", say*, %bsays "[rest(%1)]", nsay*, %bsays "[rest(%1)]", @emit* *, : [rest(%1)], @remit* *=*, : [rest(%1, =)], @remit *, : [rest(%1)], \\*, : [trim(%1, l, \\\\\\\\)], %1))), if(cand(not(%2), not(%qO)), %b--- [capstr(subj(%0))] [switch(subj(%0), they, are, is)] not on this channel and cannot see replies%, but [switch(subj(%0), they, have, has)] been invited to join.))
 
 @@ TODO:
 @@ Make sure that objects can pass along their emits, properly formatted.
@@ -331,7 +333,7 @@
 @@ %0: Location
 @@ %1: Message
 @@ %2: Player to send to if the room is gagged
-&tr.remit-or-pemit [v(d.bf)]=@break ulocal(f.is-redirected-to-channel, %0)={ @trigger me/tr.redirect-emit-to-channel=%0, %1, %2; }; @break ulocal(f.is-target-room-gagged, %0)={ @trigger me/tr.pemit=%2, %1; }; @remit %0=%1;
+&tr.remit-or-pemit [v(d.bf)]=@break ulocal(f.is-redirected-to-channel, %0)={ @assert ulocal(f.redirect-remits-to-channel, %0)={ @trigger me/tr.pemit=%2, %1; }; @trigger me/tr.redirect-emit-to-channel=%0, %1, %2; }; @break ulocal(f.is-target-room-gagged, %0)={ @trigger me/tr.pemit=%2, %1; }; @remit %0=%1;
 
 &tr.pemit [v(d.bf)]=@break t(words(setr(N, trim(squish(iter(%0, if(ulocal(f.can-sender-message-target, %2, itext(0)),, itext(0))))))))={ @trigger me/tr.error=%2, Sorry%, [itemize(iter(%qN, moniker(itext(0)),, |), |)] [case(words(%qN), 1, is, are)] not accepting messages.; }; @pemit %0=%1;
 
