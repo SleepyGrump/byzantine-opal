@@ -17,6 +17,8 @@
 ** '''pub/who''' - see who's on the channel
 * Some channels require a password:
 ** '''pub/password <password>''' - join a channel with a password
+* Sometimes channel aliases get weird and need to be reset:
+** '''+channel/fix''' - fix your channel aliases.
 |link1=+channels2
 |link2=Communication
 |link3=msg

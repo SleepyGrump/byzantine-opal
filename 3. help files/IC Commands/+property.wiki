@@ -1,0 +1,16 @@
+{{help
+|topic=+property
+|detail=See property - locations on the grid - which you own, and manage them. Players can gain property by either building a temproom or by making an official request to staff. Please be sure to read '''news Building''' before requesting property.
+|example=
+* '''+property''' - see your property, if you own any.
+* '''+temproom <title>''' - build a new temproom.
+* '''req/build <title>=<text>''' - request property. Be sure to read the news files first!
+* '''+here/help''' - see commands that can be used on a temproom or other property.
+* '''+owners''' - see the owner of the room you're in.
+|link1=+owners
+|link2=+temprooms
+|link3=+desc
+|link4=+travel
+|category1=Intermediate_Commands
+|category2=IC_Commands
+}}

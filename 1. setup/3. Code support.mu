@@ -66,7 +66,7 @@
 
 &filter.is-exit-private [v(d.bf)]=isprivate(%0)
 
-&filter.has-views [v(d.bf)]=t(lattr(%0/view-*))
+&filter.has-views [v(d.bf)]=t(setdiff(lattr(%0/view-*), VIEW-OWNERS))
 
 &filter.has-notes [v(d.bf)]=t(ulocal(f.get-visible-notes, %0,, %1))
 

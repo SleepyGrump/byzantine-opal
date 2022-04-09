@@ -1,0 +1,15 @@
+{{help
+|topic=+glance
+|detail=A quick look around a room. This will show you who's present, what they look like, and the room's short description.
+|example=
+* '''+glance''' - see a short description of the room and the people in it.
+* '''+shortdesc me=<text>''' - set your short description.
+* '''+shortdesc here=<text>''' - desc a room, if you own it.
+* '''+shortdesc o=<text>''' - desc the out exit, if you own it.
+|link1=+desc
+|link2=+property
+|link3=+temprooms
+|link4=+travel
+|category1=Intermediate_Commands
+|category2=IC_Commands
+}}

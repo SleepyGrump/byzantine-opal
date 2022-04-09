@@ -1,0 +1,20 @@
+{{help
+|topic=+notes
+|detail=Notes are details about your character that can't be contained in a character sheet or in your description. They can also be used for OOC information. When a note is approved, it counts as an official piece of your character, which you can play while IC.
+|example=
+* '''+note''' - view notes in your area
+* '''+note <name>''' - view notes on an object or player.
+* '''+note <name>/<note>''' - view a specific note on an object or player.
+* '''+note/add <target>/<title>=<note>''' - create a note.
+* '''+note/delete <target>/<title>''' - delete a note.
+* '''+note/public <target>/<title>''' - make a note public.
+* '''+note/private <target>/<title>''' - make a note private.
+* '''+note/prove <target>/<title>''' - show a note you own to another player.
+note on an object.
+|link1=+notes2
+|link2=+view
+|link3=+property
+|link4=+desc
+|category1=IC_Commands
+|category2=Intermediate_Commands
+}}

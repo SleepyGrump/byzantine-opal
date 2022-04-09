@@ -1,0 +1,16 @@
+{{help
+|topic=+views
+|detail=Views are descriptions of specific details on objects or people that aren't included in the main description. A good use of a view might be to describe a bar's regulars or bartender, to set its menu, or to describe a specific piece of clothing on your character which someone might want to examine in detail. Views are automatically visible to everyone who types +view.
+|example=
+* '''+view''' - see available views in your area. If there's only one, you will view it.
+* '''+view <target>''' - see views on a player or a location.
+* '''+view <target>/<view>''' - see a specific view on an object or player.
+* '''+view/add <target>/<title>=<view>''' - create a view. Use %R for line breaks and %T for tab indents.
+* '''+view/delete <target>/<title>''' - delete a view.
+|link1=+desc
+|link2=+notes
+|link3=+property
+|link4=+owners
+|category1=IC_Commands
+|category2=Intermediate_Commands
+}}

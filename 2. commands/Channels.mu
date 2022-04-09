@@ -123,7 +123,7 @@ MAYBE: Doubt there's much call for it, but maybe let people modify the following
 TODO: Add some kind of +com/allowtitlebypass <player> command so that players can designate who gets to use comtitles on their channels. /denytitlebypass would be good too. Need a better set of commands for this...
 
 Changes:
-2022-04-09: Changed the +channels layout to be more relevant.
+2022-04-09: Changed the +channels layout to be more relevant. Added sheet and msg to the banned words list since they don't have a + in front of them.
 2022-03-07: Stopped +com from catching just any command that starts with +com.
 2022-03-05: Added the ability to restrict comtitle-setting on a channel. There's also a coded bypass to let other code enable a comtitle for each player. See demure-bismuth/Other functionality/Sharps.mu +name/title for an example.
 2022-02-26: Fixed booting, banning, etc to be over-ridable by staff.
@@ -217,7 +217,7 @@ Changes:
 @@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
 
 @@ Words that would be bad to have as channels. Add any commands that do not have a special character in front of them, as well as their short-form versions. This keeps players from making channels with these names or aliases, since those can interfere with regular command use.
-&d.banned-words [v(d.cdb)]=msg i in inf info l lo log logo logou logout o ou out outp outpu output outputp outputpr outputpre outputpref outputprefi outputprefix outputs outputsu outputsuf outputsuff outputsuffi outputsuffix q qu qui quit s se ses sess sessi sessio session w wh who d do doi doin doing dr dro drop e en ent ente enter ex exa exam exami examin examine g ge get gi giv give go got goto h he hel help i in inv inve inven invent invento inventor inventory k ki kil kill l le lea leav leave lo loo look m mo mov move n ne new news p pa pag page po pos pose r re rea read rep repo repor report s sa say sc sco scor score sl sla slay t ta tak take th thi thin think thr thro throw tr tra trai train u us use v ve ver vers versi versio version w wh whi whis whisp whispe whisper wi wiz wizh wizhe wizhel wizhelp addcom delcom clearcom comlist comtitle on off who last allcom
+&d.banned-words [v(d.cdb)]=msg i in inf info l lo log logo logou logout o ou out outp outpu output outputp outputpr outputpre outputpref outputprefi outputprefix outputs outputsu outputsuf outputsuff outputsuffi outputsuffix q qu qui quit s se ses sess sessi sessio session w wh who d do doi doin doing dr dro drop e en ent ente enter ex exa exam exami examin examine g ge get gi giv give go got goto h he hel help i in inv inve inven invent invento inventor inventory k ki kil kill l le lea leav leave lo loo look m mo mov move n ne new news p pa pag page po pos pose r re rea read rep repo repor report s sa say sc sco scor score sl sla slay t ta tak take th thi thin think thr thro throw tr tra trai train u us use v ve ver vers versi versio version w wh whi whis whisp whispe whisper wi wiz wizh wizhe wizhel wizhelp addcom delcom clearcom comlist comtitle on off who last allcom msg sheet
 
 &d.commands-with-no-value [v(d.cdb)]=history|info|join|last|leave|mute|off|on|unmute|who|approved|loud|nospoof|notitle|private|public|quiet|spoof|staff|yestitle
 

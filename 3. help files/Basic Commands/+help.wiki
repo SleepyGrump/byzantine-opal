@@ -1,0 +1,14 @@
+{{help
+|topic=+help
+|detail=Getting information about game features is done with +help.
+|example=
+* '''+help''' - see a list of topics.
+* '''+help <topic>''' - see help on a particular topic.
+* '''+help/search <topic>''' - find all references to a particular topic.
+|link1=news
+|link2=
+|link3=
+|link4=
+|category1=Basic_Commands
+|category2=
+}}

@@ -2,20 +2,20 @@
 |topic=msg
 |detail=Send messages in character.
 |example=
-* msg - see your messages, who you last messaged, etc.
-* msg <name>=<text> - send an IC message.
-* msg/<method> <name>=<text> - send an IC message via <method>. Methods can be any text - for example, msg/telegram YourName=Test will send you <telegram> To YourName: YourName sends, "Test".
-* msg/off - turn off messages for a while.
-* msg/on - re-enable them.
-* msg/view - view any messages you missed while you were out.
-* msg/block <name> - block <name> from messaging you.
-* msg/unblock <name> - unblock them.
-* msg/hide <name> - hide all messages from <name> - you will not receive them. Those messages will be lost and they will not be notified that you didn't see them.
-* msg/unhide <name> - let <name> message you again.
+* '''msg''' - see your messages, who you last messaged, etc.
+* '''msg <name>=<text>''' - send an IC message.
+* '''msg/<method> <name>=<text>''' - send an IC message via <method>. Methods can be any text - for example, msg/telegram YourName=Test will send you <telegram> To YourName: YourName sends, "Test".
+* '''msg/off''' - turn off messages for a while.
+* '''msg/on''' - re-enable them.
+* '''msg/view''' - view any messages you missed while you were out.
+* '''msg/block <name>''' - block <name> from messaging you.
+* '''msg/unblock <name>''' - unblock them.
+* '''msg/hide <name>''' - hide all messages from <name> - you will not receive them. Those messages will be lost and they will not be notified that you didn't see them.
+* '''msg/unhide <name>''' - let <name> message you again.
 |link1=+ic
 |link2=+ooc
 |link3=Communication
 |link4=+channels
 |category1=IC_Commands
-|category2=
+|category2=Intermediate_Commands
 }}

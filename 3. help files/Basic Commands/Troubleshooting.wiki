@@ -1,0 +1,20 @@
+{{help
+|topic=Troubleshooting
+|detail=Sometimes things will get broken in ways that don't make sense. Here are some commands to help fix them.
+|example=
+* '''+channel/fix''' - fix your aliases. When you have trouble logging into some channels, sometimes a reset is called for.
+* '''+selfboot''' - if you show up in the +who twice, this can boot one of your dead connections.
+* '''+width <#>''' - set your width to a specific number between 48 and 200. This can help if the display looks too narrow sometimes. Experiment and see what works best for you! '''+width -''' to unset.
+* '''+name <text>''' - find names starting with <text>. Names can get taken by someone else if players don't log in for 45 days. Use +name to find your old name so you can log in again and pick a new name, to find a new name, or to see who has a name similar to yours.
+* '''+sweep''' - sweep disconnected players out of your room. Only works if you own the room.
+* '''+beep''' - test your client's beep function.
+* '''+block <name>''' - block someone from communicating with you via page.
+* '''pub <question>''' - ask other players a question on the Public channel.
+* '''request <title>=<text>''' - send up a request for help from staff!
+|link1=+block
+|link2=+channels
+|link3=+ooc
+|link4=+staff
+|category1=Basic Commands
+|category2=Intermediate Commands
+}}

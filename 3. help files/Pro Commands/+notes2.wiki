@@ -1,0 +1,16 @@
+{{help
+|topic=+notes2
+|detail=These commands are staff-only, and allow staff to administer notes.
+|example=
+* '''+note/staffnote <target>/<title>=<text>''' - create a staff note on an object. The note will automatically be hidden and private.
+* '''+note/approve <target>/<title>''' - approve a note. This locks it so that it cannot be changed or deleted, and puts your stamp of approval on it.
+* '''+note/unapprove <target>/<title>''' - unapprove a note.
+* '''+note/hide <target>/<title>''' - hide a note. Only staff will see it.
+* '''+note/unhide <target>/<title>''' - unhide a note. Players who own the note will be able to see it.
+|link1=
+|link2=
+|link3=
+|link4=
+|category1=Pro_Commands
+|category2=
+}}

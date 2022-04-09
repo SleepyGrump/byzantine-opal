@@ -10,13 +10,13 @@
 @@ +name - claim a name
 @@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
 
-&layout.name-list [v(d.bf)]=strcat(header(Old names beginning with %0*, %1), %r, formattext(cat(Names may be claimed after the player has gone, setr(D, v(d.max-days-before-name-available)), days without logging in. The following names are available starting with your search term of %0*:), 1, %1), %r, multicol(if(t(setr(S, search(EPLAYER=cand(strmatch(name(##), %0*), ulocal(f.is-player, ##), gt(ulocal(f.days-since-last-connected, ##), %qD))))), iter(%qS, ulocal(f.get-name, itext(0), %1),, |), None found.), * * *, 0, |, %1), %r, formattext(To claim a name%, type %ch+name/claim <name>%cn. That player will have their name changed and you will be able to create a character with that name.%r%r%tIf your name was changed by +name/claim%, you can just log in with your changed name%, then %ch@name me=<new name>%cn., 1, %1), %r, footer(, %1))
+&layout.name-list [v(d.bf)]=strcat(header(Names beginning with %0*, %1), %r, formattext(The following names match %0*:, 1, %1), %r, multicol(if(t(setr(S, search(EPLAYER=cand(strmatch(name(##), %0*), ulocal(f.is-player, ##))))), iter(%qS, cat(if(cand(gt(ulocal(f.days-since-last-connected, ##), %qD), not(strmatch(name(itext(0)), *_[rest(itext(0), #)]))), %ch*%cn, %b), ulocal(f.get-name, itext(0), %1)),, |), None found.), * * *, 0, |, %1), %r, formattext(cat(%ch*%cn Names may be claimed after the player has gone, setr(D, v(d.max-days-before-name-available)), days without logging in. Any names that are claimable in the above list are marked with a %ch*%cn. If you don't see a %ch*%cn%, the name is not claimable.%r%r%tTo claim a name%, type %ch+name/claim <name>%cn. That player will have their name changed and you will be able to create a character with that name.%r%r%tIf your name was changed by +name/claim%, you can just log in with your changed name%, then %ch@name me=<new name>%cn.), 1, %1), %r, footer(, %1))
 
 &c.+name [v(d.bc)]=$+name *:@pemit %#=ulocal(layout.name-list, %0, %#);
 
 &c.+names [v(d.bc)]=$+names *:@pemit %#=ulocal(layout.name-list, %0, %#);
 
-&c.+name/claim [v(d.bc)]=$+name/claim *:@assert t(setr(P, ulocal(f.find-player, %0, %#)))={ @trigger me/tr.error=%#, Could not find a player named '%0'.; }; @eval setq(N, ulocal(f.get-name, %qP, %#)); @assert ulocal(f.is-player, %qP)={ @trigger me/tr.error=%#, cat(%qN is not the kind of player who can have, poss(%qP), name claimed.); }; @eval setq(D, v(d.max-days-before-name-available)); @assert gt(ulocal(f.days-since-last-connected, %qP), %qD)={ @trigger me/tr.error=%#, %qN has logged in more recently than %qD days ago.; }; @break strmatch(%qN, *_%qP)={ @trigger me/tr.error=%#, cat(%qN has already had, poss(%qP), name changed.); }; @name %qP=strcat(edit(first(%qN, _), %b, _), edit(%qP, #, _)); @wipe %qP/alias; @trigger me/tr.log=%qP, _app-, Auto, Name and alias taken by another player after %qD+ days idle.; @trigger me/tr.success=%#, You claim the name %qN. %ch@name me=%qN%cn to use it!;
+&c.+name/claim [v(d.bc)]=$+name/claim *:@assert t(setr(P, ulocal(f.find-player, %0, %#)))={ @trigger me/tr.error=%#, Could not find a player named '%0'.; }; @eval setq(N, ulocal(f.get-name, %qP, %#)); @assert ulocal(f.is-player, %qP)={ @trigger me/tr.error=%#, cat(%qN is not the kind of player who can have, poss(%qP), name claimed.); }; @eval setq(D, v(d.max-days-before-name-available)); @assert gt(ulocal(f.days-since-last-connected, %qP), %qD)={ @trigger me/tr.error=%#, %qN has logged in more recently than %qD days ago. You cannot claim this name.; }; @break strmatch(%qN, *_%qP)={ @trigger me/tr.error=%#, cat(%qN has already had, poss(%qP), name changed. You can't claim a name that has already been claimed.); }; @name %qP=strcat(edit(first(%qN, _), %b, _), edit(%qP, #, _)); @wipe %qP/alias; @trigger me/tr.log=%qP, _app-, %#, Name and alias taken by another player after %qD+ days idle.; @trigger me/tr.success=%#, You claim the name %qN. %ch@name me=%qN%cn to use it!;
 
 @@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
 @@ Sweep disconnected players out of the room
@@ -93,11 +93,6 @@
 &tr.+whitelist/clear [v(d.bc)]=@assert t(setr(W, xget(%0, whitelisted-PCs)))={ @trigger me/tr.error=%0, You currently aren't whitelisting anyone.; }; @wipe %0/whitelisted-PCs; @trigger me/tr.success=%0, You have cleared your whitelist, which contained [itemize(iter(%qW, moniker(itext(0)),, |), |)]. They will no longer be able to page you when you have blocked pages from everyone.
 
 @@ =============================================================================
-@@ +name <name> - allow players to administer names
-@@ =============================================================================
-
-
-@@ =============================================================================
 @@ +beginner
 @@ =============================================================================
 
@@ -117,7 +112,6 @@ CMD-BEGINNER: $+beginner:@pemit %#=[center(Commands for Beginning MUSHers,78,
  connected Staff%R+staff/all[space(16)]Shows the staff roster.%R%RNOTE: MUSH
  commands may be case sensitive. You can always page a staffer for help.%R%r"+
  beginner" recalls this file%R
-*/
 
 &d.beginner-commands [v(d.bd)]=page
 
@@ -128,3 +122,4 @@ Welcome to [mudname()]!
 If you've never MU*d before, you might like this handy list of commands:
 
 [indent][ansi(first(themecolors()), +)]
+*/

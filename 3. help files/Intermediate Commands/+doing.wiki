@@ -1,0 +1,17 @@
+{{help
+|topic=+doing
+|detail=Tell people what you're doing while you're logged in. Doing shows up in the +who as an answer to the current poll.
+|example=
+* '''+doing <text>''' - set a doing.
+* '''+doing/list''' - see your list of random doings.
+* '''+doing/add <text>''' - add a doing to your list. Your doing will be randomly selected from this list when you log in.
+* '''+doing/remove <#>''' - delete a doing from your list.
+* '''+doing/random''' - set a random doing.
+* '''+doing/poll <text>''' (staff-only) - change the current poll.
+|link1=+finger
+|link2=+who
+|link3=Troubleshooting
+|link4=
+|category1=Intermediate_Commands
+|category2=
+}}

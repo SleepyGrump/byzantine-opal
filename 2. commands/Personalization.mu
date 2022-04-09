@@ -13,7 +13,7 @@
 
 &c.+doing_set [v(d.bc)]=$+doing *:@force %#=@doing %0; @wait .1=@trigger me/tr.success=%#, Your @doing is: [doing(%#)];
 
-&c.+doing_set_random [v(d.bc)]=$+doing/r*:@assert t(lattr(%#/doing.*)); @force %#=@doing \[v(pickrand(lattr(%#/doing.*)))\]; @wait .1=@trigger me/tr.success=%#, The current poll is: [poll()]. Your randomly-chosen @doing of the day is: [doing(%#)];
+&c.+doing_set_random [v(d.bc)]=$+doing/ra*:@assert t(lattr(%#/doing.*)); @force %#=@doing \[v(pickrand(lattr(%#/doing.*)))\]; @wait .1=@trigger me/tr.success=%#, The current poll is: [poll()]. Your randomly-chosen @doing of the day is: [doing(%#)];
 
 &c.+doing/list [v(d.bc)]=$+doing/l*:@pemit %#=ulocal(layout.doing_list, %#);
 
@@ -21,7 +21,7 @@
 
 &c.+doing/delete [v(d.bc)]=$+doing/d*:@assert cand(t(strcat(setq(N, trim(%0)), setr(N, switch(%qN, *=*, rest(%qN, =), * *, last(%qN), %qN)))), isint(%qN))={ @trigger me/tr.error=%#, Couldn't figure out which @doing you want to delete. Got '%qN'?; }; @assert t(setr(D, ulocal(f.find-attr-by-number, %#, doing., %qN)))={ @trigger me/tr.error=%#, Can't find a @doing at position #%qN.; }; @eval setq(O, xget(%#, %qD)); @wipe %#/%qD; @trigger me/tr.success=%#, You deleted the @doing '%qO'. This does not unset your current @doing.;
 
-&c.+doing/remove [v(d.bc)]=$+doing/r* *:@force %#=+doing/delete %1;
+&c.+doing/remove [v(d.bc)]=$+doing/re* *:@force %#=+doing/delete %1;
 
 &c.+doing/poll [v(d.bc)]=$+doing/poll *:@assert isstaff(%#)={ @trigger me/tr.error=%#, You must be staff to set the poll.; }; @doing/header %0; @wall/emit/no_prefix strcat(alert(Poll), %b, moniker(%#) just changed the poll to:, %b, poll(), %b, +help Poll for more info.);
 
@@ -43,6 +43,12 @@
 
 &f.grab-matching-settable-object [v(d.bf)]=case(1, strmatch(%0, me), %1, cand(strmatch(%0, here), cor(isstaff(%1), isowner(loc(%0), %1))), loc(%1), cand(isstaff(%1), isdbref(%0)), %0, isdbref(%0), if(member(ulocal(f.available-objects-to-set-%2s, %1), %0), %0, #-1 NOT FOUND), t(setr(M, grab(iter(ulocal(f.available-objects-to-set-%2s, %1), strcat(name(itext(0)), ~, itext(0)),, v(d.default-row-delimeter)), %0*, v(d.default-row-delimeter)))), rest(%qM, ~), #-1 NOT FOUND)
 
+&c.+views [v(d.bc)]=$+views:@force %#=+view;
+
+&c.+views_text [v(d.bc)]=$+views *:@force %#=+view %0;
+
+&c.+views/flag_text [v(d.bc)]=$+views/* *:@force %#=+view/%0 %1;
+
 &c.+view [v(d.bc)]=$+view:@assert t(setr(V, filter(filter.has-views, ulocal(f.available-objects-to-view, %#))))={ @trigger me/tr.error=%#, There are no objects with +views in your area.; }; @assert gt(words(%qV), 1)={ @force %#=+view %qV; }; @trigger me/tr.message=%#, The following objects have +views on them: [itemize(ulocal(f.objects-with-views, %qV), v(d.default-row-delimeter))];
 
 &c.+view_item [v(d.bc)]=$+view *:@break strmatch(%0, */*); @assert t(setr(O, ulocal(f.grab-matching-object, %0, %#, view)))={ @break eq(words(ulocal(f.grab-matching-object,, %#, view)), 1)={ @force %#=+view /%0; }; @trigger me/tr.error=%#, Could not find an object called '%0'.; }; @assert t(setr(V, getpair(%qO, view-)))={ @trigger me/tr.error=%#, moniker(%qO) does not have +views.; }; @assert gt(words(%qV, v(d.default-row-delimeter)), 1)={ @force %#=+view %qO/[rest(%qV, v(d.default-column-delimeter))]; }; @trigger me/tr.message=%#, moniker(%qO) has the following +views: [itemize(iter(%qV, rest(itext(0), v(d.default-column-delimeter)), v(d.default-row-delimeter), v(d.default-row-delimeter)), v(d.default-row-delimeter))];
@@ -63,11 +69,11 @@
 
 &c.+view/delete [v(d.bc)]=$+view/del* */*:@assert t(setr(O, ulocal(f.grab-matching-settable-object, %1, %#, view)))={ @trigger me/tr.error=%#, Could not find an object you own called '%1'.; }; @assert t(setr(V, getpairkey(%qO, view-, %2)))={ @trigger me/tr.error=%#, Could not find a view on [moniker(%qO)] called '%2'.; }; @assert eq(words(%qV, v(d.default-row-delimeter)), 1)={ @trigger me/tr.error=%#, Your delete matched multiple +views: [itemize(iter(%qV, rest(itext(0), v(d.default-column-delimeter)), v(d.default-row-delimeter), v(d.default-row-delimeter)), v(d.default-row-delimeter))]; }; @force %#=+view/set %qO/%qV=; @pemit %#=%qV;
 
-&c.+view/remove [v(d.bc)]=$+view/rem* */*:@assert t(setr(O, ulocal(f.grab-matching-settable-object, %1, %#, view)))={ @trigger me/tr.error=%#, Could not find an object you own called '%1'.; }; @assert t(setr(V, getpairkey(%qO, view-, %2)))={ @trigger me/tr.error=%#, Could not find a view on [moniker(%qO)] called '%2'.; }; @assert eq(words(%qV, v(d.default-row-delimeter)), 1)={ @trigger me/tr.error=%#, Your delete matched multiple +views: [itemize(iter(%qV, rest(itext(0), v(d.default-column-delimeter)), v(d.default-row-delimeter), v(d.default-row-delimeter)), v(d.default-row-delimeter))]; }; @force %#=+view/set %qO/%qV=;
+&c.+view/remove [v(d.bc)]=$+view/rem* */*:@force %#=+view/delete %1/%2;
 
 &c.+view/delete_me [v(d.bc)]=$+view/del* *:@break strmatch(%1, */*); @eval setr(O, %#); @assert t(setr(V, getpairkey(%qO, view-, %1)))={ @trigger me/tr.error=%#, Could not find a view on [moniker(%qO)] called '%1'.; }; @assert eq(words(%qV, v(d.default-row-delimeter)), 1)={ @trigger me/tr.error=%#, Your delete matched multiple +views: [itemize(iter(%qV, rest(itext(0), v(d.default-column-delimeter)), v(d.default-row-delimeter), v(d.default-row-delimeter)), v(d.default-row-delimeter))]; }; @force %#=+view/set %qO/%qV=;
 
-&c.+view/remove_me [v(d.bc)]=$+view/rem* *:@break strmatch(%1, */*); @eval setr(O, %#); @assert t(setr(V, getpairkey(%qO, view-, %1)))={ @trigger me/tr.error=%#, Could not find a view on [moniker(%qO)] called '%1'.; }; @assert eq(words(%qV, v(d.default-row-delimeter)), 1)={ @trigger me/tr.error=%#, Your delete matched multiple +views: [itemize(iter(%qV, rest(itext(0), v(d.default-column-delimeter)), v(d.default-row-delimeter), v(d.default-row-delimeter)), v(d.default-row-delimeter))]; }; @force %#=+view/set %qO/%qV=;
+&c.+view/remove_me [v(d.bc)]=$+view/rem* *:@break strmatch(%1, */*); @force %#=+view/delete me/%1;
 
 @@ =============================================================================
 @@ +note
@@ -86,6 +92,12 @@
 &f.available-objects-to-note [v(d.bf)]=cat(loc(%0), filter(filter.not_dark, lcon(loc(%0)),,, %0), filter(filter.isobject, lcon(loc(%0))), filter(filter.visible-exit, lexits(loc(%0)),,, %0))
 
 &f.available-objects-to-set-notes [v(d.bf)]=filter(filter.is_owner, cat(loc(%0), filter(filter.not_dark, lcon(loc(%0)),,, %0), filter(filter.isobject, lcon(loc(%0))), filter(filter.visible-exit, lexits(loc(%0)),,, %0)),,, %0)
+
+&c.+notes [v(d.bc)]=$+notes:@force %#=+note;
+
+&c.+notes_text [v(d.bc)]=$+notes *:@force %#=+note %0;
+
+&c.+notes/flag_text [v(d.bc)]=$+notes/* *:@force %#=+note/%0 %1;
 
 &c.+note [v(d.bc)]=$+note:@assert t(setr(V, filter(filter.has-notes, ulocal(f.available-objects-to-note, %#),,, %#)))={ @trigger me/tr.error=%#, There are no objects with +notes in your area.; }; @assert gt(words(%qV), 1)={ @force %#=+note %qV; }; @trigger me/tr.message=%#, The following objects have +notes on them: [itemize(ulocal(f.objects-with-notes, %qV), v(d.default-row-delimeter))];
 
@@ -107,11 +119,11 @@
 
 &c.+note/delete [v(d.bc)]=$+note/del* */*:@assert t(setr(O, ulocal(f.grab-matching-settable-object, %1, %#, note)))={ @trigger me/tr.error=%#, Could not find an object you own called '%1'.; }; @assert t(setr(V, ulocal(f.get-visible-notes, %qO, %2, %#)))={ @trigger me/tr.error=%#, Could not find a note on [moniker(%qO)] called '%2'.; }; @assert eq(words(%qV, v(d.default-row-delimeter)), 1)={ @trigger me/tr.error=%#, Your delete matched multiple +notes: [itemize(iter(%qV, rest(itext(0), v(d.default-column-delimeter)), v(d.default-row-delimeter), v(d.default-row-delimeter)), v(d.default-row-delimeter))]; }; @force %#=+note/set %qO/[rest(%qV, v(d.default-column-delimeter))]=;
 
-&c.+note/remove [v(d.bc)]=$+note/rem* */*:@assert t(setr(O, ulocal(f.grab-matching-settable-object, %1, %#, note)))={ @trigger me/tr.error=%#, Could not find an object you own called '%1'.; }; @assert t(setr(V, ulocal(f.get-visible-notes, %qO, %2, %#)))={ @trigger me/tr.error=%#, Could not find a note on [moniker(%qO)] called '%2'.; }; @assert eq(words(%qV, v(d.default-row-delimeter)), 1)={ @trigger me/tr.error=%#, Your delete matched multiple +notes: [itemize(iter(%qV, rest(itext(0), v(d.default-column-delimeter)), v(d.default-row-delimeter), v(d.default-row-delimeter)), v(d.default-row-delimeter))]; }; @force %#=+note/set %qO/[rest(%qV, v(d.default-column-delimeter))]=;
+&c.+note/remove [v(d.bc)]=$+note/rem* */*:@force %#=+note/delete %1/%2;
 
 &c.+note/delete_me [v(d.bc)]=$+note/del* *:@break strmatch(%1, */*); @eval setr(O, %#); @assert t(setr(V, ulocal(f.get-visible-notes, %qO, %1, %#)))={ @trigger me/tr.error=%#, Could not find a note on [moniker(%qO)] called '%1'.; }; @assert eq(words(%qV, v(d.default-row-delimeter)), 1)={ @trigger me/tr.error=%#, Your delete matched multiple +notes: [itemize(iter(%qV, rest(itext(0), v(d.default-column-delimeter)), v(d.default-row-delimeter), v(d.default-row-delimeter)), v(d.default-row-delimeter))]; }; @force %#=+note/set %qO/[rest(%qV, v(d.default-column-delimeter))]=;
 
-&c.+note/remove_me [v(d.bc)]=$+note/rem* *:@break strmatch(%1, */*); @eval setr(O, %#); @assert t(setr(V, ulocal(f.get-visible-notes, %qO, %1, %#)))={ @trigger me/tr.error=%#, Could not find a note on [moniker(%qO)] called '%1'.; }; @assert eq(words(%qV, v(d.default-row-delimeter)), 1)={ @trigger me/tr.error=%#, Your delete matched multiple +notes: [itemize(iter(%qV, rest(itext(0), v(d.default-column-delimeter)), v(d.default-row-delimeter), v(d.default-row-delimeter)), v(d.default-row-delimeter))]; }; @force %#=+note/set %qO/[rest(%qV, v(d.default-column-delimeter))]=;
+&c.+note/remove_me [v(d.bc)]=$+note/rem* *:@break strmatch(%1, */*); @force %#=+note/delete me/%1;
 
 &c.+note/staffnote [v(d.bc)]=$+staffnote* */*=*:@assert isstaff(%#)={ @trigger me/tr.error=%#, You must be staff to create staff notes.; }; @assert t(setr(O, ulocal(f.grab-matching-settable-object, %1, %#, note)))={ @trigger me/tr.error=%#, Could not find an object you own called '%1'.; }; @break strmatch(rest(setr(V, ulocal(f.get-visible-notes, %qO, %2, %#)), v(d.default-column-delimeter)), %2)={ @trigger me/tr.error=%#, There's already a note on [moniker(%qO)] called '%2'. Choose another name or delete the old one.; }; @assert t(setr(S, setpair(%qO, _note-, %2, %3)))={ @trigger me/tr.error=%#, Could not set +note on [moniker(%qO)] because: %qS; }; @assert t(setr(K, getpairattr(%qO, _note-, %2)))={ @trigger me/tr.error=%#, Could not find a note on [moniker(%qO)] called '%2'. Check their +notes.; }; &_notesettings-%qK %qO=strcat(-1, |, ulocal(layout.note-approval, %#)); @trigger me/tr.success=%#, moniker(%qO)'s %2 +note was created%, hidden%, and approved.; @assert hasattr(%qO, _d.staff-notes)={ &_d.staff-notes %qO=%2: %3; }
 

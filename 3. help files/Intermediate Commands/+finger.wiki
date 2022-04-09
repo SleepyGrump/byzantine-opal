@@ -3,7 +3,7 @@
 |topic=+finger
 |detail=Get basic information about a player. Some +finger information will only be visible to staff and possibly to you, under the heading "Staff Info". You can set most +finger values, but some are determined by where you connect from and what client you're using. You do not have to set any information - fields you do not set will not show up.
 
-	The name "finger" comes from an old UNIX command which was based on the definition of "finger" meaning "to snitch" or "to identify".
+	The name "finger" comes from an old Unix command which was based on the definition of "finger" meaning "to snitch" or "to identify".
 |example=
 * '''+finger <name>''' - view information about a player.
 * '''+finger/set <field>=<value>''' - set information about yourself. Fields that can be set are:
