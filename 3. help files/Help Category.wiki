@@ -1,0 +1,14 @@
+<!-- This page should be created at <yourwiki>/Category:Help. Do not include this comment. -->
+
+This is a collection of commands used throughout the game.
+
+To create a new Help file (staff only, please), enter the command name below:
+
+<inputbox>
+type=create
+preload=Template:Help/Preload
+placeholder=+command
+editintro=Template:Help/Preload
+prefix=Help:
+break=no
+</inputbox>

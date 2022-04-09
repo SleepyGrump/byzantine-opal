@@ -1,0 +1,18 @@
+{{help
+|topic=Communication
+|detail=This is a text-based game. As such, it's vital that players be able to communicate both as themselves and as their characters. Below are some important commands for communication.
+|example=
+* '''ooc Something''' - say "Something" out of character.
+* '''"Test.''' - Say "Test" in character.
+* '''page <name>=<text>''' - send a private (usually OOC) message to another player.
+* '''whisper <name>=<text>''' - whisper an IC message to another character.
+* '''pub Test''' - say "Test" on the Public channel. (All players are automatically added to the Public channel when they join the game.)
+* '''msg <player>=<text>''' - send an IC message to another player. If they're connected, they'll see it immediately. If not, they'll get a notice that they have unread messages when they next join the game.
+* '''request <title>=<text>''' - make a request of staff. (See +help +request.)
+|link1=+ooc
+|link2=+ic
+|link3=msg
+|link4=+channels
+|category1=Basic_Commands
+|category2=IC_Commands
+}}

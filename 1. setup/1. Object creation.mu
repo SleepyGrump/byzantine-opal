@@ -58,6 +58,8 @@ think if(t(v(d.cron)), Good%, you have Myrddin's mushcron%, we can continue., AL
 @set QR=TRANSPARENT
 @set [lexits([v(d.qr)])]=TRANSPARENT
 
+@force me=&d.never-listed-as-staff [v(d.bd)]=#1 #3 [v(d.go)]
+
 @@ These only exist to make sure that if you have a public channel, our two created bits aren't on it.
 @force me=@force [v(d.go)]=pub off
 @force me=@force [v(d.pp)]=pub off

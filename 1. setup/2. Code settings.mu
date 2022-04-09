@@ -106,13 +106,13 @@
 &d.default-notes-fields [v(d.bd)]=Status|Idle|Name|Note
 
 &d.default-staff-fields [v(d.bd)]=Status|Idle|Name|Alias|Position|Doing
-
+09j
 &d.3who-columns [v(d.bd)]=Status|Name|Idle
 
 &d.2who-columns [v(d.bd)]=Status|Name|Idle|Doing
 
 @@ Sort order rolls left to right, so the last search is the most recent and will dominate the output.
-&d.who-sort-order [v(d.bd)]=Idle
+&d.who-sort-order [v(d.bd)]=Connection Time
 
 &d.default-room-fields [v(d.bd)]=Name|Idle|Short-desc
 
@@ -123,7 +123,7 @@
 @@ +finger layout
 &d.finger-sections [v(d.bd)]=OOC Info|IC Info|Staff Info
 
-&d.section.ooc_info [v(d.bd)]=Location|Doing|Position|Note|OOC Pronouns|Connection Time|Mail Stats|RP Prefs|Timezone|Public Alts|Note
+&d.section.ooc_info [v(d.bd)]=Location|Doing|Position|OOC Pronouns|Connection Time|Mail Stats|RP Prefs|Timezone|Public Alts|Note
 
 &d.section.ic_info [v(d.bd)]=Apparent Age|Gender|IC Full Name|IC Handle|IC Occupation|IC Pronouns|Played-by|Short-desc|Wiki|Themesong|Quote
 
@@ -131,3 +131,4 @@
 
 &d.finger-settable-fields [v(d.bd)]=Apparent Age|Gender|IC Full Name|IC Handle|IC Occupation|IC Pronouns|OOC Pronouns|Played-by|Position|Public Alts|Quote|RP Prefs|Short-desc|Themesong|Timezone|Wiki
 
+@@ TODO: Connection_Time display bug when it shows up on +who - it should show something different for +finger than +who. Should be duration connected or just last login for +who.

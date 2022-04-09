@@ -1,0 +1,22 @@
+{{help
+|topic=+temprooms
+|detail=Temprooms are temporary rooms for roleplay or just hanging out. Anyone can create a temproom. The temproom will be destroyed when no players occupy it any longer, but the code will remember your settings for each temproom you customize, and next time you create a room with that name, your settings will be restored.
+|example=
+* '''+temprooms''' - list the temprooms you've customized in the past.
+* '''+temproom <name>''' - create a temproom. If the name matches one of your existing temprooms, its settings will be restored.
+* '''+temproom/destroy''' - destroy your current temproom.
+* Customizing:
+** '''+here/lock''' - lock your temproom.
+** '''+here/unlock''' - unlock your temproom.
+** '''+here/desc <text>''' - describe your temproom.
+*** '''+desc <exit>=<text>''' - describe the exit.
+** '''+here/shortdesc <text>''' - give it a shortdesc (shows up in +glance).
+** '''+here/public''' - make the room public - people are welcome.
+** '''+here/private''' - the default. Private rooms are unfindable on +where.
+|link1=+property
+|link2=+owners
+|link3=+travel
+|link4=+where
+|category1=Intermediate_Commands
+|category2=
+}}

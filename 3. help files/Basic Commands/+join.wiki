@@ -1,0 +1,17 @@
+{{help
+|topic=+join
+|detail=Sometimes you just want to get straight to the roleplay with a person you already know. These commands will help you get together with your friends, no matter where on the grid they are (as long as you're all approved). If you're not approved, you can still meet them in an OOC room.
+|example=
+* '''+join <name>''' - join someone at their location.
+* '''+invite <name>''' - invite someone to join you at your location.
+* '''+summon <name>''' - an alias for +invite.
+* '''+meetme <name>''' - an alias for +invite.
+* '''+return''' - go back to your previous location.
+* '''+return <name>''' (staff-only) - return someone else to their previous location.
+|link1=+ooc
+|link2=+ic
+|link3=+travel
+|link4=+temprooms
+|category1=Basic_Commands
+|category2=
+}}

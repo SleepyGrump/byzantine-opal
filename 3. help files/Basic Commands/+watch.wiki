@@ -1,0 +1,32 @@
+{{help
+|topic=+watch
+|detail=+watch is just a slightly specialized function of +who. You'll be notified when the player you +watch logs in, unless they're hiding from +watch.
+|example=
+* '''+watch/list''' - list all the people you're watching
+* '''+watch''' - see just the people you have watched
+* '''+watch/add <name>''' - watch someone's connections/disconnections
+* '''+watch/delete <name>''' - stop watching them
+* '''+watch/hide''' - hide from +watch
+* '''+watch/unhide''' - become visible to +watch again. Will not notify players that you've connected.
+* '''+watch/permit <name>''' - permit someone to see you log in even when you're hiding.
+* '''+watch/unpermit <name>''' - revoke someone's permission to +watch you while you're hiding.
+* '''+watch/all on or off''' - see all logins and disconnects.
+* '''+watch/on or /off''' - turn connect/disconnect notices on or off entirely.
+* '''+watch/page <message>''' - page all your watched players who are connected a message.
+
+==== Advanced commands: ====
+
+Change how +watch messages look with code like this:
+
+&watchfmt me=cat(alert(prettytime()), moniker(%0), has, %1.)
+
+For backwards compatibility, we also include &awatch:
+
+&awatch me=think My &awatch: %0 has %1.
+|link1=+who
+|link2=+where
+|link3=+staff
+|link4=+finger
+|category1=Basic_Commands
+|category2=
+}}

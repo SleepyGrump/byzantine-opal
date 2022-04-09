@@ -1,0 +1,20 @@
+{{help
+|topic=+who
+|detail=See who's online.
+|example=
+* '''+who''' - list all the players connected.
+* '''+3who''' - a 3-column +who.
+* '''+2who''' - a 2-column +who.
+* '''+who <text>''' - search for specific player
+* '''+who/note <player>=<note>''' - make a note so you can remember who a player is. The note is private. It will show up when you +finger them.
+* '''+who/notes''' - see all connected players and any notes you have on them
+* '''+who/sort <list>=<columns>''' - change how columns are sorted. Default sort is by Connection Time.
+* '''+who/columns <columns>''' - change the columns shown on +who. '''+who/columns''' to reset.
+* '''+who/columns <list>=<columns>''' - change the columns shown on some other commands. '''+who/columns <list>=''' to reset.
+|link1=+watch
+|link2=+where
+|link3=+staff
+|link4=+finger
+|category1=Basic_Commands
+|category2=
+}}

@@ -162,7 +162,7 @@
 
 &f.get-status [v(d.bf)]=ulocal(f.hilite-text, %0, %1, if(isstaff(%0), ulocal(f.get-staffer-status, %0, %1), if(ulocal(f.is-location-ooc, loc(%0)), ooc, ic)))
 
-&f.get-location [v(d.bf)]=if(cand(hasflag(%0, unfindable), not(isstaff(%1))), Unfindable, name(loc(%0)))
+&f.get-location [v(d.bf)]=if(cand(cor(hasflag(%0, unfindable), hasflag(loc(%0), unfindable)), not(isstaff(%1))), Unfindable, name(loc(%0)))
 
 &f.get-gender [v(d.bf)]=default(%0/sex, unset)
 
@@ -178,7 +178,7 @@
 
 &f.get-short-desc [v(d.bf)]=shortdesc(%0, %1)
 
-&f.get-staff [v(d.bf)]=v(d.staff_list)
+&f.get-staff [v(d.bf)]=unionset(v(d.staff_list), search(EPLAYER=cand(gt(bittype(##), 1), not(t(member(v(d.never-listed-as-staff), ##))))))
 
 &f.get-idle [v(d.bf)]=if(cand(not(isstaff(%1)), hasflag(%0, dark)), -, first(secs2hrs(idle(%0))))
 

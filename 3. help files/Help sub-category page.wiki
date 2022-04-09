@@ -1,0 +1,2 @@
+<!-- This should be on every sub-category of Help if you want it to show up on +help. This includes Basic Commands, Extreme Commands, IC Commands, etc. Don't include this comment. -->
+[[Category:Help]]

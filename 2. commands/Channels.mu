@@ -123,6 +123,7 @@ MAYBE: Doubt there's much call for it, but maybe let people modify the following
 TODO: Add some kind of +com/allowtitlebypass <player> command so that players can designate who gets to use comtitles on their channels. /denytitlebypass would be good too. Need a better set of commands for this...
 
 Changes:
+2022-04-09: Changed the +channels layout to be more relevant.
 2022-03-07: Stopped +com from catching just any command that starts with +com.
 2022-03-05: Added the ability to restrict comtitle-setting on a channel. There's also a coded bypass to let other code enable a comtitle for each player. See demure-bismuth/Other functionality/Sharps.mu +name/title for an example.
 2022-02-26: Fixed booting, banning, etc to be over-ridable by staff.
@@ -263,7 +264,7 @@ Changes:
 &layout.msg [v(d.chf)]=alert(Channel) %0
 
 @@ %0 - user
-&layout.channels [v(d.chf)]=strcat(header(Channels, %0), %r, multicol(strcat(Name|Owner|Status|Players|Description|, iter(ulocal(f.get-channels, %0), strcat(setq(O, ulocal(f.get-channel-owner, itext(0))), setr(T, ulocal(f.get-channel-name, itext(0))), |, if(isstaff(%qO), Staff, ulocal(f.get-name, %qO, %0)), |, ulocal(f.get-channel-lock, itext(0)), |, words(filter(filter.not_dark, cwho(%qT),,, %0)), |, ulocal(f.get-channel-desc, itext(0))),, |)), 15 10 10 7 *, 1, |, %0), %R, footer(+channel <name> for details, %0))
+&layout.channels [v(d.chf)]=strcat(header(Channels, %0), %r, multicol(strcat(Name|Alias|People|Description|, iter(ulocal(f.get-channels, %0), strcat(setq(O, ulocal(f.get-channel-alias, itext(0))), setr(T, ulocal(f.get-channel-name, itext(0))), |, %qO, |, words(filter(filter.not_dark, cwho(%qT),,, %0)), |, ulocal(f.get-channel-desc, itext(0))),, |)), 15 10 6 *, 1, |, %0), %R, footer(+channel <name> for details, %0))
 
 @@ %0 - dbref of channel object
 @@ %1 - user

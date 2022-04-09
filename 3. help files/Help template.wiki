@@ -1,27 +1,26 @@
-__NOTOC__
-{|
-|class="punk-col-75 pr-5"|
-== {{{topic}}} ==
-{{#ifeq: {{{short|}}} | | | ==== {{{short}}} ==== }}
+<!-- This file goes under <yourwiki>/Template:Help - do not include this comment. Have someone who knows how layouts work arrange it to your liking. -->
 
-== Details ==
-{{{detail}}} 
+<onlyinclude>
+{{#ifeq: {{{short|}}} | | | {{#css:
+.ShortHelpDesc {
+   position: relative;
+   top: -1em;
+   font-style: italic;
+}
+}}<span class="ShortHelpDesc">{{{short}}}</span> }}<div class="HelpDetail">{{{detail}}}</div>{{#ifeq: {{{example|}}} | | | <div class="HelpExamples">
+== Examples == 
 
-{{#ifeq: {{{example|}}} | | | 
-== Example == 
-
-{{{example}}} }}
+{{{example}}}
+</div> }}
 
 {{#ifeq: {{{link1|}}} | | | 
 == Other Suggested Topics == 
 [[Help:{{{link1}}}|{{{link1}}}]] }}{{#ifeq: {{{link2|}}} | | | , [[Help:{{{link2}}}|{{{link2}}}]] }}{{#ifeq: {{{link3|}}} | | | , [[Help:{{{link3}}}|{{{link3}}}]] }}{{#ifeq: {{{link4|}}} | | | , [[Help:{{{link4}}}|{{{link4}}}]] }}
 
-|class="punk-col-25 top" style="margin:auto;"|
-
-|}
-
-[[Category:Help]][[Category:Game_Help]][[Category:{{{category1}}}]]{{#ifeq: {{{category2|}}} | | | [[Category:{{{category2}}}]] }}
-
+[[Category:Help]][[Category:{{{category1}}}]]{{#ifeq: {{{category2|}}} | | | [[Category:{{{category2}}}]] }}
+__NOTOC__
+{{DISPLAYTITLE:{{{topic}}}|noerror}}
+</onlyinclude>
 <noinclude>
 <templatedata>
 {

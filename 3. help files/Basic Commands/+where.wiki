@@ -1,0 +1,14 @@
+{{help
+|topic=+where
+|detail=Find out where people are gathering in the game.
+|example=
+* '''+where''' - see where the people are.
+* '''+where <text>''' - find people with names starting with <text>.
+* '''+travel <key>''' - visit a location with a travel key on +where (only works if you're approved).
+|link1=+travel
+|link2=+ic
+|link3=+ooc
+|link4=+join
+|category1=Basic_Commands
+|category2=
+}}

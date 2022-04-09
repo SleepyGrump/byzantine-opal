@@ -1,0 +1,18 @@
+{{help
+|topic=+staff
+|detail=Staff are players who have moderator-like abilities, can control the code of the game, and are available to assist with general issues, both IC and OOC. Generally, if you want to interact with staff, you would use the 'req' commands below, but in an urgent situation, you might need to contact staff directly. These commands help with that.
+|example=
+* '''+staff''' - see which staffers are available right now.
+* '''+staff/all''' - see a list of all staffers.
+* '''req/help''' - see a list of all possible request types.
+* '''req/social <title>=<text>''' - ask staff about a social issue, such as a problem with another player.
+* '''request <title>=<text>''' - send staff a general request.
+* '''+help Channels''' - Some topics have their own channels dedicated to players helping other players.
+* '''page <staffer>=Hi, I need some help!''' - send us a direct message. Save this for the most urgent issues where possible.
+|link1=+channels
+|link2=+request
+|link3=Communication
+|link4=+ooc
+|category1=Basic_Commands
+|category2=
+}}

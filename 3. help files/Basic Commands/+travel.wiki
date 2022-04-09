@@ -1,0 +1,27 @@
+{{help
+|topic=+travel
+|detail=See some of the places available on the grid and travel to them.
+|example=
+* '''+travel''' - see a list of categories of locations
+* '''+travel <category>''' - find out what's available in a category
+* '''+travel <key>''' - travel to a location
+
+==== If you own a location you can also: ====
+
+* '''+travel/add <location>=<key>''' - add a location you own to +travel.
+* '''+travel/rem <location>=<key>''' - remove a location you own from +travel.
+* '''+travel/cat <location>=<category>''' - set a location's category.
+* '''+travel/addcat <location>=<category>''' - add additional categories. For example, a location might be a bar AND a restaurant.
+* '''+travel/remcat <location>=<category>''' - get rid of a category on your location.
+
+==== Staff commands: ====
+
+* '''+travel/addcat <category>''' - create a new category
+* '''+travel/remcat <category>''' - delete a travel category
+|link1=+where
+|link2=+ic
+|link3=+ooc
+|link4=+join
+|category1=Basic_Commands
+|category2=
+}}

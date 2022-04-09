@@ -1,0 +1,18 @@
+{{help
+|topic=+channels3
+|detail=These commands allow players and staffers to administer channels. Most of them can only be done by players who own a channel. We will be using the Public channel for an example channel when called for.
+|example=
+* Appearance:
+** '''pub/header <header>''' - set the header text with color - <Public> vs (Public) vs _Public_. You'll want something that stands out without being an eyesore.
+** '''pub/desc <description>''' - change the description.
+** '''pub/alias <alias>''' - change the default alias - the auto-guesser doesn't always get it right.
+* Behavior:
+** '''pub/spoof''' - set a channel spoofable (anonymous)
+** '''pub/nospoof''' - set a channel non-spoofable (not anonymous)
+** '''pub/notitle''' - restrict comtitles
+** '''pub/yestitle''' - unrestrict comtitles
+** '''pub/loud''' - set a channel noisy (emits connects/disconnects)
+** '''pub/quiet''' - set a channel quiet (no connects/disconnects)
+|category1=Extreme_Commands
+|category2=
+}}

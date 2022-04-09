@@ -1,0 +1,26 @@
+{{help
+|topic=+channels
+|detail=Channels are for discussing specific topics. They can be either OOC or IC, though normally they're OOC. Topics might include things like game rules, character generation, or just a public hangout for everyone to enjoy.
+
+	Our game allows each player to make their own channel to share with their friends, which can be public or private as the player chooses.
+|example=
+* '''+channels''' - see a list of available channels. The alias is the most important info - channel commands are performed with "<alias>/<command>" - for example, pub/on to join the public channel.
+* '''+channel <name>''' - get more info about a channel.
+* We'll use the Public channel for the rest of our commands:
+** '''pub/on''' - join the channel
+** '''pub <text>''' - say something on the channel
+** '''pub/off''' - leave the channel
+** '''pub/mute''' - mute the channel (does not work for wizards)
+** '''pub/unmute''' - unmute the channel
+** '''pub/emit''' - emit to the channel (your name will be logged)
+** '''pub/last''' - view the last 10 messages on the channel
+** '''pub/who''' - see who's on the channel
+* Some channels require a password:
+** '''pub/password <password>''' - join a channel with a password
+|link1=+channels2
+|link2=Communication
+|link3=msg
+|link4=+ooc
+|category1=Basic_Commands
+|category2=
+}}

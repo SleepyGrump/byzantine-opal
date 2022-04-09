@@ -1,0 +1,20 @@
+<!--
+This file goes under <yourwiki>/Template:Help/Preload. Do not include this comment. 
+-->
+
+{{help
+|topic=+command
+|short=Short description.
+|detail=Slightly longer details.
+|example=
+* Example 1
+* Example 2
+* Keep it short, their screens are only so big
+* More examples
+|link1=+command2
+|link2=+command3
+|link3=+command4
+|link4=
+|category1=Category_1
+|category2=Category_2
+}}

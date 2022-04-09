@@ -1,0 +1,21 @@
+{{help
+|topic=+channels2
+|detail=These commands allow players and staffers to administer channels. Most of them can only be done by players who own a channel. We will be using the Public channel for an example channel when called for.
+|example=
+* Administration:
+** '''+channel/create <name>=<description>''' - create a channel. Players only get one apiece; staff get as many as they want. Channels not owned by staff get deleted after 180 days of no activity.
+** '''+channel/give <player>=<channel>''' - only works if they're staff or don't already have a channel.
+** '''+channel/destroy <channel>''' - nuke the channel.
+* Access: changing these changes who can join a channel. Players already on a channel won't be booted.
+** '''pub/password <new password>''' - set the channel to password-protected. Anyone who doesn't know the password won't be able to join.
+** '''pub/staff''' - set the channel staff-only.
+** '''pub/approved''' - only approved characters can join.
+** '''pub/public''' - set the channel public - all players will see it and all will be able to join.
+** '''pub/private''' - set the channel private - it won't be locked, but it won't be listed either. This is the default for new channels.
+** '''pub/boot <player>''' - boot a player. They can come back.
+** '''pub/ban <player>''' - ban a player. They won't be able to return.
+** '''pub/unban <player>''' - unban a player - they can come back on.
+|link1=+channels3
+|category1=Extreme_Commands
+|category2=
+}}
