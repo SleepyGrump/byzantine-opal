@@ -93,26 +93,26 @@
 
 @exitformat [v(d.rp)]=ulocal(layout.exitformat, %#)
 
-&d.allowed-who-fields [v(d.bd)]=Alias|Apparent Age|Connection Info|Connection Time|DBref|Doing|Gender|IC Full Name|IC Handle|IC Occupation|IC Pronouns|Idle|Last IP|Location|Mail Stats|Name|Note|OOC Pronouns|Played-by|Position|Private Alts|Public Alts|Quote|RP Prefs|Short-desc|Staff Notes|Status|Themesong|Timezone|Wiki
+&d.allowed-who-fields [v(d.bd)]=Alias|Apparent Age|Connection Info|Connected|DBref|Doing|Gender|IC Full Name|IC Handle|IC Occupation|IC Pronouns|Idle|Last IP|Location|Mail Stats|Name|Note|OOC Pronouns|Played-by|Position|Private Alts|Public Alts|Quote|RP Prefs|Short-desc|Staff Notes|Status|Themesong|Timezone|Wiki
 
-&d.who-field-widths [v(d.bd)]=10 15 15 15 5 * 10 20 10 15 12 4 15 * 10 12 * 12 20 * 12 12 * 10 * * 8 * 10 *
+&d.who-field-widths [v(d.bd)]=10 15 15 9 5 * 10 20 10 15 12 4 15 * 10 12 * 12 20 * 12 12 * 10 * * 8 * 10 *
 
 &d.staff-only-who-fields [v(d.bd)]=Connection Info|Private Alts|Last IP|Staff Notes
 
-&d.default-who-fields [v(d.bd)]=Status|Idle|Name|Location|Doing|Position
+&d.default-who-fields [v(d.bd)]=Status|Idle|Name|Position|Doing
 
 &d.default-watch-fields [v(d.bd)]=Status|Idle|Name|Location|Doing|Note
 
 &d.default-notes-fields [v(d.bd)]=Status|Idle|Name|Note
 
 &d.default-staff-fields [v(d.bd)]=Status|Idle|Name|Alias|Position|Doing
-09j
+
 &d.3who-columns [v(d.bd)]=Status|Name|Idle
 
-&d.2who-columns [v(d.bd)]=Status|Name|Idle|Doing
+&d.2who-columns [v(d.bd)]=Status|Name|Idle
 
 @@ Sort order rolls left to right, so the last search is the most recent and will dominate the output.
-&d.who-sort-order [v(d.bd)]=Connection Time
+&d.who-sort-order [v(d.bd)]=Connected
 
 &d.default-room-fields [v(d.bd)]=Name|Idle|Short-desc
 

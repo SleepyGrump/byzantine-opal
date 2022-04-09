@@ -125,6 +125,12 @@
 
 &f.sort.by_connection_time [v(d.bf)]=strcat(setq(S, iter(%0, xget(itext(0), _last-conn), |, |)), munge(f.sortby-connection_time, %qS, edit(%0, %b, |), |))
 
+&f.sort-connected [v(d.bf)]=case(1, gt(%0, %1), -1, lt(%0, %1), 1, 0)
+
+&f.sortby-connected [v(d.bf)]=sortby(f.sort-connected, %0, |, |)
+
+&f.sort.by_connected [v(d.bf)]=strcat(setq(S, iter(%0, xget(itext(0), _last-conn), |, |)), munge(f.sortby-connected, %qS, edit(%0, %b, |), |))
+
 @@ =============================================================================
 @@ Functions
 @@ =============================================================================
@@ -203,6 +209,8 @@
 &f.get-ooc_pronouns [v(d.bf)]=xget(%0, d.ooc_pronouns)
 
 &f.get-connection_time [v(d.bf)]=if(ulocal(filter.is_connected_player, %0, %1), cat(Connected since, prettytime(xget(%0, _last-conn))), cat(Last on, prettytime(convtime(xget(%0, last)))))
+
+&f.get-connected [v(d.bf)]=if(ulocal(filter.is_connected_player, %0, %1), interval(xget(%0, _last-conn)), -)
 
 &f.get-mail_stats [v(d.bf)]=strcat(setq(M, mail(%0)), if(t(%qM), strcat(extract(%qM, 2, 1) unread out of, %b, ladd(%qM), %b, messages.)))
 

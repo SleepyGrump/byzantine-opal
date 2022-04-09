@@ -16,6 +16,6 @@
 ** '''pub/ban <player>''' - ban a player. They won't be able to return.
 ** '''pub/unban <player>''' - unban a player - they can come back on.
 |link1=+channels3
-|category1=Extreme_Commands
+|category1=Pro_Commands
 |category2=
 }}

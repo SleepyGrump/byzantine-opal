@@ -72,6 +72,10 @@ TODO: Include a full-text +help/search.
 
 &f.format-results [v(d.bf)]=strcat(setq(0, 0), iter(edit(trim(trim(translate(%0, p), b, lit(%r))), lit(%r), %r, %r%r%r, %r%r, lit(%(), %(, lit(%)), %), lit(%[), %[, lit(%]), %], %r***, %r%b%b%cx>>%cn*, %r**, %r%b%b*, \\\\\\\\, \\\\, %%t, %T), if(cor(strmatch(itext(0), ''*), t(%q0)), strcat(ansi(h, trim(itext(0), b, ')), setq(0, not(strmatch(itext(0), *'')))), itext(0))))
 
+@@ th ulocal(v(d.bf)/f.format-results, ''Test''. Testing.)
+
+@@ TODO: Format Results doesn't work if the '' comes right before punctuation. ''test''. <-- fails. Easy fix, remove punctuation except for ' in the match, but then that causes the trim to fail. Pity we can't run multiple separators on the iter... well, we could but that's a lot of work for an edge case...
+
 &layout.list-category [v(d.bf)]=strcat(header(%0, %2), %r, formatcolumns(%1, v(d.default-row-delimeter), %2) %r, footer(+help <file name> for more., %2))
 
 &f.find-help-by-text [v(d.bf)]=if(t(setr(P, ulocal(f.get-exact-page-text, %0))), ulocal(layout.help-page, ulocal(f.format-results, %qP), %1), if(t(setr(C, ulocal(f.get-exact-category-contents, %0))), ulocal(layout.list-category, Help files under '%0', %qC, %1), if(t(setr(P, ulocal(f.get-similar-page-text, %0))), ulocal(layout.help-page, ulocal(f.format-results, %qP), %1), if(t(setr(C, ulocal(f.get-similar-category-contents, %0))), ulocal(layout.list-category, Help files under '%0', %qC, %1), alert(Error) No results found for '%0'.))))

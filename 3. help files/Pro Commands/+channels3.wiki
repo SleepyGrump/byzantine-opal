@@ -13,6 +13,6 @@
 ** '''pub/yestitle''' - unrestrict comtitles
 ** '''pub/loud''' - set a channel noisy (emits connects/disconnects)
 ** '''pub/quiet''' - set a channel quiet (no connects/disconnects)
-|category1=Extreme_Commands
+|category1=Pro_Commands
 |category2=
 }}

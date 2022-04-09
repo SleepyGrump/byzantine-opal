@@ -1,3 +1,5 @@
+/* This is a work in progress! This doesn't really DO anything yet. */
+
 @@ %0: left border text
 @@ %1: right border text
 @@ %2: inner left border text

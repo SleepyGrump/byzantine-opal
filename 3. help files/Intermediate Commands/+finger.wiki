@@ -1,0 +1,32 @@
+<!-- Don't forget to customize this to your game! -->
+{{help
+|topic=+finger
+|detail=Get basic information about a player. Some +finger information will only be visible to staff and possibly to you, under the heading "Staff Info". You can set most +finger values, but some are determined by where you connect from and what client you're using. You do not have to set any information - fields you do not set will not show up.
+
+	The name "finger" comes from an old UNIX command which was based on the definition of "finger" meaning "to snitch" or "to identify".
+|example=
+* '''+finger <name>''' - view information about a player.
+* '''+finger/set <field>=<value>''' - set information about yourself. Fields that can be set are:
+** Apparent Age - how old your character looks.
+** Gender - your character's gender - if it starts with 'm' the code will assume male, 'f' for female. Anything else will assume non-binary with they/them pronouns.
+** IC Full Name - your character's full name.
+** IC Handle - your character's street alias.
+** IC Occupation - your character's job
+** IC Pronouns - your character's pronouns
+** OOC Pronouns - your (the player's) pronouns
+** Played-by - the actor you choose to represent your character
+** Position - your position on the game. This is a quasi-OOC field - some people use it for IC info, but it cannot be taken for granted as 'known' by other characters, so it goes in the OOC Info section.
+** Public Alts - the alts you want people to know you have.
+** Quote - something your character would say.
+** RP Prefs - your preferences in RP - "I love comedy and I hate drama" would be an example.
+** Short-desc - a brief description of your character. This shows up in the room when people +glance.
+** Themesong - your character's themesong.
+** Timezone - what timezone are you in, in real life? This helps with scheduling times to play.
+** Wiki - a link to your character's wiki page.
+|link1=+who
+|link2=+doing
+|link3=Communication
+|link4=+glance
+|category1=Intermediate_Commands
+|category2=
+}}

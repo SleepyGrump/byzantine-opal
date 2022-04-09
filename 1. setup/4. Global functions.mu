@@ -342,7 +342,7 @@
 
 &f.get-sort-order [v(d.bf)]=strcat(setq(S,), null(iter(default(%0/d.%1-sort, v(d.who-sort-order)), if(member(v(d.allowed-who-fields), itext(0), |), setq(S, %qS|[itext(0)])), |)), setq(S, trim(%qS, b, |)), %qS)
 
-&layout.who-list [v(d.bf)]=multicol(strcat(edit(setr(F, ulocal(f.get-fields, %1, %2, v(d.default-%2-fields))), Doing, poll()), |, iter(%0, ulocal(layout.who_data, itext(0), %1, %qF),, |)), ulocal(f.get-field-widths, %qF, %2), 1, |, %1)
+&layout.who-list [v(d.bf)]=multicol(strcat(edit(setr(F, ulocal(f.get-fields, %1, %2, v(d.default-%2-fields))), Doing, poll()), |, iter(whosort(%0, %1, %2), ulocal(layout.who_data, itext(0), %1, %qF),, |)), ulocal(f.get-field-widths, %qF, %2), 1, |, %1)
 
 &layout.who_data [v(d.bf)]=iter(%2, ulocal(f.get-[edit(itext(0), %b, _)], %0, %1), |, |)
 
