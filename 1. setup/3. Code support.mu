@@ -84,7 +84,7 @@
 
 &f.get-note-approval-status [v(d.bf)]=rest(default(%0/_notesettings-%1, 0|), |)
 
-&f.get-visible-notes [v(d.bf)]=strcat(setq(C, v(d.default-column-delimeter)), setq(R, v(d.default-row-delimeter)), setq(L, trim(squish(iter(lattr(%0/_note-*), strcat(setq(G, rest(itext(0), _NOTE-)), setq(T, xget(%0, ulocal(f.get-key-prefix, _note-)%qG)), if(cand(gte(ulocal(f.get-note-visibility-setting, %0, %qG), case(1, isstaff(%2), -1, isowner(%0, %2), 0, 1)), cor(not(t(%1)), strmatch(%qT, %1*))), strcat(itext(0), %qC, %qT))),, %qR), %qR), b, %qR)), if(t(%1), setq(X, trim(squish(iter(%qL, if(strmatch(rest(itext(0), %qC), %1), itext(0)), %qR, %qR), %qR), b, %qR))), if(t(%qX), %qX, %qL))
+&f.get-visible-notes [v(d.bf)]=strcat(setq(C, v(d.default-column-delimiter)), setq(R, v(d.default-row-delimiter)), setq(L, trim(squish(iter(lattr(%0/_note-*), strcat(setq(G, rest(itext(0), _NOTE-)), setq(T, xget(%0, ulocal(f.get-key-prefix, _note-)%qG)), if(cand(gte(ulocal(f.get-note-visibility-setting, %0, %qG), case(1, isstaff(%2), -1, isowner(%0, %2), 0, 1)), cor(not(t(%1)), strmatch(%qT, %1*))), strcat(itext(0), %qC, %qT))),, %qR), %qR), b, %qR)), if(t(%1), setq(X, trim(squish(iter(%qL, if(strmatch(rest(itext(0), %qC), %1), itext(0)), %qR, %qR), %qR), b, %qR))), if(t(%qX), %qX, %qL))
 
 &f.is-location-ooc [v(d.bf)]=hasattrp(%0, OOC)
 

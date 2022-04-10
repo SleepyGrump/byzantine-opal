@@ -42,7 +42,7 @@ If you already have news pages, follow one of the solutions listed here: https:/
 @@ Layouts
 @@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
 
-&layout.news-page [v(d.bf)]=strcat(header(ulocal(f.get-page-topic, %0), %1), %r, formattext(strcat(ulocal(f.get-page-short, %0), %r%r%t, ulocal(f.get-page-detail, %0)), 1, %1), ulocal(layout.see_also, %0, %1), %r, footer(news for more, %1))
+&layout.news-page [v(d.bf)]=strcat(header(ulocal(f.get-page-topic, %0), %1), %r, ulocal(layout.page-text, %0, %1), ulocal(layout.see_also, %0, %1), %r, footer(news for more, %1))
 
 @@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
 @@ Commands

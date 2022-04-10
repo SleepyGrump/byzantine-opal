@@ -9,6 +9,8 @@ Sample templates are included in "3. help files". Each help file is written for 
 
 TODO: BUG: on new game, lots of errors get thrown to the Monitor channel when user hits +help and there's no DB set up. That's sort of expected, though...
 
+TODO: Add a link to the wiki itself on each help/news file so the player can see the original text!
+
 */
 
 @@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
@@ -47,7 +49,7 @@ TODO: BUG: on new game, lots of errors get thrown to the Monitor channel when us
 
 &CRON_TIME_SQL [v(d.cron)]=|||04 08 12 16 20 24||
 
-&tr.sql-check [v(d.bc)]=@eval strcat(setr(R, sql(setr(Q, SELECT 1), v(d.default-row-delimeter), v(d.default-column-delimeter))), ulocal(tr.report_query_error, tr.sql-check, %qR, %qQ));
+&tr.sql-check [v(d.bc)]=@eval strcat(setr(R, sql(setr(Q, SELECT 1), v(d.default-row-delimiter), v(d.default-column-delimiter))), ulocal(tr.report_query_error, tr.sql-check, %qR, %qQ));
 
 @@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
 @@ MySQL statements
@@ -85,13 +87,23 @@ TODO: BUG: on new game, lots of errors get thrown to the Monitor channel when us
 @@ Work functions
 @@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
 
-&f.run-query [v(d.bf)]=strcat(setr(R, sql(setr(Q, ulocal(%0, lcstr(%1), %2)), v(d.default-row-delimeter), v(d.default-column-delimeter))), ulocal(tr.report_query_error, %0, %qR, %qQ))
+&f.run-query [v(d.bf)]=strcat(setr(R, sql(setr(Q, ulocal(%0, lcstr(%1), %2)), v(d.default-row-delimiter), v(d.default-column-delimiter))), ulocal(tr.report_query_error, %0, %qR, %qQ))
 
-&f.format-results [v(d.bf)]=strcat(setq(0, 0), iter(edit(trim(trim(translate(%0, p), b, lit(%r))), lit(%r), %r, lit(%t), %t, lit(%b), %b, lit(%%R), %%R, lit(%%T), %%T, %r%r%r, %r%r, lit(%(), %(, lit(%)), %), lit(%[), %[, lit(%]), %], %r***, %r%b%b%cx>>%cn*, %r**, %r%b%b*, \\\\\\\\, \\\\, %%t, %T, <blockquote>,, </blockquote>,), if(cor(strmatch(itext(0), ''*), t(%q0)), strcat(ansi(h, trim(itext(0), b, ')), setq(0, not(strmatch(itext(0), *'')))), itext(0))))
+&f.format-punctuation [v(d.bf)]=strcat(setq(0, %0), null(iter(strip(v(d.punctuation), %2), setq(0, iter(%q0, ulocal(%1, strcat(@@BREAK@@, itext(0))), itext(0), itext(0))))), edit(%q0, @@BREAK@@,))
 
-@@ th ulocal(v(d.bf)/f.format-results, ''Test''. Testing.)
+&f.format-word-bold-italic [v(d.bf)]=strcat(setq(1, 0), iter(%0, if(cor(strmatch(itext(0), ''*), t(%q1)), strcat(ansi(h, trim(itext(0), b, ')), setq(1, not(strmatch(itext(0), *'')))), itext(0))))
 
-@@ TODO: Format Results doesn't work if the '' comes right before punctuation. ''test''. <-- fails. Easy fix, remove punctuation except for ' in the match, but then that causes the trim to fail. Pity we can't run multiple separators on the iter... well, we could but that's a lot of work for an edge case...
+&f.format-paragraph [v(d.bf)]=iter(%0, ulocal(%1, itext(0)), %r%r, %r%r)
+
+&f.format-single-links [v(d.bf)]=strcat(setq(1, 0), iter(%0, if(cor(strmatch(itext(0), %%%[*), t(%q1)), ansi(h, strcat(setq(L, trim(trim(itext(0), b, %%%[), b, %%%])), switch(%qL, News:*, news%b, Help:, +help%b,), edit(if(strmatch(%qL, *@@PIPE@@*), rest(%qL, @@PIPE@@), %qL), _, %b)), setq(1, not(strmatch(itext(0), *%%%])))), itext(0))))
+
+&f.format-double-links [v(d.bf)]=strcat(setq(1, 0), iter(%0, if(cor(strmatch(itext(0), %%%[%%%[*), t(%q1)), ansi(h, strcat(setq(L, trim(trim(itext(0), b, %%%[), b, %%%])), switch(%qL, News:*, news%b, Help:, +help%b,), edit(if(strmatch(%qL, *@@PIPE@@*), rest(%qL, @@PIPE@@), %qL), _, %b)), setq(1, not(strmatch(itext(0), *%%%]%%%])))), itext(0))))
+
+&f.format-cleanse-links [v(d.bf)]=iter(%0, if(strmatch(itext(0), *%%%[*|*%%%]*), edit(itext(0), |, @@PIPE@@), itext(0)), =, =)
+
+&f.format-numbers [v(d.bf)]=if(strmatch(%0, *#*), strcat(setq(0, 1), iter(%0, if(cor(t(strlen(edit(itext(0), %r,))), eq(inum(0), 1)), strcat(itext(0), %q0.%b, setq(0, inc(%q0)))), #, @@)), %0)
+
+&f.format-results [v(d.bf)]=ulocal(f.format-paragraph, ulocal(f.format-punctuation, ulocal(f.format-punctuation, ulocal(f.format-punctuation, edit(ulocal(f.format-cleanse-links, trim(trim(translate(%0, p), b, lit(%r)))), lit(%%R), %%R, lit(%%T), %%T, %r%r%r, %r%r, lit(%(), %(, lit(%)), %), %r***, %r%b%b%cx>>%cn*, %r**, %r%b%b*, \\\\\\\\, \\\\, %%t, %T, <blockquote>,, </blockquote>,, lit(%r), %r, lit(%t), %t, lit(%b), %b), f.format-word-bold-italic, '), f.format-double-links, %[%]%%), f.format-single-links, %[%]%%.), f.format-numbers)
 
 &f.sanitize-where [v(d.bf)]=strcat(setq(0, strip(%0, v(d.sanitize-where))), setq(0, if(strmatch(%q0, * LIKE *), edit(%q0, *, %%%%), %q0)), edit(%q0, @@ESCAPE@@, \\\\))
 
@@ -107,9 +119,11 @@ TODO: BUG: on new game, lots of errors get thrown to the Monitor channel when us
 
 &layout.see_also [v(d.bf)]=if(t(setr(A, ulocal(f.get-page-links, %0))), strcat(%r, formattext(strcat(%r, Other topics:, %b, ulocal(layout.list, %qA)), 0, %1)))
 
-&layout.help-page [v(d.bf)]=strcat(header(ulocal(f.get-page-topic, %0), %1), %r, formattext(strcat(ulocal(f.get-page-short, %0), %r%r%t, ulocal(f.get-page-detail, %0)), 1, %1), %r, ulocal(layout.examples, %0, %1), ulocal(layout.see_also, %0, %1), %r, footer(+help for more, %1))
+&layout.page-text [v(d.bf)]=formattext(strcat(ulocal(f.get-page-short, %0), %r%r, setq(P, ulocal(f.get-page-detail, %0)), if(strmatch(%qP, \\**),, %t), %qP), 1, %1)
 
-&layout.list-category [v(d.bf)]=strcat(header(%0, %2), %r, formatcolumns(edit(%1, _, %b), v(d.default-row-delimeter), %2) %r, footer(switch(%3, news, %3, +%3) <file name> for more., %2))
+&layout.help-page [v(d.bf)]=strcat(header(ulocal(f.get-page-topic, %0), %1), %r, ulocal(layout.page-text, %0, %1), %r, ulocal(layout.examples, %0, %1), ulocal(layout.see_also, %0, %1), %r, footer(+help for more, %1))
+
+&layout.list-category [v(d.bf)]=strcat(header(%0, %2), %r, formatcolumns(edit(%1, _, %b), v(d.default-row-delimiter), %2) %r, footer(switch(%3, news, %3, +%3) <file name> for more., %2))
 
 &layout.namespace-categories [v(d.bf)]=if(t(setr(P, ulocal(f.run-query, sql.get-namespace-main-categories,, %2))), ulocal(layout.list-category, capstr(%2) categories, %qP, %0, %2), alert(Error) No %2 files found.)
 

@@ -255,7 +255,7 @@
 @@ Input: data as formatted by fetch()
 @@ Output: a table with rows and columns determined from the given data.
 
-&f.globalpp.formatdb [v(d.bf)]=strcat(setq(R, if(t(%2), %2, v(d.default-row-delimeter))), setq(C, if(t(%3), %3, v(d.default-column-delimeter))), setq(5, words(first(%0, %qR), %qC)), setq(T, edit(%0, %qC, %qR)), setq(0, ulocal(f.get-width, %4)), setq(1, v(d.body-left)), setq(2, v(d.body-right)), setq(3, sub(%q0, add(strlen(%q1), strlen(%q2), 4))), setq(4, div(%q3, inc(%q5))), setq(6, ceil(fdiv(words(%qT, %qR), %q5))), setq(7, ulocal(f.apply-effect, iter(lnum(%q6), %q1,, @@), strlen(%q1))), setq(8, ulocal(f.apply-effect, iter(lnum(%q6), %q2,, @@), strlen(%q2))), setq(E, sub(%q3, add(mul(%q4, %q5), %q5))), setq(4, add(%q4, div(%qE, %q5))), iter(lnum(%q6), strcat(%b, mid(%q7, mul(itext(0), strlen(%q1)), strlen(%q1)), %b, setq(9, mid(iter(lnum(%q5), ansi(if(cand(t(%1), eq(itext(1), 0)), strcat(first(v(d.colors)), %b, u)), ljust(mid(extract(%qT, add(mul(itext(1), %q5), inum(0)), 1, %qR), 0, %q4), %q4)),, %b), 0, %q3)), %q9, space(sub(%q3, strlen(%q9))), %b, mid(%q8, mul(itext(0), strlen(%q2)), strlen(%q2))),, %r))
+&f.globalpp.formatdb [v(d.bf)]=strcat(setq(R, if(t(%2), %2, v(d.default-row-delimiter))), setq(C, if(t(%3), %3, v(d.default-column-delimiter))), setq(5, words(first(%0, %qR), %qC)), setq(T, edit(%0, %qC, %qR)), setq(0, ulocal(f.get-width, %4)), setq(1, v(d.body-left)), setq(2, v(d.body-right)), setq(3, sub(%q0, add(strlen(%q1), strlen(%q2), 4))), setq(4, div(%q3, inc(%q5))), setq(6, ceil(fdiv(words(%qT, %qR), %q5))), setq(7, ulocal(f.apply-effect, iter(lnum(%q6), %q1,, @@), strlen(%q1))), setq(8, ulocal(f.apply-effect, iter(lnum(%q6), %q2,, @@), strlen(%q2))), setq(E, sub(%q3, add(mul(%q4, %q5), %q5))), setq(4, add(%q4, div(%qE, %q5))), iter(lnum(%q6), strcat(%b, mid(%q7, mul(itext(0), strlen(%q1)), strlen(%q1)), %b, setq(9, mid(iter(lnum(%q5), ansi(if(cand(t(%1), eq(itext(1), 0)), strcat(first(v(d.colors)), %b, u)), ljust(mid(extract(%qT, add(mul(itext(1), %q5), inum(0)), 1, %qR), 0, %q4), %q4)),, %b), 0, %q3)), %q9, space(sub(%q3, strlen(%q9))), %b, mid(%q8, mul(itext(0), strlen(%q2)), strlen(%q2))),, %r))
 
 @@ %0: data to work with
 @@ %1: a list of column widths
@@ -394,7 +394,7 @@
 
 @@ %0: Room number
 @@ Output: the public notes on a room.
-&f.globalpp.lnotes [v(d.bf)]=case(0, isdbref(%0), #-1 NOT A VALID DBREF, hastype(%0, ROOM), #-1 NOT A ROOM, cor(isstaff(%#), member(loc(%#), %0)), #-1 CAN'T SEE NOTES ELSEWHERE, strcat(setq(K, ulocal(f.get-key-prefix, _note-)), setq(L, ulocal(f.list-matching-pairs, %0, _note-, lattr(%0/%qK*), %qK)), trim(squish(iter(%qL, if(gte(ulocal(f.get-note-visibility-setting, %0, rest(first(itext(0), v(d.default-column-delimeter)), -)), case(1, isstaff(%2), -1, isowner(%0, %2), 0, 1)), itext(0)), v(d.default-row-delimeter), v(d.default-row-delimeter)), v(d.default-row-delimeter)), b, v(d.default-row-delimeter))))
+&f.globalpp.lnotes [v(d.bf)]=case(0, isdbref(%0), #-1 NOT A VALID DBREF, hastype(%0, ROOM), #-1 NOT A ROOM, cor(isstaff(%#), member(loc(%#), %0)), #-1 CAN'T SEE NOTES ELSEWHERE, strcat(setq(K, ulocal(f.get-key-prefix, _note-)), setq(L, ulocal(f.list-matching-pairs, %0, _note-, lattr(%0/%qK*), %qK)), trim(squish(iter(%qL, if(gte(ulocal(f.get-note-visibility-setting, %0, rest(first(itext(0), v(d.default-column-delimiter)), -)), case(1, isstaff(%2), -1, isowner(%0, %2), 0, 1)), itext(0)), v(d.default-row-delimiter), v(d.default-row-delimiter)), v(d.default-row-delimiter)), b, v(d.default-row-delimiter))))
 
 
 @@ ============================================================================
@@ -415,11 +415,11 @@
 @@ %1: the attribute prefix of the var - _note-, view-, etc. Note that the separator dash is part of the prefix; if you skip it you'll get &view123 obj=<blah>.
 @@ %2: (optional) The partial or exact title you're looking up. If you skip, this will return a list of vars and their titles separated by the default row and column delimiters.
 @@ Output: #-1 ERROR MESSAGE, the value that matches the key, or a list of keys and attributes.
-&f.globalpp.getpair [v(d.bf)]=case(0, cor(isstaff(%#), cand(not(member(num(me), %@)), hastype(%@, THING), andflags(%@, I!h!n), isstaff(owner(%@)))), #-1 PERMISSION DENIED, isdbref(%0), #-2 OBJECT NOT FOUND, t(%1), #-3 PREFIX IS REQUIRED, strcat(setq(K, ulocal(f.get-key-prefix, %1)), t(%2)), ulocal(f.list-matching-pairs, %0, %1, lattr(%0/%qK*), %qK), t(setr(V, ulocal(f.find-pairs-by-title, %0, %1, %2))), #-4 TITLE NOT FOUND, eq(words(%qV, v(d.default-row-delimeter)), 1), ulocal(f.list-matching-pairs, %0, %1, %qV, %qK), ulocal(%0/[strcat(%1, rest(%qV, ucstr(%qK)))]))
+&f.globalpp.getpair [v(d.bf)]=case(0, cor(isstaff(%#), cand(not(member(num(me), %@)), hastype(%@, THING), andflags(%@, I!h!n), isstaff(owner(%@)))), #-1 PERMISSION DENIED, isdbref(%0), #-2 OBJECT NOT FOUND, t(%1), #-3 PREFIX IS REQUIRED, strcat(setq(K, ulocal(f.get-key-prefix, %1)), t(%2)), ulocal(f.list-matching-pairs, %0, %1, lattr(%0/%qK*), %qK), t(setr(V, ulocal(f.find-pairs-by-title, %0, %1, %2))), #-4 TITLE NOT FOUND, eq(words(%qV, v(d.default-row-delimiter)), 1), ulocal(f.list-matching-pairs, %0, %1, %qV, %qK), ulocal(%0/[strcat(%1, rest(%qV, ucstr(%qK)))]))
 
 &f.get-key-prefix [v(d.bf)]=switch(%0, _*, strcat(_, key-, rest(%0, _)), key-%0)
 
-&f.list-matching-pairs [v(d.bf)]=iter(%2, strcat(%1, rest(itext(0), ucstr(%3)), v(d.default-column-delimeter), xget(%0, itext(0))),, v(d.default-row-delimeter))
+&f.list-matching-pairs [v(d.bf)]=iter(%2, strcat(%1, rest(itext(0), ucstr(%3)), v(d.default-column-delimiter), xget(%0, itext(0))),, v(d.default-row-delimiter))
 
 &f.find-pairs-by-title [v(d.bf)]=if(t(setr(P, ulocal(f.find-pairs-by-exact-title, %0, %1, %2))), %qP, trim(squish(iter(grepi(%0, ulocal(f.get-key-prefix, %1)*, %2), if(strmatch(xget(%0, itext(0)), %2*), itext(0))))))
 
@@ -428,13 +428,13 @@
 @@ %0: object
 @@ %1: prefix
 @@ %2: which key to get the proper, stored title of
-&f.globalpp.getpairkey [v(d.bf)]=case(0, cor(isstaff(%#), cand(not(member(num(me), %@)), hastype(%@, THING), andflags(%@, I!h!n), isstaff(owner(%@)))), #-1 PERMISSION DENIED, isdbref(%0), #-2 OBJECT NOT FOUND, t(%1), #-3 PREFIX IS REQUIRED, strcat(setq(K, ulocal(f.get-key-prefix, %1)), t(%2)), ulocal(f.list-matching-pairs, %0, %1, lattr(%0/%qK*), %qK), t(setr(V, ulocal(f.find-pairs-by-title, %0, %1, %2))), #-4 TITLE NOT FOUND, eq(words(%qV, v(d.default-row-delimeter)), 1), ulocal(f.list-matching-pairs, %0, %1, %qV, %qK), xget(%0, %qV))
+&f.globalpp.getpairkey [v(d.bf)]=case(0, cor(isstaff(%#), cand(not(member(num(me), %@)), hastype(%@, THING), andflags(%@, I!h!n), isstaff(owner(%@)))), #-1 PERMISSION DENIED, isdbref(%0), #-2 OBJECT NOT FOUND, t(%1), #-3 PREFIX IS REQUIRED, strcat(setq(K, ulocal(f.get-key-prefix, %1)), t(%2)), ulocal(f.list-matching-pairs, %0, %1, lattr(%0/%qK*), %qK), t(setr(V, ulocal(f.find-pairs-by-title, %0, %1, %2))), #-4 TITLE NOT FOUND, eq(words(%qV, v(d.default-row-delimiter)), 1), ulocal(f.list-matching-pairs, %0, %1, %qV, %qK), xget(%0, %qV))
 
 @@ %0: object
 @@ %1: prefix
 @@ %2: which key to get the attribute index of
 @@ Output: the destination attribute, without the prefix.
-&f.globalpp.getpairattr [v(d.bf)]=case(0, cor(isstaff(%#), cand(not(member(num(me), %@)), hastype(%@, THING), andflags(%@, I!h!n), isstaff(owner(%@)))), #-1 PERMISSION DENIED, isdbref(%0), #-2 OBJECT NOT FOUND, t(%1), #-3 PREFIX IS REQUIRED, strcat(setq(K, ulocal(f.get-key-prefix, %1)), t(%2)), ulocal(f.list-matching-pairs, %0, %1, lattr(%0/%qK*), %qK), t(setr(V, ulocal(f.find-pairs-by-title, %0, %1, %2))), #-4 TITLE NOT FOUND, eq(words(%qV, v(d.default-row-delimeter)), 1), ulocal(f.list-matching-pairs, %0, %1, %qV, %qK), rest(%qV, ucstr(%qK)))
+&f.globalpp.getpairattr [v(d.bf)]=case(0, cor(isstaff(%#), cand(not(member(num(me), %@)), hastype(%@, THING), andflags(%@, I!h!n), isstaff(owner(%@)))), #-1 PERMISSION DENIED, isdbref(%0), #-2 OBJECT NOT FOUND, t(%1), #-3 PREFIX IS REQUIRED, strcat(setq(K, ulocal(f.get-key-prefix, %1)), t(%2)), ulocal(f.list-matching-pairs, %0, %1, lattr(%0/%qK*), %qK), t(setr(V, ulocal(f.find-pairs-by-title, %0, %1, %2))), #-4 TITLE NOT FOUND, eq(words(%qV, v(d.default-row-delimiter)), 1), ulocal(f.list-matching-pairs, %0, %1, %qV, %qK), rest(%qV, ucstr(%qK)))
 
 @@ %0: the object to set the var to
 @@ %1: the attribute prefix of the var - _note-, view-, _c., etc.

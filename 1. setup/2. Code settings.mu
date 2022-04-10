@@ -10,9 +10,9 @@
 &d.max-travel-categories [v(d.bd)]=3
 
 @@ Make sure these match the defaults in your SQL Commands install if you change those. Note that these are used for other things beyond SQL so consider carefully before changing them.
-&d.default-row-delimeter [v(d.bd)]=|
+&d.default-row-delimiter [v(d.bd)]=@@ROW@@
 
-&d.default-column-delimeter [v(d.bd)]=~
+&d.default-column-delimiter [v(d.bd)]=@@COLUMN@@
 
 &d.dangerous_in_sql [v(d.bd)]=%*_`\
 
@@ -23,7 +23,7 @@
 @@ Title case functions
 &d.words-to-leave-uncapitalized [v(d.bd)]=a an and as at but by for in it nor of on or the to up von
 
-&d.punctuation [v(d.bd)]=. , ? ! ; : ( ) < > { } * / - + " '
+&d.punctuation [v(d.bd)]=. , ? ! ; : ( ) < > { } [ ] * / - + " '
 
 &d.banned-characters [v(d.bd)]=. , ? ! ; : ( ) < > { } * / - + " ' % # @ + = $ ^ & _ | \ [ ]
 
@@ -77,9 +77,9 @@
 
 @desc [v(d.rp)]=%R%TThis is the default room description.%R
 
-&layout.views [v(d.rp)]=strcat(%r, divider(+views, %2), %r, formatcolumns(iter(%1, rest(itext(0), v(d.default-column-delimeter)), v(d.default-row-delimeter), v(d.default-row-delimeter)), v(d.default-row-delimeter), %2))
+&layout.views [v(d.rp)]=strcat(%r, divider(+views, %2), %r, formatcolumns(iter(%1, rest(itext(0), v(d.default-column-delimiter)), v(d.default-row-delimiter), v(d.default-row-delimiter)), v(d.default-row-delimiter), %2))
 
-&layout.notes [v(d.rp)]=strcat(%r, divider(+notes, %2), %r, formatcolumns(iter(%1, rest(itext(0), v(d.default-column-delimeter)), v(d.default-row-delimeter), v(d.default-row-delimeter)), v(d.default-row-delimeter), %2))
+&layout.notes [v(d.rp)]=strcat(%r, divider(+notes, %2), %r, formatcolumns(iter(%1, rest(itext(0), v(d.default-column-delimiter)), v(d.default-row-delimiter), v(d.default-row-delimiter)), v(d.default-row-delimiter), %2))
 
 @descformat [v(d.rp)]=strcat(formattext(%0, 1, %#), if(t(setr(V, lviews(num(me)))), ulocal(layout.views, num(me), %qV, %#)), if(t(setr(N, lnotes(num(me)))), ulocal(layout.notes, num(me), %qN, %#)))
 
