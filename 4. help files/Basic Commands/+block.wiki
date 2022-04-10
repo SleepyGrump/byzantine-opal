@@ -1,0 +1,19 @@
+{{help
+|topic=+block
+|detail=If a player is giving you OOC trouble of any kind, you can +block them. This prevents them from contacting you via page. It doesn't prevent them from using msg to send you an IC message, so be sure to use '''msg/block <player>''' if you want to block them there as well.
+|example=
+* '''+block <name>''' - block a player from paging you.
+* '''+block all''' - block everybody from paging you.
+* '''+unblock <name>''' - unblock them.
+* '''+block/clear''' - clear all blocks.
+* '''+block/who''' - see who you're blocking.
+* '''+whitelist <name>''' - allow someone to page you even when you're blocking everyone.
+* '''+blacklist <name>''' - remove someone from your whitelist.
+* '''+whitelist/clear''' - remove everyone from your whitelist.
+|link1=Troubleshooting
+|link2=Communication
+|link3=+channels
+|link4=Msg
+|category1=Basic_Commands
+|category2=
+}}

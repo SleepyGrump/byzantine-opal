@@ -1,23 +1,18 @@
-<!-- This file goes under <yourwiki>/Template:Help - do not include this comment. Have someone who knows how layouts work arrange it to your liking. -->
-
+<!-- Add this file at <yourwiki>/Template:News. Do not include this comment. -->
 <onlyinclude>
 {{#ifeq: {{{short|}}} | | | {{#css:
-.ShortHelpDesc {
+.ShortNewsDesc {
    position: relative;
    top: -1em;
    font-style: italic;
 }
-}}<span class="ShortHelpDesc">{{{short}}}</span> }}<div class="HelpDetail">{{{detail}}}</div>{{#ifeq: {{{example|}}} | | | <div class="HelpExamples">
-== Examples == 
-
-{{{example}}}
-</div> }}
+}}<span class="ShortNewsDesc">{{{short}}}</span> }}<div class="NewsDetail">{{{detail}}}</div>
 
 {{#ifeq: {{{link1|}}} | | | 
 == Other Suggested Topics == 
-[[Help:{{{link1}}}|{{{link1}}}]] }}{{#ifeq: {{{link2|}}} | | | , [[Help:{{{link2}}}|{{{link2}}}]] }}{{#ifeq: {{{link3|}}} | | | , [[Help:{{{link3}}}|{{{link3}}}]] }}{{#ifeq: {{{link4|}}} | | | , [[Help:{{{link4}}}|{{{link4}}}]] }}
+[[News:{{{link1}}}|{{{link1}}}]] }}{{#ifeq: {{{link2|}}} | | | , [[News:{{{link2}}}|{{{link2}}}]] }}{{#ifeq: {{{link3|}}} | | | , [[News:{{{link3}}}|{{{link3}}}]] }}{{#ifeq: {{{link4|}}} | | | , [[News:{{{link4}}}|{{{link4}}}]] }}
 
-[[Category:Help]][[Category:{{{category1}}}]]{{#ifeq: {{{category2|}}} | | | [[Category:{{{category2}}}]] }}
+[[Category:News]][[Category:{{{category1}}}]]{{#ifeq: {{{category2|}}} | | | [[Category:{{{category2}}}]] }}
 __NOTOC__
 {{DISPLAYTITLE:{{{topic}}}|noerror}}
 </onlyinclude>

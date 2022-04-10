@@ -21,8 +21,8 @@
 * '''+ooc''' - go out of character.
 |link1=+ooc
 |link2=+travel
-|link3=+meetme
-|link4=+join
+|link3=+join
+|link4=+where
 |category1=Basic_Commands
 |category2=
 }}

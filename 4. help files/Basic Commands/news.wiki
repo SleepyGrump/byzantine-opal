@@ -1,0 +1,14 @@
+{{help
+|topic=news
+|detail=The 'news' command lets you get information about the game without visiting the wiki. It works much the same as +help, but is for setting information, policies, house rules, etc.
+|example=
+* '''news''' - see a list of topics.
+* '''news <topic>''' - see the information on a particular topic.
+* '''news/search <topic>''' - find all references to a particular topic.
+|link1=+help
+|link2=
+|link3=
+|link4=
+|category1=Basic_Commands
+|category2=
+}}

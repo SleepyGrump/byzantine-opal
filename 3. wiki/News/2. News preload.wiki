@@ -1,0 +1,14 @@
+<!--
+This file goes under <yourwiki>/Template:News/Preload. Do not include this comment.
+-->
+{{news
+|topic=Topic
+|short=Short description.
+|detail=Slightly longer details.
+|link1=Topic2
+|link2=
+|link3=
+|link4=
+|category1=Category_1
+|category2=
+}}

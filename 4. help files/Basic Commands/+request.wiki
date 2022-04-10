@@ -1,0 +1,14 @@
+{{help
+|topic=+request
+|detail=+request is a way of asking for help. All requests go to staff.
+|example=
+* '''req/help''' - see a list of request types.
+* '''req/<type> <title>=<text>''' - create a request of <type>. Types are important - they help staff prioritize your request correctly and assign it to the place it needs to go.
+* '''+request <title>=<text>''' - if you're not sure what kind of request to make it, a general request is fine. Give it a title and provide enough information that staff can figure out what you need.
+|link1=+staff
+|link2=Troubleshooting
+|link3=Communication
+|link4=+channels
+|category1=Basic_Commands
+|category2=
+}}

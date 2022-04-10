@@ -1,0 +1,14 @@
+<!-- Create your Help SubCategories at <yourwiki>/Category:<SubCategoryName> and put this content inside each of them. Don't include this comment.
+
+If you're importing the help files included in this repository, you should create the following subcategories:
+
+Category:Basic_Commands
+Category:IC_Commands
+Category:Intermediate_Commands
+Category:Jobs_Commands
+Category:Pro_Commands
+Category:Staff_Commands
+
+as well as any others you want to link different help files to.
+-->
+[[Category:Help]]

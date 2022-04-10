@@ -1,0 +1,14 @@
+<!-- This page should be created at <yourwiki>/Category:News. Do not include this comment. -->
+
+Information about the game - setting, policies, etc - is available under News.
+
+To create a new News file (staff only, please), enter the command name below:
+
+<inputbox>
+type=create
+preload=Template:News/Preload
+placeholder=Topic
+editintro=Template:News/Preload
+prefix=News:
+break=no
+</inputbox>

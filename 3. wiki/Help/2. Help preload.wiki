@@ -1,7 +1,6 @@
 <!--
-This file goes under <yourwiki>/Template:Help/Preload. Do not include this comment. 
+This file goes under <yourwiki>/Template:Help/Preload. Do not include this comment.
 -->
-
 {{help
 |topic=+command
 |short=Short description.

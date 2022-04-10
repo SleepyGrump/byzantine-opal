@@ -1,0 +1,16 @@
+{{help
+|topic=+owners
+|detail=See who owns the property you're in. The owner of the property is who you should contact about events that take place on their property for follow-up roleplay. You don't have to contact them, but it's considered polite to do so if you made major changes or a giant mess, since no ongoing changes will be made to the property without the owner's or staff's consent.
+|example=
+* '''+owners''' - see who owns the location you're playing in. If you own it, you'll see a list of commands you can perform as the owner of the place.
+* '''+owner/add <player>''' - if you own the place, you can add other owners.
+* '''+owner/delete <player>''' - remove someone as an owner.
+* '''+here/help''' - see a list of more commands owners can use.
+* '''+owners/clean''' (staff-only) - removes all unapproved players as owners of property. Should be run regularly.
+|link1=+property
+|link2=+travel
+|link3=+temprooms
+|link4=+where
+|category1=IC_Commands
+|category2=Intermediate_Commands
+}}

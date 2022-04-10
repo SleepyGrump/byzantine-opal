@@ -1,0 +1,77 @@
+<!-- Add this file at <yourwiki>/Template:Help. Do not include this comment. -->
+<onlyinclude>
+{{#ifeq: {{{short|}}} | | | {{#css:
+.ShortHelpDesc {
+   position: relative;
+   top: -1em;
+   font-style: italic;
+}
+}}<span class="ShortHelpDesc">{{{short}}}</span> }}<div class="HelpDetail">{{{detail}}}</div>{{#ifeq: {{{example|}}} | | | <div class="HelpExamples">
+== Commands == 
+
+{{{example}}}
+</div> }}
+
+{{#ifeq: {{{link1|}}} | | | 
+== Other Suggested Topics == 
+[[Help:{{{link1}}}|{{{link1}}}]] }}{{#ifeq: {{{link2|}}} | | | , [[Help:{{{link2}}}|{{{link2}}}]] }}{{#ifeq: {{{link3|}}} | | | , [[Help:{{{link3}}}|{{{link3}}}]] }}{{#ifeq: {{{link4|}}} | | | , [[Help:{{{link4}}}|{{{link4}}}]] }}
+
+[[Category:Help]][[Category:{{{category1}}}]]{{#ifeq: {{{category2|}}} | | | [[Category:{{{category2}}}]] }}
+__NOTOC__
+{{DISPLAYTITLE:{{{topic}}}|noerror}}
+</onlyinclude>
+<noinclude>
+<templatedata>
+{
+	"params": {
+		"topic": {
+			"type": "line",
+			"required": true
+		},
+		"short": {
+			"type": "line",
+			"suggested": true
+		},
+		"detail": {
+			"type": "content",
+			"required": true
+		},
+		"link1": {
+			"type": "wiki-page-name"
+		},
+		"example": {
+			"type": "content",
+			"suggested": true
+		},
+		"link2": {
+			"type": "wiki-page-name"
+		},
+		"link3": {
+			"type": "wiki-page-name"
+		},
+		"link4": {
+			"type": "wiki-page-name"
+		},
+		"category1": {
+			"type": "wiki-page-name",
+			"required": true
+		},
+		"category2": {
+			"type": "wiki-page-name"
+		}
+	},
+	"paramOrder": [
+		"topic",
+		"short",
+		"detail",
+		"example",
+		"link1",
+		"link2",
+		"link3",
+		"link4",
+		"category1",
+		"category2"
+	]
+}
+</templatedata>
+</noinclude>

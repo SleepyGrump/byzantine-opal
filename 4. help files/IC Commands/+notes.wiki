@@ -10,9 +10,8 @@
 * '''+note/public <target>/<title>''' - make a note public.
 * '''+note/private <target>/<title>''' - make a note private.
 * '''+note/prove <target>/<title>''' - show a note you own to another player.
-note on an object.
 |link1=+notes2
-|link2=+view
+|link2=+views
 |link3=+property
 |link4=+desc
 |category1=IC_Commands

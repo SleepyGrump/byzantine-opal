@@ -1,0 +1,11 @@
+<!-- This should be on every sub-category of News if you want it to show up on news. Don't include this comment.
+
+Sample sub-categories:
+
+Category:Setting
+Category:Policies
+Category:House Rules
+
+Etc. Add one for every sub-section you want to display on 'news' and make sure their contents are as below. Do not include this comment.
+-->
+[[Category:News]]
