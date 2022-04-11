@@ -1,8 +1,6 @@
 {{help
 |topic=+ooc and ooc
-|detail=The 'ooc' command marks whatever you're saying as Out Of Character. You don't need to use it in the OOC rooms - everything said there is assumed to be OOC - but you might want to use it in an IC (In Character) room to let people know your OOC thoughts.
-
-	The '+ooc' command takes you Out Of Character and removes you from the IC room you were playing in. It is important to note that anyone can leave any scene at any time for any reason. It's considered polite to give an OOC heads up - ooc Gotta go, AFK! - but absolutely not required.
+|detail=The 'ooc' command marks whatever you're saying as Out Of Character. You don't need to use it in the OOC rooms - everything said there is assumed to be OOC - but you might want to use it in an IC (In Character) room to let people know your OOC thoughts.<br /><br />The '+ooc' command takes you Out Of Character and removes you from the IC room you were playing in. It is important to note that anyone can leave any scene at any time for any reason. It's considered polite to give an OOC heads up - ooc Gotta go, AFK! - but absolutely not required.
 |example=
 * ooc Test - will show <OOC> YourName says "Test"
 * ooc :does stuff. - will show <OOC> YourName does stuff.

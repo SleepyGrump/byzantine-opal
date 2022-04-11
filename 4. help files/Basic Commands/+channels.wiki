@@ -2,7 +2,7 @@
 |topic=+channels
 |detail=Channels are for discussing specific topics. They can be either OOC or IC, though normally they're OOC. Topics might include things like game rules, character generation, or just a public hangout for everyone to enjoy.
 
-	Our game allows each player to make their own channel to share with their friends, which can be public or private as the player chooses.
+Our game allows each player to make their own channel to share with their friends, which can be public or private as the player chooses.
 |example=
 * '''+channels''' - see a list of available channels. The alias is the most important info - channel commands are performed with "<alias>/<command>" - for example, pub/on to join the public channel.
 * '''+channel <name>''' - get more info about a channel.

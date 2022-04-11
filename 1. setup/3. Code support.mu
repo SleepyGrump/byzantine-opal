@@ -363,4 +363,4 @@
 
 &layout.log [v(d.bf)]=cat(ansi(xh, extract(%0, 1, 2, /)), rest(rest(rest(%0))))
 
-&layout.list [v(d.bf)]=if(t(%0), itemize(setunion(%0, %0, |), |, if(t(%1), %1, and)), None)
+&layout.list [v(d.bf)]=if(t(%0), itemize(trim(setunion(%0, %0, |), b, |), |, if(t(%1), %1, and)), None)

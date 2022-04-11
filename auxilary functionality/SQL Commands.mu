@@ -177,7 +177,7 @@ TODO: all items below.
 
 &tr.make-functions [v(d.sf)]=@dolist lattr(me/f.global.*)=@function rest(rest(##, .), .)=me/##; @dolist lattr(me/f.globalp.*)=@function/preserve rest(rest(##, .), .)=me/##; @dolist lattr(me/f.globalpp.*)=@function/preserve/privilege rest(rest(##, .), .)=me/##;
 
-&f.sanitize-where [v(d.sf)]=strcat(setq(0, strip(%0, v(d.sanitize-where))), setq(0, if(strmatch(%q0, * LIKE *), edit(%q0, *, %%%%), %q0)), edit(%q0, @@ESCAPE@@, \\\\))
+&f.sanitize-where [v(d.sf)]=strcat(setq(0, edit(strip(%0, v(d.sanitize-where)), ', '')), setq(0, if(strmatch(%q0, * LIKE *), edit(%q0, *, %%%%), %q0)), edit(%q0, @@ESCAPE@@, \\\\))
 
 &layout.query_error [v(d.sf)]=strcat(Query error in %0:, %b, \[%1\], :%b, %2)
 

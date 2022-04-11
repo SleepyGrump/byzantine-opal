@@ -1,8 +1,6 @@
 {{help
 |topic=+ic and IC communication
-|detail=+ic will take you In Character (if you're approved).
-
-	Once you're there, you'll need to be able to roleplay. The various commands below will show you how to communicate as your character.
+|detail=+ic will take you In Character (if you're approved).<br /><br />Once you're there, you'll need to be able to roleplay. The various commands below will show you how to communicate as your character.
 |example=
 * YourName says "Test!"
 ** say Test!

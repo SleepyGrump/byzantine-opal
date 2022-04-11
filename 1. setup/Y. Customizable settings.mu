@@ -13,6 +13,36 @@
 
 @@ Make sure to also edit your badsite_connect file to include the above email address.
 
+@@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
+@@ +help and news settings
+@@ +help and news require additional customization to work with your wiki.
+@@ See the files Wiki +help.mu and Wiki news.mu for additional changes.
+@@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
+
+@@ Your wiki prefix, if any:
+&vP [v(d.bd)]=wiki_
+
+@@ This is for if you're using wiki help and news.
+&d.wiki-url [v(d.bd)]=<your wiki url here>
+
+@@ The Help namespace text. We're going with MediaWiki's built in Help namespace by default. If you put it in a custom namespace, change it to your custom namespace name. This might involve a _ instead of a space if you have a space in your namespace, AKA Game Help. Try it both ways and make sure it works.
+&d.help.namespace [v(d.bd)]=Help
+
+@@ The Help namespace ID. This is 12 by default and is set by MediaWiki. Change it to the new ID if you're putting Help in a new namespace.
+&d.help.namespace.id [v(d.bd)]=12
+
+@@ News Settings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
+
+@@ The News namespace text.
+&d.news.namespace [v(d.bd)]=News
+
+@@ The News namespace ID.
+&d.news.namespace.id [v(d.bd)]=3000
+
+@@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
+@@ Other settings
+@@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
+
 @@ I like Posebreak on by default. Change this to 0 if you don't.
 &_posebreak [v(d.pp)]=1
 

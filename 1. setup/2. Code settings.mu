@@ -20,6 +20,34 @@
 
 &d.allowed_with_escapes_in_sql [v(d.bd)]=' "
 
+@@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
+@@ Wiki help and news default settings
+@@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
+
+&d.help.topic.field [v(d.bd)]=topic
+
+&d.help.shortdesc.field [v(d.bd)]=short
+
+&d.help.detail.field [v(d.bd)]=detail
+
+&d.help.example.field [v(d.bd)]=example
+
+&d.help.link.field [v(d.bd)]=link
+
+&d.help.link.count [v(d.bd)]=4
+
+&d.news.topic.field [v(d.bd)]=topic
+
+&d.news.shortdesc.field [v(d.bd)]=short
+
+&d.news.detail.field [v(d.bd)]=detail
+
+&d.news.link.field [v(d.bd)]=link
+
+&d.news.link.count [v(d.bd)]=4
+
+@@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
+
 @@ Title case functions
 &d.words-to-leave-uncapitalized [v(d.bd)]=a an and as at but by for in it nor of on or the to up von
 

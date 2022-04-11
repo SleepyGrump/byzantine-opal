@@ -15,34 +15,9 @@ $wgUrlProtocols = array_diff( $wgUrlProtocols, array( 'news:' ) );
 
 If you already have news pages, follow one of the solutions listed here: https://www.mediawiki.org/wiki/Manual:Using_custom_namespaces#Dealing_with_existing_pages
 
+You could basically duplicate this process for anything you want to show on the MU* that's stored on the wiki, so long as the wiki pages use the templates.
+
 */
-
-
-@@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
-@@ Settings
-@@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
-
-&d.news.topic.field [v(d.bd)]=topic
-
-&d.news.shortdesc.field [v(d.bd)]=short
-
-&d.news.detail.field [v(d.bd)]=detail
-
-&d.news.link.field [v(d.bd)]=link
-
-&d.news.link.count [v(d.bd)]=4
-
-@@ The News namespace text.
-&d.news.namespace [v(d.bd)]=News
-
-@@ The News namespace ID.
-&d.news.namespace.id [v(d.bd)]=3000
-
-@@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
-@@ Layouts
-@@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
-
-&layout.news-page [v(d.bf)]=strcat(header(ulocal(f.get-page-topic, %0), %1), %r, ulocal(layout.page-text, %0, %1), ulocal(layout.see_also, %0, %1), %r, footer(news for more, %1))
 
 @@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
 @@ Commands

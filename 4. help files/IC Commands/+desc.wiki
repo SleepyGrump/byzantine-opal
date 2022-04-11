@@ -1,8 +1,6 @@
 {{help
 |topic=+desc and looking
-|detail=Part of getting around the game is seeing what things look like. You can view rooms, exits, objects, and other players. You can also describe things you own, like yourself and your property. By default, when you enter a room, you'll be shown a description of the room and a short description of the people in it.
-
-	All players are expected to have at least one sentence of relevant text for their description.
+|detail=Part of getting around the game is seeing what things look like. You can view rooms, exits, objects, and other players. You can also describe things you own, like yourself and your property. By default, when you enter a room, you'll be shown a description of the room and a short description of the people in it.<br /><br />All players are expected to have at least one sentence of relevant text for their description.
 |example=
 * '''look''' or '''l''' - look at the room's description.
 * '''l <player>''' - look at another player's description.
