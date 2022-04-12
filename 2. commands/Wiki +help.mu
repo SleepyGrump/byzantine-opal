@@ -82,7 +82,7 @@ TODO: BUG: on new game, lots of errors get thrown to the Monitor channel when us
 
 &f.format-cleanse-links [v(d.bf)]=edit(iter(%0, if(strmatch(itext(0), *%[*|*%]*), edit(itext(0), |, @@PIPE@@), itext(0)), =, =), strcat(@@PIPE@@, if(t(setr(X, v(d.%1.example.field))), %qX, setr(X, v(d.%1.link.field)))), |%qX)
 
-&f.format-numbers [v(d.bf)]=if(strmatch(%0, *#*), strcat(setq(0, 1), iter(%0, if(cor(t(strlen(edit(itext(0), %r,))), eq(inum(0), 1)), strcat(itext(0), if(cand(cor(strmatch(itext(0), *%r),  eq(inum(0), 1)), neq(inum(0), words(%0, #))), %q0.%b), setq(0, inc(%q0)))), #, @@)), %0)
+&f.format-numbers [v(d.bf)]=if(strmatch(%0, *%r#*), strcat(setq(0, 1), iter(%0, if(cor(t(strlen(edit(itext(0), %r,))), eq(inum(0), 1)), strcat(itext(0), if(cand(cor(strmatch(itext(0), *%r),  eq(inum(0), 1)), neq(inum(0), words(%0, #))), %q0.%b), setq(0, inc(%q0)))), #, @@)), %0)
 
 &f.format-bullets [v(d.bf)]=edit(%0, %r***, %r%b%b%b%b*, %r**, %r%b%b*)
 
