@@ -52,15 +52,17 @@ TODO: BUG: on new game, lots of errors get thrown to the Monitor channel when us
 @@ Info functions
 @@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
 
-&f.get-page-topic [v(d.bf)]=trim(rest(finditem(%0, v(d.help.topic.field)=, |), =), b, %r)
+&f.get-page-topic [v(d.bf)]=trim(rest(finditem(%0, v(d.%1.topic.field)=, |), =), b, %r)
 
-&f.get-page-short [v(d.bf)]=trim(rest(finditem(%0, v(d.help.shortdesc.field)=, |), =), b, %r)
+&f.get-page-short [v(d.bf)]=trim(rest(finditem(%0, v(d.%1.shortdesc.field)=, |), =), b, %r)
 
-&f.get-page-detail [v(d.bf)]=trim(rest(finditem(%0, v(d.help.detail.field)=, |), =), b, %r)
+&f.get-page-detail [v(d.bf)]=trim(rest(finditem(%0, v(d.%1.detail.field)=, |), =), b, %r)
 
-&f.get-page-example [v(d.bf)]=trim(rest(finditem(%0, v(d.help.example.field)=, |), =), b, %r)
+&f.get-page-example [v(d.bf)]=trim(rest(finditem(%0, v(d.%1.example.field)=, |), =), b, %r)
 
-&f.get-page-links [v(d.bf)]=squish(trim(edit(iter(lnum(1, v(d.help.link.count)), trim(trim(trim(rest(finditem(%0, strcat(v(d.help.link.field), itext(0), =), |), =)), b, %b%r), b, %r),, |), %b%r,), b, |), |)
+&f.get-page-links [v(d.bf)]=squish(trim(edit(iter(lnum(1, v(d.%1.link.count)), trim(rest(finditem(%0, strcat(v(d.%1.link.field), itext(0), =), |), =)),, |), %r,, _, %b), b, |), |)
+
+&f.get-page-categories [v(d.bf)]=squish(trim(edit(iter(lnum(1, v(d.%1.category.count)), edit(trim(rest(finditem(%0, strcat(v(d.%1.category.field), itext(0), =), |), =)), %r,),, |), %%%}%%%},, _, %b), b, |), |)
 
 @@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
 @@ Work functions
@@ -74,39 +76,41 @@ TODO: BUG: on new game, lots of errors get thrown to the Monitor channel when us
 
 &f.format-tabs [v(d.bf)]=iter(%0, if(strmatch(itext(0), :*), strcat(edit(first(itext(0)), :, %t), rest(itext(0))), itext(0)), %r, %r)
 
-&f.format-links [v(d.bf)]=strcat(setq(1, 0), iter(%0, if(cor(switch(itext(0), %%%[*, 1, %%%[%%%[*, 1, %[%[*, 1, %[*, 1, 0), t(%q1)), ansi(h, strcat(setq(L, edit(itext(0), %%%[,, %%%],, %[,, %],)), switch(%qL, News:*, news%b, Help:, +help%b,), edit(if(strmatch(%qL, *@@PIPE@@*), rest(%qL, @@PIPE@@), %qL), _, %b)), setq(1, not(switch(itext(0), *%%%]*, 1, *%%%]%%%]*, 1, *%]%]*, 1, *%]*, 1, 0)))), itext(0))))
+&f.format-links [v(d.bf)]=strcat(setq(1, 0), iter(%0, if(cor(switch(itext(0), %%%[*, 1, %%%[%%%[*, 1, %[%[*, 1, %[*, 1, 0), t(%q1)), ansi(h, strcat(setq(L, edit(itext(0), %%%[,, %%%],, %[,, %],)), switch(%qL, News:*, news%b, Help:, +help%b,), edit(if(strmatch(%qL, *@@PIPE@@*), rest(%qL, @@PIPE@@), %qL), _, %b, News:,, Help:,)), setq(1, not(switch(itext(0), *%%%]*, 1, *%%%]%%%]*, 1, *%]%]*, 1, *%]*, 1, 0)))), itext(0))))
 
-&f.format-bold-italic [v(d.bf)]=strcat(setq(1, 0), iter(%0, if(cor(strmatch(trim(itext(0), b, %r), ''*), t(%q1)), ansi(h, trim(edit(itext(0), ''',,'',), b, '), setq(1, not(cand(strmatch(itext(0), *''*), cor(not(strmatch(trim(itext(0), b, %r), ''*)), strmatch(itext(0), ''*'')))))), itext(0))))
+&f.format-bold-italic [v(d.bf)]=edit(strcat(setq(1, 0), iter(edit(%0, %r, %b%r, %(, @@LEFTPAREN@@%b, %), %b@@RIGHTPAREN@@), if(cor(strmatch(trim(itext(0), b, %r), ''*), t(%q1)), ansi(h, trim(edit(itext(0), ''',,'',), b, '), setq(1, not(cand(strmatch(itext(0), *''*), cor(not(strmatch(trim(itext(0), b, %r), ''*)), strmatch(trim(itext(0), b, %r), ''*'')))))), itext(0)))), %b%r, %r,@@LEFTPAREN@@%b, %(, %b@@RIGHTPAREN@@, %))
 
-&f.format-cleanse-links [v(d.bf)]=iter(%0, if(strmatch(itext(0), *%[*|*%]*), edit(itext(0), |, @@PIPE@@), itext(0)), =, =)
+&f.format-cleanse-links [v(d.bf)]=edit(iter(%0, if(strmatch(itext(0), *%[*|*%]*), edit(itext(0), |, @@PIPE@@), itext(0)), =, =), strcat(@@PIPE@@, if(t(setr(X, v(d.%1.example.field))), %qX, setr(X, v(d.%1.link.field)))), |%qX)
 
 &f.format-numbers [v(d.bf)]=if(strmatch(%0, *#*), strcat(setq(0, 1), iter(%0, if(cor(t(strlen(edit(itext(0), %r,))), eq(inum(0), 1)), strcat(itext(0), if(cand(cor(strmatch(itext(0), *%r),  eq(inum(0), 1)), neq(inum(0), words(%0, #))), %q0.%b), setq(0, inc(%q0)))), #, @@)), %0)
 
-&f.format-bullets [v(d.bf)]=edit(%0, %%r***, %r%b%b%b%b*, %%r**, %r%b%b*)
+&f.format-bullets [v(d.bf)]=edit(%0, %r***, %r%b%b%b%b*, %r**, %r%b%b*)
 
 &f.format-results [v(d.bf)]=ulocal(f.format-links, ulocal(f.format-bold-italic, ulocal(f.format-paragraph, ulocal(f.format-punctuation, ulocal(f.format-bullets, trim(trim(%0, b, lit(%r)))), f.format-tabs, :), f.format-numbers)))
 
 &f.sanitize-where [v(d.bf)]=strcat(setq(0, edit(strip(%0, v(d.sanitize-where)), ', '')), setq(0, if(strmatch(%q0, * LIKE *), edit(%q0, *, %%%%), %q0)), edit(%q0, @@ESCAPE@@, \\\\))
 
-&f.find-namespace-by-text [v(d.bf)]=if(t(setr(P, ulocal(f.run-query, sql.get-exact-page-text, %0, %2))), ulocal(layout.page, ulocal(f.cleanse-output, %qP), %1, %2), if(t(setr(C, ulocal(f.run-query, sql.get-exact-category-contents, %0, %2))), ulocal(layout.list-category, ulocal(f.run-query, sql.get-namespace-category-name, %0, %2), %qC, %1, %2), if(t(setr(P, ulocal(f.run-query, sql.get-similar-page-text, %0, %2))), ulocal(layout.page, ulocal(f.cleanse-output, %qP), %1, %2), if(t(setr(C, ulocal(f.run-query, sql.get-similar-category-contents, %0, %2))), ulocal(layout.list-category, ulocal(f.run-query, sql.get-namespace-category-name, %0, %2), %qC, %1, %2), if(t(setr(S, ulocal(f.run-query, sql.namespace-text-search, %0, %2))), ulocal(layout.list-category, capstr(%2) files containing '%0', %qS, %1, %2), alert(Error) No %2 files found for '%0' Try [switch(%2, news, %2, +%2)]/search %0.)))))
+&f.find-namespace-by-text [v(d.bf)]=if(t(setr(P, ulocal(f.run-query, sql.get-exact-page-text, %0, %2))), ulocal(layout.page, ulocal(f.cleanse-output, %qP, %2), %1, %2), if(t(setr(C, ulocal(f.run-query, sql.get-exact-category-contents, %0, %2))), ulocal(layout.list-category, ulocal(f.run-query, sql.get-namespace-category-name, %0, %2), %qC, %1, %2), if(t(setr(P, ulocal(f.run-query, sql.get-similar-page-text, %0, %2))), ulocal(layout.page, ulocal(f.cleanse-output, %qP, %2), %1, %2), if(t(setr(C, ulocal(f.run-query, sql.get-similar-category-contents, %0, %2))), ulocal(layout.list-category, ulocal(f.run-query, sql.get-namespace-category-name, %0, %2), %qC, %1, %2), if(t(setr(S, ulocal(f.run-query, sql.namespace-text-search, %0, %2))), ulocal(layout.list-category, capstr(%2) files containing '%0', %qS, %1, %2), alert(Error) No %2 files found for '%0' Try [switch(%2, news, %2, +%2)]/search %0.)))))
 
 &f.search-namespace-by-text [v(d.bf)]=if(t(setr(S, ulocal(f.run-query, sql.namespace-text-search, %0, %2))), ulocal(layout.list-category, capstr(%2) files containing '%0', %qS, %1, %2), alert(Error) No %2 files found for '%0' Try [switch(%2, news, %2, +%2)]/search %0.)
 
-&f.cleanse-output [v(d.bd)]=edit(translate(ulocal(f.format-cleanse-links, first(%0, v(d.default-row-delimiter))), p), %%r, %b%r, lit(%%R), %%R, lit(%%T), %%T, %r%r%r, %r%r, lit(%(), %(, lit(%)), %), \\\\\\\\, \\\\, %%t, %T, <blockquote>,, </blockquote>,,<br>, %r, <br/>, %r, <br />, %r, lit(%r), %r, lit(%t), %t, lit(%b), %b)
+&f.cleanse-output [v(d.bd)]=edit(translate(ulocal(f.format-cleanse-links, first(%0, v(d.default-row-delimiter)), %1), p), lit(%%R), %%R, lit(%%T), %%T, %r%r%r, %r%r, lit(%(), %(, lit(%)), %), \\\\\\\\, \\\\, %%t, %T, <blockquote>,, </blockquote>,,<br>, %r, <br/>, %r, <br />, %r, lit(%r), %r, lit(%t), %t, lit(%b), %b)
 
 @@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
 @@ Layouts
 @@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
 
-&layout.examples [v(d.bf)]=if(t(setr(E, ulocal(f.format-results, ulocal(f.get-page-example, %0)))), strcat(%r, divider(Commands, %1), %r, formattext(%qE%r, 0, %1)))
+&layout.examples [v(d.bf)]=if(t(setr(E, ulocal(f.format-results, ulocal(f.get-page-example, %0, %2)))), strcat(%r, divider(Commands, %1), %r, formattext(%qE%r, 0, %1)))
 
-&layout.see_also [v(d.bf)]=if(t(setr(A, ulocal(f.get-page-links, %0))), strcat(%r, formattext(strcat(%chOther topics:%cn, %b, ulocal(layout.list, %qA)), 0, %1)))
+&layout.see_also [v(d.bf)]=if(t(setr(A, ulocal(f.get-page-links, %0, %2))), strcat(%r, formattext(strcat(%chOther topics:%cn, %b, ulocal(layout.list, %qA)), 0, %1)))
+
+&layout.categories [v(d.bf)]=if(t(setr(A, ulocal(f.get-page-categories, %0, %2))), strcat(%r, formattext(strcat(%r, ansi(h, plural(words(%qA, |), Category:, Categories:)), %b, ulocal(layout.list, %qA)), 0, %1)))
 
 &layout.wiki_link [v(d.bf)]=formattext(strcat(%r, %chWiki:%cn, %b, v(d.wiki-url), v(d.%2.namespace), :, edit(trim(%3), %b, _)), 0, %1)
 
-&layout.page-text [v(d.bf)]=strcat(setq(P, ulocal(f.format-results, ulocal(f.get-page-detail, %0))), setq(S, ulocal(f.get-page-short, %0)), formattext(strcat(%qS, if(t(%qS), %r%r, %r), %qP, %r), 0, %1))
+&layout.page-text [v(d.bf)]=strcat(setq(P, ulocal(f.format-results, ulocal(f.get-page-detail, %0, %3))), setq(S, ulocal(f.get-page-short, %0, %3)), formattext(strcat(%qS, if(t(%qS), %r%r, %r), %qP, %r), 0, %1))
 
-&layout.page [v(d.bf)]=strcat(header(setr(T, ulocal(f.get-page-topic, %0)), %1), %r, ulocal(layout.page-text, %0, %1, %qT), ulocal(layout.examples, %0, %1), ulocal(layout.see_also, %0, %1), %r, ulocal(layout.wiki_link, %0, %1, %2, %qT), %r, footer(switch(%2, news, %2, +%2) for more, %1))
+&layout.page [v(d.bf)]=strcat(header(setr(T, ulocal(f.get-page-topic, %0, %2)), %1), %r, ulocal(layout.page-text, %0, %1, %qT, %2), ulocal(layout.examples, %0, %1), ulocal(layout.see_also, %0, %1, %2), ulocal(layout.categories, %0, %1, %2), %r, ulocal(layout.wiki_link, %0, %1, %2, %qT), %r, footer(switch(%2, news, %2, +%2) for more, %1))
 
 &layout.list-category [v(d.bf)]=strcat(header(%0, %2), %r, formatcolumns(edit(%1, _, %b), v(d.default-row-delimiter), %2) %r, footer(switch(%3, news, %3, +%3) <file name> for more., %2))
 

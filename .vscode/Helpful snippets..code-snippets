@@ -32,7 +32,7 @@
 	},
 	"Insert assert staff error": {
 		"prefix": "@assert isstaff(",
-		"body": "@assert isstaff(%${1:#})={ @trigger me/tr.error=$1, Only staff can $0.; };",
+		"body": "@assert isstaff(%${1:#})={ @trigger me/tr.error=%$1, Only staff can $0.; };",
 		"description": "assert staff error"
 	},
 	"Insert find player error": {

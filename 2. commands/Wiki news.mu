@@ -28,3 +28,5 @@ You could basically duplicate this process for anything you want to show on the 
 &c.news/search_text [v(d.bc)]=$news/s* *:@pemit %#=ulocal(f.search-namespace-by-text, %1, %#, news)
 
 &c.news [v(d.bc)]=$news:@pemit %#=ulocal(layout.namespace-categories, %#,, news)
+
+&c.+news [v(d.bc)]=$+news*:@force %#=news%0;

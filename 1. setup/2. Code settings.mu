@@ -36,6 +36,10 @@
 
 &d.help.link.count [v(d.bd)]=4
 
+&d.help.category.field [v(d.bd)]=category
+
+&d.help.category.count [v(d.bd)]=2
+
 &d.news.topic.field [v(d.bd)]=topic
 
 &d.news.shortdesc.field [v(d.bd)]=short
@@ -45,6 +49,10 @@
 &d.news.link.field [v(d.bd)]=link
 
 &d.news.link.count [v(d.bd)]=4
+
+&d.news.category.field [v(d.bd)]=category
+
+&d.news.category.count [v(d.bd)]=2
 
 @@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
 
