@@ -110,7 +110,7 @@ TODO: BUG: on new game, lots of errors get thrown to the Monitor channel when us
 
 &layout.page-text [v(d.bf)]=strcat(setq(P, ulocal(f.format-results, ulocal(f.get-page-detail, %0, %3))), setq(S, ulocal(f.get-page-short, %0, %3)), formattext(strcat(%qS, if(t(%qS), %r%r, %r), %qP, %r), 0, %1))
 
-&layout.page [v(d.bf)]=strcat(header(setr(T, ulocal(f.get-page-topic, %0, %2)), %1), %r, ulocal(layout.page-text, %0, %1, %qT, %2), ulocal(layout.examples, %0, %1), ulocal(layout.see_also, %0, %1, %2), ulocal(layout.categories, %0, %1, %2), %r, ulocal(layout.wiki_link, %0, %1, %2, %qT), %r, footer(switch(%2, news, %2, +%2) for more, %1))
+&layout.page [v(d.bf)]=strcat(header(setr(T, ulocal(f.get-page-topic, %0, %2)), %1), %r, ulocal(layout.page-text, %0, %1, %qT, %2), ulocal(layout.examples, %0, %1, %2), ulocal(layout.see_also, %0, %1, %2), ulocal(layout.categories, %0, %1, %2), %r, ulocal(layout.wiki_link, %0, %1, %2, %qT), %r, footer(switch(%2, news, %2, +%2) for more, %1))
 
 &layout.list-category [v(d.bf)]=strcat(header(%0, %2), %r, formatcolumns(edit(%1, _, %b), v(d.default-row-delimiter), %2) %r, footer(switch(%3, news, %3, +%3) <file name> for more., %2))
 
