@@ -76,7 +76,7 @@ TODO: BUG: on new game, lots of errors get thrown to the Monitor channel when us
 
 &f.format-tabs [v(d.bf)]=iter(%0, if(strmatch(itext(0), :*), strcat(edit(first(itext(0)), :, %t), rest(itext(0))), itext(0)), %r, %r)
 
-&f.format-links [v(d.bf)]=strcat(setq(1, 0), iter(%0, if(cor(switch(itext(0), %%%[*, 1, %%%[%%%[*, 1, %[%[*, 1, %[*, 1, 0), t(%q1)), ansi(h, strcat(setq(L, edit(itext(0), %%%[,, %%%],, %[,, %],)), switch(%qL, News:*, news%b, Help:, +help%b,), edit(if(strmatch(%qL, *@@PIPE@@*), rest(%qL, @@PIPE@@), %qL), _, %b, News:,, Help:,)), setq(1, not(switch(itext(0), *%%%]*, 1, *%%%]%%%]*, 1, *%]%]*, 1, *%]*, 1, 0)))), itext(0))))
+&f.format-links [v(d.bf)]=strcat(setq(1, 0), iter(%0, if(cor(switch(itext(0), %%%[*, 1, %%%[%%%[*, 1, %[%[*, 1, %[*, 1, 0), t(%q1)), ansi(h, strcat(setq(L, edit(itext(0), %%%[,, %%%],, %[,, %],)), switch(itext(0), *News:*, news%b, *Help:*, +help%b,), edit(if(strmatch(%qL, *@@PIPE@@*), rest(%qL, @@PIPE@@), %qL), _, %b, News:,, Help:,)), setq(1, not(switch(itext(0), *%%%]*, 1, *%%%]%%%]*, 1, *%]%]*, 1, *%]*, 1, 0)))), itext(0))))
 
 &f.format-bold-italic [v(d.bf)]=edit(strcat(setq(1, 0), iter(edit(%0, %r, %b%r, %(, @@LEFTPAREN@@%b, %), %b@@RIGHTPAREN@@), if(cor(strmatch(trim(itext(0), b, %r), ''*), t(%q1)), ansi(h, trim(edit(itext(0), ''',,'',), b, '), setq(1, not(cand(strmatch(itext(0), *''*), cor(not(strmatch(trim(itext(0), b, %r), ''*)), strmatch(trim(itext(0), b, %r), ''*'')))))), itext(0)))), %b%r, %r,@@LEFTPAREN@@%b, %(, %b@@RIGHTPAREN@@, %))
 
