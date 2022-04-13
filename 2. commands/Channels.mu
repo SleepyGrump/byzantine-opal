@@ -123,6 +123,7 @@ MAYBE: Doubt there's much call for it, but maybe let people modify the following
 TODO: Add some kind of +com/allowtitlebypass <player> command so that players can designate who gets to use comtitles on their channels. /denytitlebypass would be good too. Need a better set of commands for this...
 
 Changes:
+2022-04-12: Added MUTE status to /who! Can't believe I didn't think of that. Also fixed a bug where staff wouldn't see the user's comtitle if the channel was spoofed (they should see both).
 2022-04-09: Changed the +channels layout to be more relevant. Added sheet and msg to the banned words list since they don't have a + in front of them.
 2022-03-07: Stopped +com from catching just any command that starts with +com.
 2022-03-05: Added the ability to restrict comtitle-setting on a channel. There's also a coded bypass to let other code enable a comtitle for each player. See demure-bismuth/Other functionality/Sharps.mu +name/title for an example.
@@ -272,7 +273,7 @@ Changes:
 
 @@ %0 - dbref of channel object
 @@ %1 - user
-&layout.channel-who [v(d.chf)]=strcat(setq(N, ulocal(f.get-channel-name, %0)), header(%qN channel players, %1), %r, formatcolumns(iter(filter(filter.not_dark, cwho(%qN),,, %1), ulocal(layout.player-name-or-comtitle-with-idle, itext(0), %1, %qN),, |), |, %1), %r, footer(, %1))
+&layout.channel-who [v(d.chf)]=strcat(setq(N, ulocal(f.get-channel-name, %0)), header(%qN channel players, %1), %r, multicol(strcat(Idle|Status|Name|Idle|Status|Name|, iter(filter(filter.not_dark, cwho(%qN),,, %1), ulocal(layout.player-name-or-comtitle-with-idle, itext(0), %1, %qN),, |)), 8 8 * 8 8 *, 1, |, %1), %r, footer(, %1))
 
 @@ %0 - dbref of channel object
 @@ %1 - user
@@ -289,7 +290,7 @@ Changes:
 @@ %2 - channel name
 &layout.player-name-or-comtitle [v(d.chf)]=switch(strcat(t(setr(C, comtitle(%0, %2))), ulocal(f.get-channel-spoof, %2), isstaff(%1)), 1Spoof1, ulocal(layout.comtitle-then-name, %0, %1, %qC), 1Spoofed0, %qC, 1Non-spoofed*, ulocal(layout.non-spoofed-comtitle-and-name, %0, %1, %qC), ulocal(f.get-name, %0, %1))
 
-&layout.player-name-or-comtitle-with-idle [v(d.chf)]=cat(ulocal(f.get-idle, %0, %1), -, switch(strcat(t(setr(C, comtitle(%0, %2))), ulocal(f.get-channel-spoof, %2), isstaff(%1)), 1Spoof1, ulocal(layout.comtitle-then-name, %0, %1, %qC), 1Spoofed0, %qC, 1Non-spoofed*, ulocal(layout.non-spoofed-comtitle-and-name, %0, %1, %qC), ulocal(f.get-name, %0, %1)))
+&layout.player-name-or-comtitle-with-idle [v(d.chf)]=strcat(ulocal(f.get-idle, %0, %1), |, if(ulocal(filter.is-on-channel-unmuted, %2, %0), Active, Muted), |, switch(strcat(t(setr(C, comtitle(%0, %2))), ulocal(f.get-channel-spoof, %2), isstaff(%1)), 1Spoofed1, ulocal(layout.comtitle-then-name, %0, %1, %qC), 1Spoofed0, %qC, 1Non-spoofed*, ulocal(layout.non-spoofed-comtitle-and-name, %0, %1, %qC), ulocal(f.get-name, %0, %1)))
 
 &layout.comtitle-then-name [v(d.chf)]=strcat(%2, %b, %(, ulocal(f.get-name, %0, %1), %))
 
