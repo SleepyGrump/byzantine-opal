@@ -159,7 +159,7 @@
 
 &layout.finger-sections [v(d.bf)]=iter(v(d.finger-sections), ulocal(layout.finger-section, %0, %1, itext(0)), |, @@)
 
-&layout.finger-header [v(d.bf)]=strcat(ulocal(f.get-name, %0, %1), %b, %(, ulocal(f.get-alias, %0, %1), %), if(isstaff(%1), strcat(%b, %0, %b, flags(%0))))
+&layout.finger-header [v(d.bf)]=strcat(ulocal(f.get-name, %0, %1), %b, setq(A, ulocal(f.get-alias, %0, %1)), if(t(%qA), %(%qA%)%b), if(isstaff(%1), strcat(- %0, %b, flags(%0))))
 
 &layout.finger-footer [v(d.bf)]=cat(ulocal(f.get-status, %0, %1), case(1, isstaff(%0), staff, isapproved(%0), approved, unapproved), ulocal(f.get-idle, %0, %1) idle)
 
