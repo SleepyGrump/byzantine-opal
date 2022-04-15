@@ -76,9 +76,9 @@ TODO: BUG: on new game, lots of errors get thrown to the Monitor channel when us
 
 &f.format-tabs [v(d.bf)]=iter(%0, if(strmatch(itext(0), :*), strcat(edit(first(itext(0)), :, %t), rest(itext(0))), itext(0)), %r, %r)
 
-&f.format-links [v(d.bf)]=strcat(setq(1, 0), iter(%0, if(cor(switch(itext(0), %%%[*, 1, %%%[%%%[*, 1, %[%[*, 1, %[*, 1, 0), t(%q1)), ansi(h, strcat(setq(L, edit(itext(0), %%%[,, %%%],, %[,, %],)), switch(itext(0), *News:*, news%b, *Help:*, +help%b,), edit(if(strmatch(%qL, *@@PIPE@@*), rest(%qL, @@PIPE@@), %qL), _, %b, News:,, Help:,)), setq(1, not(switch(itext(0), *%%%]*, 1, *%%%]%%%]*, 1, *%]%]*, 1, *%]*, 1, 0)))), itext(0))))
+&f.format-links [v(d.bf)]=edit(strcat(setq(1, 0), iter(edit(%0, %r, %b%r), if(cor(switch(itext(0), %%%[*, 1, %%%[%%%[*, 1, %[%[*, 1, %[*, 1, 0), t(%q1)), ansi(h, strcat(setq(L, edit(itext(0), %%%[,, %%%],, %[,, %],)), switch(itext(0), *News:*, news%b, *Help:*, +help%b,), edit(if(strmatch(%qL, *@@PIPE@@*), rest(%qL, @@PIPE@@), %qL), _, %b, News:,, Help:,)), setq(1, not(switch(itext(0), *%%%]*, 1, *%%%]%%%]*, 1, *%]%]*, 1, *%]*, 1, 0)))), itext(0)))), %b%r, %r)
 
-&f.format-bold-italic [v(d.bf)]=edit(strcat(setq(1, 0), iter(edit(%0, %r, %b%r, %(, @@LEFTPAREN@@%b, %), %b@@RIGHTPAREN@@), if(cor(strmatch(trim(itext(0), b, %r), ''*), t(%q1)), ansi(h, trim(edit(itext(0), ''',,'',), b, '), setq(1, not(cand(strmatch(itext(0), *''*), cor(not(strmatch(trim(itext(0), b, %r), ''*)), strmatch(trim(itext(0), b, %r), ''*'')))))), itext(0)))), %b%r, %r,@@LEFTPAREN@@%b, %(, %b@@RIGHTPAREN@@, %))
+&f.format-bold-italic [v(d.bf)]=edit(strcat(setq(2, 0), iter(edit(%0, %r, %b%r, %(, @@LEFTPAREN@@%b, %), %b@@RIGHTPAREN@@), if(cor(strmatch(itext(0), ''*), t(%q2)), ansi(h, trim(edit(itext(0), ''',,'',), b, '), setq(2, not(cand(strmatch(itext(0), *''*), cor(not(strmatch(trim(itext(0), b, %r), ''*)), strmatch(itext(0), ''*''*)))))), itext(0)))), %b%r, %r,@@LEFTPAREN@@%b, %(, %b@@RIGHTPAREN@@, %))
 
 &f.format-cleanse-links [v(d.bf)]=edit(iter(%0, if(strmatch(itext(0), *%[*|*%]*), edit(itext(0), |, @@PIPE@@), itext(0)), =, =), strcat(@@PIPE@@, if(t(setr(X, v(d.%1.example.field))), %qX, setr(X, v(d.%1.link.field)))), |%qX)
 
@@ -94,7 +94,7 @@ TODO: BUG: on new game, lots of errors get thrown to the Monitor channel when us
 
 &f.search-namespace-by-text [v(d.bf)]=if(t(setr(S, ulocal(f.run-query, sql.namespace-text-search, %0, %2))), ulocal(layout.list-category, capstr(%2) files containing '%0', %qS, %1, %2), alert(Error) No %2 files found for '%0' Try [switch(%2, news, %2, +%2)]/search %0.)
 
-&f.cleanse-output [v(d.bd)]=edit(translate(ulocal(f.format-cleanse-links, first(%0, v(d.default-row-delimiter)), %1), p), lit(%%R), %%R, lit(%%T), %%T, %r%r%r, %r%r, lit(%(), %(, lit(%)), %), \\\\\\\\, \\\\, %%t, %T, <blockquote>,, </blockquote>,,<br>, %r, <br/>, %r, <br />, %r, lit(%r), %r, lit(%t), %t, lit(%b), %b)
+&f.cleanse-output [v(d.bd)]=edit(translate(ulocal(f.format-cleanse-links, first(%0, v(d.default-row-delimiter)), %1), p), lit(%%R), %%R, lit(%%T), %%T, %r%r%r, %r%r, lit(%(), %(, lit(%)), %), \\\\\\\\, \\\\, %%t, %T, <blockquote>,, </blockquote>,,<br>, %r, <br/>, %r, <br />, %r, lit(%r), %r, lit(%t), %t, lit(%b), %b, %%%%, %%)
 
 @@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
 @@ Layouts
