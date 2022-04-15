@@ -4,7 +4,7 @@
 
 @@ TODO: Maybe add dynamic startups to this as well? +doing/poll/random?
 
-@startup [v(d.bf)]=@trigger me/tr.make-functions; @doing/header [v(d.default-poll)]; @enable eventchecking; @disable building; @trigger me/tr.ban-banned-players; @trigger me/tr.clear-timers;
+@startup [v(d.bf)]=@trigger me/tr.make-functions; @doing/header [v(d.default-poll)]; @enable eventchecking; @trigger me/tr.ban-banned-players; @trigger me/tr.clear-timers;
 
 &tr.make-functions [v(d.bf)]=@dolist lattr(me/f.global.*)=@function rest(rest(##, .), .)=me/##; @dolist lattr(me/f.globalp.*)=@function/preserve rest(rest(##, .), .)=me/##; @dolist lattr(me/f.globalpp.*)=@function/preserve/privilege rest(rest(##, .), .)=me/##;
 
