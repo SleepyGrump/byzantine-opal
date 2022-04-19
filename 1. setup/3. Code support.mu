@@ -315,6 +315,10 @@
 @@ %2: message (if not given, message is assumed to be %1)
 &tr.alert-to-channel [v(d.bf)]=@cemit %0=cat(ansi(xh, extract(prettytime(), 1, 2, /)), ansi(<#777777>, rest(prettytime())), if(t(%2), cat(ulocal(f.get-name, %1):, %2), %1));
 
+@@ %0: player or message
+@@ %1: message (if not given, message is assumed to be %0)
+&tr.monitor [v(d.bf)]=@trigger me/tr.alert-to-channel=[v(d.report-target)], %0, %1;
+
 @@ %0: attribute group
 &tr.clean-old-player-logs [v(d.bf)]=@dolist search(EPLAYER=t(lattr(##/%0*)))={ @trigger me/tr.clean-old-logs=##, %0; };
 
