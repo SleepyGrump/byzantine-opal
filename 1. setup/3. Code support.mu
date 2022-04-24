@@ -367,4 +367,7 @@
 
 &layout.log [v(d.bf)]=cat(ansi(xh, extract(%0, 1, 2, /)), rest(rest(rest(%0))))
 
-&layout.list [v(d.bf)]=if(t(%0), itemize(trim(setunion(%0, %0, |), b, |), |, if(t(%1), %1, and)), None)
+@@ %0: a list of |-delimited items
+@@ %1: the connecting word for the last item - 'and' by default.
+@@ %2: the maximum number of items to list - 12 by default.
+&layout.list [v(d.bf)]=if(t(%0), strcat(setq(M, if(t(%2), %2, 12)), itemize(trim(if(lte(words(setr(0, sort(setunion(%0, %0, |),, |, |)), |), dec(%qM)), %q0, strcat(extract(%q0, 1, %qM, |), |, sub(words(%q0, |), %qM) more items)), b, |), |, if(t(%1), %1, and))), None)

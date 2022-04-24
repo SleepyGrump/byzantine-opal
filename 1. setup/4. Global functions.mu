@@ -34,6 +34,12 @@
 @@ NOTE: This code is written so that your input can contain "0" as part of the list, and will match it. To test the output of this code, use t(strlen(finditem(list, item, delimiter))) rather than just t() when a 0 may be involved in the output.
 &f.globalpp.finditem [v(d.bf)]=if(strlen(%1), strcat(if(t(%2), setq(D, %2), setq(D, %b)), if(t(strlen(setr(S, extract(%0, member(%0, %1, %qD), 1, %qD)))), %qS, if(t(strlen(setr(S, extract(%0, match(%0, %1*, %qD), 1, %qD)))), %qS, if(member(%0, *, %qD), %1)))))
 
+@@ %0: A delimiter-separated list of items
+@@ %1: The item to find matches for. If not entered, will return all.
+@@ %2: Default space.
+@@ finditems(list, item, delimiter) - finds all items that match the input. Cannot match the * character - will treat it like a strmatch string.
+&f.globalpp.finditems [v(d.bf)]=strcat(if(t(%2), setq(D, %2), setq(D, %b)), trim(squish(iter(%0, if(strmatch(itext(0), *%1*), itext(0)), %qD, %qD), %qD), b, %qD))
+
 @@ Sets a timer in a standardized way.
 @@ %0 - target to set the timer on
 @@ %1 - name of the timer (must be attribute-friendly)
