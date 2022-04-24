@@ -26,7 +26,7 @@ TODO: BUG: on new game, lots of errors get thrown to the Monitor channel when us
 
 @force me=&CRON_JOB_SQL [v(d.cron)]=@trigger [v(d.bc)]/tr.sql-check
 
-&CRON_TIME_SQL [v(d.cron)]=|||04 08 12 16 20 24||
+&CRON_TIME_SQL [v(d.cron)]=|||00 04 08 12 16 20|00|
 
 &tr.sql-check [v(d.bc)]=@eval strcat(setr(R, sql(setr(Q, SELECT 1), v(d.default-row-delimiter), v(d.default-column-delimiter))), ulocal(tr.report_query_error, tr.sql-check, %qR, %qQ));
 
