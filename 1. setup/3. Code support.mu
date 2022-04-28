@@ -310,6 +310,9 @@
 @@ %3: message
 &tr.log [v(d.bf)]=@eval setq(1, if(strmatch(%1, _*), rest(%1, _), %1)); @set %0=[ulocal(f.get-next-id-attr, %0, _log-%q1)]:[ulocal(layout.log-data, %2, %3)]; @assert t(member(v(d.log-types), %q1))={ @set %vD=d.log-types:[setunion(v(d.log-types), %q1)]; };
 
+@@ Same as tr.log, but stores the data directly instead of logging it. Useful for incremental storage.
+&tr.store [v(d.bf)]=@set %0=[ulocal(f.get-next-id-attr, %0, %1)]:[ulocal(layout.log-data, %2, %3)];
+
 @@ %0: channel
 @@ %1: player or message
 @@ %2: message (if not given, message is assumed to be %1)
