@@ -192,7 +192,7 @@ Changes:
 
 @force me=&vH [v(d.bf)]=[v(d.chf)]
 
-@force me=&vD [v(d.chf)]=[v(d.cdb)]
+@force me=&vN [v(d.chf)]=[v(d.cdb)]
 
 @@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
 @@ Settings you can change!
@@ -314,10 +314,10 @@ Changes:
 &f.can-see-channel [v(d.chf)]=cor(isstaff(%1), not(t(xget(%0, channel.lock))), t(ulocal(%0/channel.lock, %1)))
 
 @@ %0 - player
-&f.get-channels [v(d.chf)]=filter(f.can-see-channel, edit(lattr(%vD/channel.*), CHANNEL.,),,, %0)
+&f.get-channels [v(d.chf)]=filter(f.can-see-channel, edit(lattr(%vN/channel.*), CHANNEL.,),,, %0)
 
 @@ %0 - player
-&f.can-create-channels [v(d.chf)]=or(isstaff(%0), and(hasflag(%0, APPROVED), lt(words(xget(%0, _channels-created)), xget(%vD, d.max-player-channels))))
+&f.can-create-channels [v(d.chf)]=or(isstaff(%0), and(hasflag(%0, APPROVED), lt(words(xget(%0, _channels-created)), xget(%vN, d.max-player-channels))))
 
 @@ %0 - the command input
 &f.find-command-switch [v(d.chf)]=strcat(setq(0,), setq(1,), setq(2, switch(%0, /*/*, first(rest(first(%0), /), /), /*, rest(first(%0), /), )), null(iter(sort(lattr(%!/switch.*.%q2*)), case(1, match(last(itext(0), .), %q2), setq(0, %q0 [itext(0)]), strmatch(last(itext(0), .), %q2*), setq(1, %q1 [itext(0)])))), trim(if(t(%q0), first(%q0), %q1), b))
@@ -327,7 +327,7 @@ Changes:
 &f.can-modify-channel [v(d.chf)]=cor(isstaff(%0), match(ulocal(f.get-channel-owner, %1), %0, |))
 
 @@ %0 - title of channel
-&f.get-channel-dbref [v(d.chf)]=squish(trim(iter(lattr(%vD/channel.*), if(cor(strmatch(ulocal(f.get-channel-name, rest(itext(0), .)), %0), strmatch(ulocal(f.get-channel-alias, rest(itext(0), .)), %0)), rest(itext(0), .)))))
+&f.get-channel-dbref [v(d.chf)]=squish(trim(iter(lattr(%vN/channel.*), if(cor(strmatch(ulocal(f.get-channel-name, rest(itext(0), .)), %0), strmatch(ulocal(f.get-channel-alias, rest(itext(0), .)), %0)), rest(itext(0), .)))))
 
 @@ %0 - dbref of channel
 &f.get-channel-owner [v(d.chf)]=xget(%0, creator-dbref)
@@ -336,7 +336,7 @@ Changes:
 &f.get-channel-name [v(d.chf)]=xget(%0, channel-name)
 
 @@ %0 - dbref of channel
-&f.get-channel-details [v(d.chf)]=xget(%vD, channel.%0)
+&f.get-channel-details [v(d.chf)]=xget(%vN, channel.%0)
 
 @@ %0 - dbref of channel
 &f.get-channel-alias [v(d.chf)]=xget(%0, channel-alias)
@@ -380,12 +380,10 @@ Changes:
 &f.is-banned-string [v(d.chf)]=not(match(strip(mid(%0, 0, 1), v(d.banned-characters)), mid(%0, 0, 1)))
 
 @@ %0 - title of the new channel
-&f.is-banned-name [v(d.chf)]=ladd(strcat(iter(lattr(%vD/channel.*), match(ulocal(f.get-channel-name, rest(itext(0), .)), %0*, |)), %b, match(default(%vD/d.existing-channels, 0), %0, |), %b, ulocal(f.is-banned-string, %0), %b,  match(xget(%vD, d.banned-words), %0)))
+&f.is-banned-name [v(d.chf)]=ladd(strcat(iter(lattr(%vN/channel.*), match(ulocal(f.get-channel-name, rest(itext(0), .)), %0*, |)), %b, match(default(%vN/d.existing-channels, 0), %0, |), %b, ulocal(f.is-banned-string, %0), %b,  match(xget(%vN, d.banned-words), %0)))
 
 @@ %0 - new alias of the channel
-&f.is-banned-alias [v(d.chf)]=ladd(strcat(iter(lattr(%vD/channel.*), match(ulocal(f.get-channel-alias, rest(itext(0), .)), %0, |)), %b, match(xget(%vD, d.banned-words), %0), %b, ulocal(f.is-banned-string, %0)))
-
-th ulocal(v(d.chf)/f.is-banned-alias, quit)
+&f.is-banned-alias [v(d.chf)]=ladd(strcat(iter(lattr(%vN/channel.*), match(ulocal(f.get-channel-alias, rest(itext(0), .)), %0, |)), %b, match(xget(%vN, d.banned-words), %0), %b, ulocal(f.is-banned-string, %0)))
 
 @@ %0 - title of channel
 &f.clean-channel-name [v(d.chf)]=title(%0)
@@ -582,7 +580,7 @@ th ulocal(v(d.chf)/f.is-banned-alias, quit)
 @@ %0 - %#
 @@ %1 - channel dbref
 @@ %2 - action
-&tr.log-channel-history [v(d.chc)]=@set %vD=channel.%1:[trim(strcat(xget(%vD, channel.%1), %r, prettytime() >, %b, moniker(%0) %(%0%):, %b, %2), b, %r)];
+&tr.log-channel-history [v(d.chc)]=@set %vN=channel.%1:[trim(strcat(xget(%vN, channel.%1), %r, prettytime() >, %b, moniker(%0) %(%0%):, %b, %2), b, %r)];
 
 @@ Input:
 @@ %0 - %#
@@ -622,7 +620,7 @@ th ulocal(v(d.chf)/f.is-banned-alias, quit)
 
 &tr.fire-command-on-all-channels [v(d.chc)]=@switch t(setr(L, switch(%1, on, ulocal(f.get-channels, %0), filter(filter.is-on-channel, ulocal(f.get-channels, %0),,, %0))))=1, { @dolist %qL={ @switch t(setr(A, ulocal(f.get-user-alias, %0, ##)))=1, { @force %0={ +com/%1 %qA; }; }; }; }, { @pemit %0=ulocal(layout.error, You haven't currently joined any channels to modify.); };
 
-&tr.send-text-to-all-channels [v(d.chc)]=@switch [xget(%vD, d.allow-multi-channel-messaging)]=1, { @switch t(setr(L, filter(filter.is-on-channel-unmuted, ulocal(f.get-channels, %0),,, %0)))=1, { @dolist %qL={ @switch t(setr(A, ulocal(f.get-user-alias, %0, ##)))=1, { @force %0={ %qA %1; }; }; }; }, { @pemit %0=ulocal(layout.error, You haven't currently joined any channels to send that text to.); }; }, { @pemit %0=ulocal(layout.error, Multi-channel messaging is not enabled.); }
+&tr.send-text-to-all-channels [v(d.chc)]=@switch [xget(%vN, d.allow-multi-channel-messaging)]=1, { @switch t(setr(L, filter(filter.is-on-channel-unmuted, ulocal(f.get-channels, %0),,, %0)))=1, { @dolist %qL={ @switch t(setr(A, ulocal(f.get-user-alias, %0, ##)))=1, { @force %0={ %qA %1; }; }; }; }, { @pemit %0=ulocal(layout.error, You haven't currently joined any channels to send that text to.); }; }, { @pemit %0=ulocal(layout.error, Multi-channel messaging is not enabled.); }
 
 &tr.channel-clear [v(d.chc)]=@set %0=_channel-clear:[secs()]; @pemit %0=ulocal(layout.msg, This will clear all your channel data. It's useful for when you're having trouble joining channels. You will leave all channels you are currently on. If you would like to continue%, type +com/clear YES within the next 10 minutes. It is now [prettytime()].);
 
@@ -659,7 +657,7 @@ th ulocal(v(d.chf)/f.is-banned-alias, quit)
 @@ %2 - alias
 &tr.channel-alias [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), %b, if(t(ulocal(f.is-banned-alias, %2)), You can't use the alias '%2' because it is already in use.), %b, if(not(ulocal(f.can-modify-channel, %0, %qN)), You are not staff or the owner of the channel '%qT' and cannot change it.), setq(A, ulocal(f.get-channel-alias, %qN))))))=, { @trigger me/tr.channel-alias-cleanup=%0, %qT, you have changed the channel's alias.; &channel-alias %qN=%2; @force %0={ addcom %2=%qT; }; @trigger me/tr.set-alias-commands; @pemit %0=ulocal(layout.msg, Changed the alias of '%qT' to '%2'. This reset the alias for you but does not change it for anyone else.); }, { @pemit %0=ulocal(layout.error, %qE); }
 
-&tr.set-alias-commands [v(d.chc)]=&cmd-alias/command me=edit(xget(%vD, command-alias/cmd), aliases_go_here, iter(lattr(%vD/channel.*), ulocal(f.get-channel-alias, edit(itext(0), CHANNEL.,)),, |), d.commands-with-no-value, xget(%vD, d.commands-with-no-value)); @set me/cmd-alias/command=no_parse; @set me/cmd-alias/command=regexp; @force me=&cmd-alias_with_text me=edit(xget(%vD, command-alias/cmd_txt), aliases_go_here, iter(lattr(%vD/channel.*), ulocal(f.get-channel-alias, edit(itext(0), CHANNEL.,)),, |), d.commands-with-value, xget(%vD, d.commands-with-value)); @set me/cmd-alias_with_text=no_parse; @set me/cmd-alias_with_text=regexp;
+&tr.set-alias-commands [v(d.chc)]=&cmd-alias/command me=edit(xget(%vN, command-alias/cmd), aliases_go_here, iter(lattr(%vN/channel.*), ulocal(f.get-channel-alias, edit(itext(0), CHANNEL.,)),, |), d.commands-with-no-value, xget(%vN, d.commands-with-no-value)); @set me/cmd-alias/command=no_parse; @set me/cmd-alias/command=regexp; @force me=&cmd-alias_with_text me=edit(xget(%vN, command-alias/cmd_txt), aliases_go_here, iter(lattr(%vN/channel.*), ulocal(f.get-channel-alias, edit(itext(0), CHANNEL.,)),, |), d.commands-with-value, xget(%vN, d.commands-with-value)); @set me/cmd-alias_with_text=no_parse; @set me/cmd-alias_with_text=regexp;
 
 @@ Input:
 @@ %0 - %#
@@ -727,7 +725,7 @@ th ulocal(v(d.chf)/f.is-banned-alias, quit)
 @@ %0 - %#
 @@ %1 - channel title
 @@ %2 - existing log object (if exists)
-&tr.channel-claim [v(d.chc)]=@assert isstaff(%0)={ @pemit %0=ulocal(layout.error, Staff only.); }; @assert t(comalias(%0, %1))={ @pemit %0=ulocal(layout.error, Can't find a channel you joined named '%1'. Please enter the exact name of the channel - it is case sensitive - and make sure you have joined the channel.); }; @assert cor(cand(isdbref(%2), match(type(%2), THING), t(setr(N, %2))), t(setr(N, create(%1 Channel Object, 10))))={ @pemit %0=ulocal(layout.error, if(t(%2), '%2' is not a valid channel log object., Could not create '%1 Channel Object'.)); }; @trigger me/tr.channel-created-or-claimed=%0, %1, %qN, if(t(%2), xget(%2, desc)); @set %vD=d.existing-channels:[setdiff(xget(%vD, d.existing-channels), %1, |)]; @trigger me/tr.log-channel-history=%0, %qN, Claimed.; @pemit %0=ulocal(layout.msg, Channel '%1' claimed. It's yours now. Take good care of it!);
+&tr.channel-claim [v(d.chc)]=@assert isstaff(%0)={ @pemit %0=ulocal(layout.error, Staff only.); }; @assert t(comalias(%0, %1))={ @pemit %0=ulocal(layout.error, Can't find a channel you joined named '%1'. Please enter the exact name of the channel - it is case sensitive - and make sure you have joined the channel.); }; @assert cor(cand(isdbref(%2), match(type(%2), THING), t(setr(N, %2))), t(setr(N, create(%1 Channel Object, 10))))={ @pemit %0=ulocal(layout.error, if(t(%2), '%2' is not a valid channel log object., Could not create '%1 Channel Object'.)); }; @trigger me/tr.channel-created-or-claimed=%0, %1, %qN, if(t(%2), xget(%2, desc)); @set %vN=d.existing-channels:[setdiff(xget(%vN, d.existing-channels), %1, |)]; @trigger me/tr.log-channel-history=%0, %qN, Claimed.; @pemit %0=ulocal(layout.msg, Channel '%1' claimed. It's yours now. Take good care of it!);
 
 @@ Input:
 @@ %0 - %#
@@ -760,7 +758,7 @@ th ulocal(v(d.chf)/f.is-banned-alias, quit)
 @@ %3 - lock type - staff, approved-only, password, ban, unban
 @@ %4 - auxillary data - the password or the person to ban or unban
 @@ %5 - the info to log.
-&tr.lock-channel [v(d.chc)]=@trigger me/tr.log-channel-history=%0, %1, %5; @set %1=channel.lock-status:[setr(S, switch(%3, staff, Staff-only, approved, Approved-only, password, Password-protected, public, Public, private, Private, xget(%1, channel.lock-status)))]; @set %1=INHERIT; @cset/private %2; @lock %1=CHAN-LOCK/1; @set %1=CHAN-LOCK:[xget(%vD, switch(%qS, st*, staff, app*, approved, pas*, password, pub*, public, pri*, private)-lock)]; @cpflags %2=!join; @set %1=channel.lock:[edit(xget(%1, CHAN-LOCK), \%#, \%0)]; @set %1=channel-password:[switch(%3, ban, xget(%1, channel-password), unban, xget(%1, channel-password), password, %4,)]; @set %1=banned-players:[switch(%3, ban, setunion(xget(%1, banned-players), %4), unban, setdiff(xget(%1, banned-players), %4), xget(%1, banned-players))]; @switch %3=public, { @cset/public %2; };
+&tr.lock-channel [v(d.chc)]=@trigger me/tr.log-channel-history=%0, %1, %5; @set %1=channel.lock-status:[setr(S, switch(%3, staff, Staff-only, approved, Approved-only, password, Password-protected, public, Public, private, Private, xget(%1, channel.lock-status)))]; @set %1=INHERIT; @cset/private %2; @lock %1=CHAN-LOCK/1; @set %1=CHAN-LOCK:[xget(%vN, switch(%qS, st*, staff, app*, approved, pas*, password, pub*, public, pri*, private)-lock)]; @cpflags %2=!join; @set %1=channel.lock:[edit(xget(%1, CHAN-LOCK), \%#, \%0)]; @set %1=channel-password:[switch(%3, ban, xget(%1, channel-password), unban, xget(%1, channel-password), password, %4,)]; @set %1=banned-players:[switch(%3, ban, setunion(xget(%1, banned-players), %4), unban, setdiff(xget(%1, banned-players), %4), xget(%1, banned-players))]; @switch %3=public, { @cset/public %2; };
 
 @@ Input:
 @@ %0 - %#
@@ -770,7 +768,7 @@ th ulocal(v(d.chf)/f.is-banned-alias, quit)
 
 @@ Input:
 @@ %0 - %#
-&tr.channel-cleanup [v(d.chc)]=@assert isstaff(%0)={ @pemit %0=ulocal(layout.error, Staff only.); }; @wait me={ @pemit %0=alert(Channel) Cleanup complete. [default(%0/_channel-cleanup-count, 0)] channels to clean up.; }; @dolist/notify lattr(%vD/channel.*)={ @assert not(isstaff(setr(O, ulocal(f.get-channel-owner, setr(N, rest(##, .)))))); @assert not(hasflag(%qO, CONNECTED)); @assert not(hasflag(%qO, CONNECTED)); @assert gt(sub(secs(), convtime(xget(%qO, last))), 15552000); @assert t(setr(T, ulocal(f.clean-channel-name, %qN))); @set %0=_channel-nuke:%qN|[secs()]; @set %0=add(default(%0/_channel-cleanup-count, 0), 1); @trigger me/tr.destroy-channel=%0, %qT, YES; };
+&tr.channel-cleanup [v(d.chc)]=@assert isstaff(%0)={ @pemit %0=ulocal(layout.error, Staff only.); }; @wait me={ @pemit %0=alert(Channel) Cleanup complete. [default(%0/_channel-cleanup-count, 0)] channels to clean up.; }; @dolist/notify lattr(%vN/channel.*)={ @assert not(isstaff(setr(O, ulocal(f.get-channel-owner, setr(N, rest(##, .)))))); @assert not(hasflag(%qO, CONNECTED)); @assert not(hasflag(%qO, CONNECTED)); @assert gt(sub(secs(), convtime(xget(%qO, last))), 15552000); @assert t(setr(T, ulocal(f.clean-channel-name, %qN))); @set %0=_channel-nuke:%qN|[secs()]; @set %0=add(default(%0/_channel-cleanup-count, 0), 1); @trigger me/tr.destroy-channel=%0, %qT, YES; };
 
 @@ Input:
 @@ %0 - %#
@@ -781,7 +779,7 @@ th ulocal(v(d.chf)/f.is-banned-alias, quit)
 @@ %0 - %#
 @@ %1 - title
 @@ %2 - hopefully 'YES'
-&tr.destroy-channel [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), %b, if(not(ulocal(f.can-modify-channel, %0, %qN)), You are not staff or the owner of the channel '%qT' and cannot change it.), %b, setq(W, xget(%0, _channel-nuke)), if(cor(not(strmatch(%qN, first(%qW, |))), gt(sub(secs(), rest(%qW, |)), 300), not(match(%2, YES))), Your destruction timeout expired or you didn't type 'YES'. Please try again.)))))=, { @pemit %0=ulocal(layout.msg, Deleting %qT%, please  wait.); @trigger me/tr.channel-alias-cleanup-for-all-players=%qT, ulocal(f.get-name, %0) deleted the channel.; @dolist search(TYPE=PLAYER)={ @set ##=_channels-created:[setdiff(xget(##, _channels-created), %qN)]; }; delcom ulocal(f.get-fallback-alias, %qT); @wait 3={ @cdestroy %qT; @wipe %vD/channel.%qN; @destroy %qN; @pemit %0=alert(Channel) The channel '%qT' has been destroyed.; }; }, { @pemit %0=ulocal(layout.error, %qE); };
+&tr.destroy-channel [v(d.chc)]=@switch setr(E, trim(squish(strcat(u(f.get-channel-by-name-error, %0, %1, 1), %b, if(not(ulocal(f.can-modify-channel, %0, %qN)), You are not staff or the owner of the channel '%qT' and cannot change it.), %b, setq(W, xget(%0, _channel-nuke)), if(cor(not(strmatch(%qN, first(%qW, |))), gt(sub(secs(), rest(%qW, |)), 300), not(match(%2, YES))), Your destruction timeout expired or you didn't type 'YES'. Please try again.)))))=, { @pemit %0=ulocal(layout.msg, Deleting %qT%, please  wait.); @trigger me/tr.channel-alias-cleanup-for-all-players=%qT, ulocal(f.get-name, %0) deleted the channel.; @dolist search(TYPE=PLAYER)={ @set ##=_channels-created:[setdiff(xget(##, _channels-created), %qN)]; }; delcom ulocal(f.get-fallback-alias, %qT); @wait 3={ @cdestroy %qT; @wipe %vN/channel.%qN; @destroy %qN; @pemit %0=alert(Channel) The channel '%qT' has been destroyed.; }; }, { @pemit %0=ulocal(layout.error, %qE); };
 
 @@ Input:
 @@ %0 - title
