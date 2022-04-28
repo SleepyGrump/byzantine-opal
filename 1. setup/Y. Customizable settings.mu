@@ -68,6 +68,19 @@
 @@ Most games have a private staff-only channel called Monitor.
 &d.report-target [v(d.bd)]=Monitor
 
+@@ Player logs are stored on the player in the form of "log attribute + a number". An automatic process clears player logs as appropriate. These settings can extend the length of time logs are kept, and the and amount of logs kept, at minimum.
+
+@@ The top 20 logs are kept by default, no matter how old they are.
+&d.keep-last-X-logs [v(d.bd)]=20
+
+@@ All logs from the last 10 days are kept by default, regardless of how many there are.
+&d.keep-logs-from-the-last-X-days [v(d.bd)]=10
+
+@@ Together the above settings can create a lot of spam on player objects. If they're too much, you might want to reduce the above numbers. Games can handle hundreds of thousands of attributes, though, so we're erring on the side of being generous with this data.
+
+@@ Some logs are never deleted. These will have to be manually cleaned up by staffers on individual players which somehow get overwhelming. By default this list is empty but you can add any log keywords to it that you want to always preserve.
+&d.keep-all-logs-from-this-list [v(d.bd)]=
+
 @@ A few notes about color:
 @@ 1. Not everyone likes it.
 @@ 2. They can turn it off.

@@ -16,7 +16,7 @@
 
 &tr.ban-banned-players [v(d.bf)]=@dolist lattr(%vD/d.ban.*)=@admin forbid_site=rest(##, D.BAN.) 255.255.255.255;
 
-@daily [v(d.bf)]=@trigger me/tr.clear-timers; @trigger me/tr.clean-old-player-logs=_ownerlog-;
+@daily [v(d.bf)]=@trigger me/tr.clear-timers; @trigger me/tr.clean-all-player-logs;
 
 @@ =============================================================================
 @@ Locks
@@ -289,7 +289,7 @@
 @@ %0: player
 @@ %1: log attribute group
 @@ %2: number to get (default 10)
-&f.get-last-X-logs [v(d.bf)]=extract(revwords(lattr(%0/%1*)), 1, if(t(%2), %2, 10))
+&f.get-last-X-logs [v(d.bf)]=extract(revwords(lattr(strcat(%0, /, _log-, switch(%1, _*, rest(%1, _), %1), *))), 1, if(t(%2), %2, 10))
 
 @@ =============================================================================
 @@ Triggers - these must be globally available to all descendants, so belong on
@@ -308,7 +308,7 @@
 @@ %1: attribute group
 @@ %2: setter
 @@ %3: message
-&tr.log [v(d.bf)]=@set %0=[ulocal(f.get-next-id-attr, %0, %1)]:[ulocal(layout.log-data, %2, %3)];
+&tr.log [v(d.bf)]=@eval setq(1, if(strmatch(%1, _*), rest(%1, _), %1)); @set %0=[ulocal(f.get-next-id-attr, %0, _log-%q1)]:[ulocal(layout.log-data, %2, %3)]; @assert t(member(v(d.log-types), %q1))={ @set %vD=d.log-types:[setunion(v(d.log-types), %q1)]; };
 
 @@ %0: channel
 @@ %1: player or message
@@ -319,13 +319,26 @@
 @@ %1: message (if not given, message is assumed to be %0)
 &tr.monitor [v(d.bf)]=@trigger me/tr.alert-to-channel=[v(d.report-target)], %0, %1;
 
+&tr.clean-all-player-logs [v(d.bf)]=@dolist v(d.log-types)={ @trigger me/tr.clean-old-logs=##; };
+
 @@ %0: attribute group
-&tr.clean-old-player-logs [v(d.bf)]=@dolist search(EPLAYER=t(lattr(##/%0*)))={ @trigger me/tr.clean-old-logs=##, %0; };
+&tr.clean-old-player-logs [v(d.bf)]=@dolist search(EPLAYER=t(lattr(##/_log-%0*)))={ @trigger me/tr.clean-old-logs=##, %0; };
 
 @@ %0: player
 @@ %1: attribute group
-@@ Deletes logs that are not in the top 20 log entries and which did not take place within the last 7 days.
-&tr.clean-old-logs [v(d.bf)]=@eval setq(L, lattr(%0/%1*)); @eval setq(L, setdiff(%qL, extract(revwords(%qL), 1, 20))) @assert t(%qL); @dolist %qL={ @assert gt(sub(secs(), unprettytime(extract(xget(%0, ##), 1, 2))), 604800); @wipe %0/##; };
+@@ Deletes logs that are not in the top X log entries and which did not take place within the last X days, and which are not on the "never delete" list.
+&tr.clean-old-logs [v(d.bf)]=@break t(member(v(d.keep-all-logs-from-this-list), %1)); @eval setq(L, lattr(%0/_log-%1*)); @eval setq(L, setdiff(%qL, extract(revwords(%qL), 1, 20))) @assert t(%qL); @dolist %qL={ @assert gt(sub(secs(), unprettytime(extract(xget(%0, ##), 1, 2))), mul(v(d.keep-logs-from-the-last-X-days), 60, 60, 24)); @wipe %0/##; };
+
+@@ A special trigger designed to be called when a coder accidentally stores logs in the wrong spot. (Have done this.) Change the code to point to the right spot, then call this for the old stuff. Warning: will overwrite new logs that are formed in the time between when you update your code and when you call the trigger, so test your code somewhere safe first or halt the object doing the logging until you're done with the move.
+
+@@ %0: log to move
+&tr.move-logs [v(d.bf)]=@dolist search(EPLAYER=t(lattr(##/%0*)))={ @trigger me/tr.move-player-logs=##, %0; };
+
+&tr.move-player-logs [v(d.bf)]=@dolist lattr(%0/%1*)={ @mvattr %0=##, strcat(_log-, edit(if(strmatch(##, _*), rest(##, _), ##), _STAT.,)); };
+
+@@ Called with:
+@@ @force me=@trigger [v(d.bf)]/tr.move-logs=_xp-
+@@ Be careful to use the whole prefix - _xp- instead of _xp. Probably fine to mess it up, but could catch something incorrect if you do.
 
 @@ TODO: Consider adding options for cemit, job, and msg? And possibly a global trigger which handles all possibilities passed as a flag - channel, job, msg, page, and any future options we come up with, defaulting to remit.
 
