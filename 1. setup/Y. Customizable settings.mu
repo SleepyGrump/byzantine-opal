@@ -81,6 +81,42 @@
 @@ Some logs are never deleted. These will have to be manually cleaned up by staffers on individual players which somehow get overwhelming. By default this list is empty but you can add any log keywords to it that you want to always preserve.
 &d.keep-all-logs-from-this-list [v(d.bd)]=
 
+@@ The emit prefix that comes out when people use "ooc <text>" to talk.
+&d.ooc_text [v(d.bd)]=<OOC>
+
+@@ Default poll (shows when you type DOING or +who). Max length is 45 characters. This is a MUX limit.
+&d.default-poll [v(d.bd)]=Whatcha doing?
+
+@@ Travel categories, separated by |. These will be specific to your game and could include categories like "Retail" or "Market" depending on your setting. Your players will group their businesses under these categories. The only default is "OOC Rooms", so that you can add OOC destinations like the OOC room, the RP Nexus, Chargen, etc.
+&d.travel.categories [v(d.bd)]=OOC Rooms
+
+@@ The DBref of your OOC room
+&d.ooc [v(d.bd)]=#0
+
+@@ All communication in room # will go to this channel. You can add as many of these as you like. Users will be alerted that they need to join the channel to see the rest of the conversation if they're not already on the channel. To disable, just remove this attribute. This functionality can be used to direct convo from, say, the Chargen room to the Chargen channel, the OOC room to the Public channel, etc.
+@force me=&d.redirect-poses.[v(d.ooc)] [v(d.bd)]=Public
+
+@@ Include this only if you want things like dice rolls to also be directed to the channel. If you don't include it, only the player who rolled the dice will see the roll. No one else in the OOC room will. Some commands override this, such as the ooc <text> command, and post directly to the channel anyway.
+@force me=&d.redirect-remits.[v(d.ooc)] [v(d.bd)]=Public
+
+@@ Set this to the DBref of your quiet room and any other room you want silent.
+@force me=&d.gag-emits [v(d.bd)]=[v(d.qr)]
+
+@@ Default meeting timeout in seconds. Sometimes the default 10m is too short!
+&d.meeting-timeout [v(d.bd)]=600
+
+&d.default-out-exit [v(d.bd)]=Out <O>;o;out;exit;
+
+@@ If yours is the kind of place where you're fine with players who haven't been approved going through character generation, flip this flag to a 1 and they'll be able to wander around on the IC grid. Most places want at least a little staff involvement with that before letting them wander where they might interfere with roleplay, but some places don't have a definition of IC, or might be fine with allowing players on the grid but not allowing them to pose, etc. Note that this setting affects +travel, +summon, +join, +meet, etc - if disabled, unapproved characters will not be able to use code to get IC. (Staff can still summon them IC, of course.)
+&d.allow-unapproved-players-IC [v(d.bd)]=0
+
+@@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
+@@ For this section, make sure to take a look at Layout.mu and decide whether
+@@ you want to use that instead. It would suck to put a lot of effort into this
+@@ and then decide that the other option is better. Eventually Layout.mu will
+@@ replace this section entirely.
+@@ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ @@
+
 @@ A few notes about color:
 @@ 1. Not everyone likes it.
 @@ 2. They can turn it off.
@@ -205,33 +241,3 @@
 @@ : text goes here and there is surely going to be a lot of text whee texting :
 @@ /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/
 @@ /=/ text goes here and there is surely going to be a lot of text whee tex /=/
-
-@@ The emit prefix that comes out when people use "ooc <text>" to talk.
-&d.ooc_text [v(d.bd)]=<OOC>
-
-@@ Default poll (shows when you type DOING or +who). Max length is 45 characters. This is a MUX limit.
-&d.default-poll [v(d.bd)]=Whatcha doing?
-
-@@ Travel categories, separated by |. These will be specific to your game and could include categories like "Retail" or "Market" depending on your setting. Your players will group their businesses under these categories. The only default is "OOC Rooms", so that you can add OOC destinations like the OOC room, the RP Nexus, Chargen, etc.
-&d.travel.categories [v(d.bd)]=OOC Rooms
-
-@@ The DBref of your OOC room
-&d.ooc [v(d.bd)]=#0
-
-@@ All communication in room # will go to this channel. You can add as many of these as you like. Users will be alerted that they need to join the channel to see the rest of the conversation if they're not already on the channel. To disable, just remove this attribute. This functionality can be used to direct convo from, say, the Chargen room to the Chargen channel, the OOC room to the Public channel, etc.
-@force me=&d.redirect-poses.[v(d.ooc)] [v(d.bd)]=Public
-
-@@ Include this only if you want things like dice rolls to also be directed to the channel. If you don't include it, only the player who rolled the dice will see the roll. No one else in the OOC room will. Some commands override this, such as the ooc <text> command, and post directly to the channel anyway.
-@force me=&d.redirect-remits.[v(d.ooc)] [v(d.bd)]=Public
-
-@@ Set this to the DBref of your quiet room and any other room you want silent.
-@force me=&d.gag-emits [v(d.bd)]=[v(d.qr)]
-
-@@ Default meeting timeout in seconds. Sometimes the default 10m is too short!
-&d.meeting-timeout [v(d.bd)]=600
-
-&d.default-out-exit [v(d.bd)]=Out <O>;o;out;exit;
-
-@@ If yours is the kind of place where you're fine with players who haven't been approved going through character generation, flip this flag to a 1 and they'll be able to wander around on the IC grid. Most places want at least a little staff involvement with that before letting them wander where they might interfere with roleplay, but some places don't have a definition of IC, or might be fine with allowing players on the grid but not allowing them to pose, etc. Note that this setting affects +travel, +summon, +join, +meet, etc - if disabled, unapproved characters will not be able to use code to get IC. (Staff can still summon them IC, of course.)
-&d.allow-unapproved-players-IC [v(d.bd)]=0
-
