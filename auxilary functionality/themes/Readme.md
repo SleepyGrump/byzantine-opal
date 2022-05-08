@@ -2,7 +2,7 @@
 
 ## Black and white dot matrix ##
 
-![Black and white dot matrix](images/Black%20and%20white%20dot%20matrix.jpg)
+![Black and white dot matrix](images/Black%20and%20white%20dot%20matrix.png)
 
 ## Lace sunrise ##
 
